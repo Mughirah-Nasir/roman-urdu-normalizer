@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "roman-urdu-normalizer"
+version = "1.0.0"
+description = "A three-layer phonetic normalizer for Pakistani Roman Urdu text"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Mughirah Nasir", email = "mnasir.bee25seecs@seecs.edu.pk" },
+]
+keywords = ["urdu", "roman-urdu", "nlp", "normalization", "phonetic", "south-asian", "pakistan"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Text Processing :: Linguistic",
+    "Natural Language :: Urdu",
+]
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+    "pydantic>=2.10.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.0",
+    "pytest-cov>=6.0.0",
+    "httpx>=0.27.0",
+    "ruff>=0.13.0",
+    "mypy>=1.18.0",
+]
+
+[project.scripts]
+roman-urdu-normalizer = "app.cli:main"
+
+[project.urls]
+Repository = "https://github.com/MughirahNasir/roman-urdu-normalizer"
+Issues = "https://github.com/MughirahNasir/roman-urdu-normalizer/issues"
+Author = "https://github.com/MughirahNasir"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+addopts = "-ra --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501"]  # line length — handled by formatter
