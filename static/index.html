@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roman Urdu Normalizer · Mughirah Nasir</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:           #0f0e0c;
+      --bg-2:         #181613;
+      --ink:          #f5efe3;
+      --ink-dim:      #b8b0a1;
+      --ink-faint:    #6e685c;
+      --saffron:      #e8a33d;
+      --saffron-dim:  #c0832a;
+      --jade:         #5fb39a;
+      --rust:         #c97a4c;
+      --amber:        #d4a056;
+      --border:       #2a261f;
+      --serif:        'Fraunces', Georgia, serif;
+      --sans:         'Hanken Grotesk', system-ui, sans-serif;
+      --mono:         'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse at top, rgba(232, 163, 61, 0.08), transparent 60%),
+        radial-gradient(ellipse at bottom right, rgba(95, 179, 154, 0.04), transparent 50%),
+        var(--bg);
+    }
+
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 64px 32px 96px;
+    }
+
+    /* ---- header ---- */
+    header { margin-bottom: 64px; }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--saffron);
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: clamp(36px, 6vw, 64px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--saffron);
+      font-weight: 400;
+    }
+
+    .lede {
+      font-size: 19px;
+      color: var(--ink-dim);
+      max-width: 640px;
+      line-height: 1.6;
+    }
+
+    .meta {
+      margin-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-faint);
+    }
+    .meta span::before { content: "·  "; margin-right: 6px; color: var(--saffron); }
+    .meta span:first-child::before { content: ""; }
+
+    /* ---- section heads ---- */
+    .section { margin-top: 80px; }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-num {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--saffron);
+      letter-spacing: 0.1em;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+
+    /* ---- demo ---- */
+    .demo {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 32px;
+    }
+
+    .demo-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-faint);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 96px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--ink);
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 14px;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--saffron);
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: var(--saffron);
+      color: var(--bg);
+      border: none;
+      padding: 12px 24px;
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      min-height: 44px;
+    }
+    button:hover { background: var(--saffron-dim); }
+    button:active { transform: translateY(1px); }
+    button.secondary {
+      background: transparent;
+      color: var(--ink-dim);
+      border: 1px solid var(--border);
+    }
+    button.secondary:hover {
+      color: var(--ink);
+      border-color: var(--ink-faint);
+      background: transparent;
+    }
+
+    /* ---- output panels ---- */
+    .panels {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 768px) {
+      .panels { grid-template-columns: 1fr 1fr; }
+    }
+
+    .panel {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px;
+      min-height: 200px;
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .panel-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    .panel-stat {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--saffron);
+    }
+
+    .tokens {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 4px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .token {
+      padding: 2px 8px;
+      border-radius: 3px;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    .token.variant_map { background: rgba(232, 163, 61, 0.12); color: var(--amber); border-color: rgba(232, 163, 61, 0.3); }
+    .token.phonetic    { background: rgba(95, 179, 154, 0.1);  color: var(--jade);   border-color: rgba(95, 179, 154, 0.3); }
+    .token.unchanged   { color: var(--ink-dim); }
+    .token.unknown     { background: rgba(201, 122, 76, 0.12); color: var(--rust);   border-color: rgba(201, 122, 76, 0.3); text-decoration: underline dotted; }
+    .token.ambiguous   { border-color: var(--saffron); }
+
+    .original-strike { color: var(--ink-faint); text-decoration: line-through; margin-right: 4px; font-size: 11px; }
+
+    .normalized-out {
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      color: var(--ink);
+    }
+
+    /* ---- legend ---- */
+    .legend {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-faint);
+    }
+    .legend-item { display: flex; align-items: center; gap: 8px; }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 2px;
+    }
+    .legend-dot.variant_map { background: var(--amber); }
+    .legend-dot.phonetic    { background: var(--jade); }
+    .legend-dot.unchanged   { background: var(--ink-dim); }
+    .legend-dot.unknown     { background: var(--rust); }
+
+    /* ---- empty state ---- */
+    .empty {
+      color: var(--ink-faint);
+      font-style: italic;
+      text-align: center;
+      padding: 40px 0;
+      font-size: 14px;
+    }
+
+    /* ---- architecture section ---- */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 768px) {
+      .arch-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .arch-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--saffron);
+      padding: 24px;
+      border-radius: 0 4px 4px 0;
+    }
+    .arch-card:nth-child(2) { border-left-color: var(--jade); }
+    .arch-card:nth-child(3) { border-left-color: var(--rust); }
+
+    .arch-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-faint);
+      margin-bottom: 8px;
+    }
+    .arch-title {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    .arch-body {
+      font-size: 14px;
+      color: var(--ink-dim);
+      line-height: 1.6;
+    }
+    .arch-body code {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: var(--bg);
+      padding: 2px 6px;
+      border-radius: 2px;
+      color: var(--saffron);
+    }
+
+    /* ---- footer ---- */
+    footer {
+      margin-top: 96px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-faint);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    footer a { color: var(--saffron); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ---- fade-in animation ---- */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in { transition: none; opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header class="fade-in">
+      <div class="eyebrow">B1 · Portfolio Project · 2026</div>
+      <h1>Roman Urdu spelled <em>every which way</em> — normalized to one canonical form.</h1>
+      <p class="lede">
+        Pakistani Roman Urdu on WhatsApp and Twitter is a spelling free-for-all. "kya / kia / kyaa", "bht / bohat / bahut", "nhi / nahin / nai" all mean the same thing. This API resolves them — through a three-layer pipeline that knows when to guess and when to stay quiet.
+      </p>
+      <div class="meta">
+        <span>FastAPI · Python 3.10+</span>
+        <span>29 tests passing</span>
+        <span>Mughirah Nasir · NUST SEECS</span>
+      </div>
+    </header>
+
+    <section class="section fade-in">
+      <div class="section-head">
+        <div class="section-num">01</div>
+        <h2 class="section-title">Try it</h2>
+      </div>
+
+      <div class="demo">
+        <div class="demo-label">Input — Roman Urdu</div>
+        <textarea id="input" placeholder="yr bht thora kch kya kr rhe ho">yr bht thora kch kya kr rhe ho</textarea>
+        <div class="controls">
+          <button id="normalize-btn">Normalize</button>
+          <button class="secondary" id="shuffle-btn">Shuffle example</button>
+          <button class="secondary" id="clear-btn">Clear</button>
+        </div>
+
+        <div class="panels">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Per-token resolution</div>
+              <div class="panel-stat" id="token-count">—</div>
+            </div>
+            <div class="tokens" id="tokens-out">
+              <div class="empty">Click "Normalize" to see how each word is resolved.</div>
+            </div>
+            <div class="legend">
+              <div class="legend-item"><div class="legend-dot variant_map"></div>variant map</div>
+              <div class="legend-item"><div class="legend-dot phonetic"></div>phonetic</div>
+              <div class="legend-item"><div class="legend-dot unchanged"></div>unchanged</div>
+              <div class="legend-item"><div class="legend-dot unknown"></div>unknown</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Normalized output</div>
+              <div class="panel-stat" id="norm-pct">—</div>
+            </div>
+            <div class="normalized-out" id="normalized-out">
+              <div class="empty">The cleaned string will appear here.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section fade-in">
+      <div class="section-head">
+        <div class="section-num">02</div>
+        <h2 class="section-title">How it resolves a word</h2>
+      </div>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <div class="arch-num">Layer 1</div>
+          <div class="arch-title">Variant map</div>
+          <p class="arch-body">
+            An exact-match table for SMS shorthand the phonetic algorithm can't reach because it drops too many vowels: <code>bht</code> → <code>bahut</code>, <code>nhi</code> → <code>nahi</code>. O(1) dict lookup. Highest priority.
+          </p>
+        </div>
+        <div class="arch-card">
+          <div class="arch-num">Layer 2</div>
+          <div class="arch-title">Phonetic key</div>
+          <p class="arch-body">
+            Each word is reduced to a sound-skeleton (digraph folding, vowel-class collapse, repeat squashing). <code>kya / kia / kyaa</code> share one key. A pre-built index maps the key to canonical lexicon words.
+          </p>
+        </div>
+        <div class="arch-card">
+          <div class="arch-num">Layer 3</div>
+          <div class="arch-title">Unknown</div>
+          <p class="arch-body">
+            Nothing matched. The token passes through unchanged and is flagged <code>source: unknown</code>. We never silently guess — silent guessing is how normalizers poison every system downstream.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>Built by Mughirah Nasir · NUST SEECS · 2026</div>
+      <div>
+        <a href="/docs">OpenAPI docs →</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/MughirahNasir" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // ============================================================
+    // Frontend demo logic.
+    //
+    // Talks to POST /normalize when the FastAPI server is running.
+    // Falls back to a small in-browser approximation when it's not,
+    // so the page is never visibly broken during portfolio review.
+    // ============================================================
+
+    const $ = (id) => document.getElementById(id);
+
+    const examples = [
+      "yr bht thora kch kya kr rhe ho",
+      "ap ne kahaan se kia ye?",
+      "bohat shukrya yr, mein bhi theek hun",
+      "nhi yr, mei abhi school gya hun",
+      "kese ho? sab kch theek hai?",
+      "aslam alaikum, ap kab aaye thay?",
+    ];
+
+    // -------- in-browser fallback --------
+    // Tiny version of the variant map for offline demo. The full lookup
+    // happens server-side via FastAPI; this exists so the page works
+    // even without the server running.
+    const FALLBACK_MAP = {
+      yr: "yaar", nhi: "nahi", nahin: "nahi", nai: "nahi",
+      bht: "bahut", bhot: "bahut", bohat: "bahut",
+      kia: "kya", kyaa: "kya", kyon: "kyun", kiun: "kyun",
+      kahaan: "kahan", kahan: "kahan",
+      kese: "kaise", thora: "thora",
+      mein: "main", mai: "main", ap: "aap",
+      hoon: "hun", h: "hai", tk: "theek", thk: "theek",
+      shukrya: "shukriya", shukria: "shukriya",
+      aslam: "salam", acha: "accha", achha: "accha",
+      kch: "kuch", kr: "kar", rhe: "rahe", gya: "gaya",
+    };
+    const CANONICAL_SET = new Set([
+      "kya","kyun","kahan","kab","kaise","nahi","bahut","thora","main","tum","aap",
+      "hai","ho","hun","theek","accha","salam","shukriya","yaar","ghar","kaam"
+    ]);
+
+    function fallbackNormalize(text) {
+      const re = /(\w+|\W+)/g;
+      const pieces = text.match(re) || [];
+      const tokens = [];
+      let out = "";
+      const stats = { total: 0, variant_map: 0, phonetic: 0, unchanged: 0, unknown: 0, ambiguous: 0 };
+
+      for (const p of pieces) {
+        if (/\w/.test(p)) {
+          const lower = p.toLowerCase();
+          let record;
+          if (CANONICAL_SET.has(lower)) {
+            record = { original: p, normalized: lower, source: "unchanged", ambiguous: false };
+          } else if (FALLBACK_MAP[lower]) {
+            record = { original: p, normalized: FALLBACK_MAP[lower], source: "variant_map", ambiguous: false };
+          } else {
+            record = { original: p, normalized: p, source: "unknown", ambiguous: false };
+          }
+          tokens.push(record);
+          out += record.normalized;
+          stats.total++;
+          stats[record.source]++;
+        } else {
+          out += p;
+        }
+      }
+      return { input: text, normalized: out, tokens, stats };
+    }
+
+    // -------- API call with fallback --------
+    async function normalize(text) {
+      try {
+        const res = await fetch("/normalize", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+        });
+        if (!res.ok) throw new Error("server error");
+        return await res.json();
+      } catch (e) {
+        // Server isn't running — use the in-browser fallback
+        const result = fallbackNormalize(text);
+        result._offline = true;
+        return result;
+      }
+    }
+
+    // -------- render --------
+    function render(result) {
+      const tokensEl = $("tokens-out");
+      const normalizedEl = $("normalized-out");
+      const tokenCountEl = $("token-count");
+      const normPctEl = $("norm-pct");
+
+      tokensEl.innerHTML = "";
+      result.tokens.forEach(t => {
+        const span = document.createElement("span");
+        span.className = "token " + t.source + (t.ambiguous ? " ambiguous" : "");
+        if (t.source !== "unchanged" && t.source !== "unknown" && t.original.toLowerCase() !== t.normalized) {
+          const strike = document.createElement("span");
+          strike.className = "original-strike";
+          strike.textContent = t.original;
+          span.appendChild(strike);
+        }
+        span.appendChild(document.createTextNode(t.normalized));
+        tokensEl.appendChild(span);
+      });
+
+      normalizedEl.textContent = result.normalized;
+
+      const s = result.stats;
+      tokenCountEl.textContent = `${s.total} tokens` + (result._offline ? " · offline mode" : "");
+      const changed = s.variant_map + s.phonetic;
+      const pct = s.total > 0 ? Math.round((changed / s.total) * 100) : 0;
+      normPctEl.textContent = `${pct}% normalized`;
+    }
+
+    // -------- wire up --------
+    $("normalize-btn").addEventListener("click", async () => {
+      const text = $("input").value.trim();
+      if (!text) return;
+      const result = await normalize(text);
+      render(result);
+    });
+
+    $("shuffle-btn").addEventListener("click", () => {
+      const current = $("input").value.trim();
+      let next;
+      do {
+        next = examples[Math.floor(Math.random() * examples.length)];
+      } while (next === current && examples.length > 1);
+      $("input").value = next;
+      $("normalize-btn").click();
+    });
+
+    $("clear-btn").addEventListener("click", () => {
+      $("input").value = "";
+      $("tokens-out").innerHTML = '<div class="empty">Click "Normalize" to see how each word is resolved.</div>';
+      $("normalized-out").innerHTML = '<div class="empty">The cleaned string will appear here.</div>';
+      $("token-count").textContent = "—";
+      $("norm-pct").textContent = "—";
+    });
+
+    $("input").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        $("normalize-btn").click();
+      }
+    });
+
+    // Run once on load so the demo isn't empty
+    window.addEventListener("load", () => $("normalize-btn").click());
+
+    // Scroll-triggered fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add("visible");
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll(".fade-in").forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
