@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bgGlow" cx="50%" cy="0%" r="60%">
+      <stop offset="0%" stop-color="#e8a33d" stop-opacity="0.08"/>
+      <stop offset="60%" stop-color="#0f0e0c" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="bgRadial" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#e8a33d" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#0f0e0c" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="720" fill="#0f0e0c"/>
+  <rect width="1200" height="720" fill="url(#bgRadial)"/>
+
+  <!-- eyebrow -->
+  <text x="80" y="80" fill="#e8a33d" font-family="'JetBrains Mono', monospace" font-size="11" letter-spacing="2.2">
+    B1 · PORTFOLIO PROJECT · 2026
+  </text>
+
+  <!-- title -->
+  <text x="80" y="140" fill="#f5efe3" font-family="Georgia, serif" font-size="44" font-weight="500" letter-spacing="-0.5">
+    Roman Urdu spelled <tspan fill="#e8a33d" font-style="italic">every which way</tspan>
+  </text>
+  <text x="80" y="190" fill="#f5efe3" font-family="Georgia, serif" font-size="44" font-weight="500" letter-spacing="-0.5">
+    — normalized to one canonical form.
+  </text>
+
+  <!-- lede -->
+  <text x="80" y="240" fill="#b8b0a1" font-size="16">
+    Pakistani Roman Urdu on WhatsApp and Twitter is a spelling free-for-all. This API resolves it —
+  </text>
+  <text x="80" y="262" fill="#b8b0a1" font-size="16">
+    through a three-layer pipeline that knows when to guess and when to stay quiet.
+  </text>
+
+  <!-- demo card -->
+  <rect x="80" y="310" width="1040" height="360" fill="#181613" stroke="#2a261f" stroke-width="1" rx="4"/>
+
+  <!-- input label -->
+  <text x="112" y="346" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="11" letter-spacing="1.5">
+    INPUT — ROMAN URDU
+  </text>
+
+  <!-- input box -->
+  <rect x="112" y="358" width="976" height="56" fill="#0f0e0c" stroke="#2a261f" stroke-width="1" rx="4"/>
+  <text x="128" y="392" fill="#f5efe3" font-family="'JetBrains Mono', monospace" font-size="14">
+    yr bht thora kch kya kr rhe ho
+  </text>
+
+  <!-- normalize button -->
+  <rect x="112" y="434" width="120" height="42" fill="#e8a33d" rx="4"/>
+  <text x="172" y="461" fill="#0f0e0c" font-size="14" font-weight="500" text-anchor="middle">Normalize</text>
+
+  <rect x="244" y="434" width="160" height="42" fill="transparent" stroke="#2a261f" stroke-width="1" rx="4"/>
+  <text x="324" y="461" fill="#b8b0a1" font-size="14" font-weight="400" text-anchor="middle">Shuffle example</text>
+
+  <!-- left panel: per-token resolution -->
+  <rect x="112" y="500" width="475" height="140" fill="#0f0e0c" stroke="#2a261f" stroke-width="1" rx="4"/>
+  <text x="132" y="528" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5">
+    PER-TOKEN RESOLUTION
+  </text>
+  <text x="567" y="528" fill="#e8a33d" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="end">8 TOKENS</text>
+
+  <!-- token chips -->
+  <!-- yr -> yaar -->
+  <rect x="132" y="544" width="76" height="22" fill="rgba(232,163,61,0.12)" stroke="#e8a33d" stroke-opacity="0.4" rx="3"/>
+  <text x="170" y="559" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">
+    <tspan fill="#6e685c" text-decoration="line-through" font-size="9">yr</tspan> yaar
+  </text>
+
+  <!-- bht -> bahut -->
+  <rect x="216" y="544" width="80" height="22" fill="rgba(232,163,61,0.12)" stroke="#e8a33d" stroke-opacity="0.4" rx="3"/>
+  <text x="256" y="559" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">
+    <tspan fill="#6e685c" text-decoration="line-through" font-size="9">bht</tspan> bahut
+  </text>
+
+  <!-- thora (unchanged) -->
+  <rect x="304" y="544" width="58" height="22" fill="transparent" rx="3"/>
+  <text x="333" y="559" fill="#b8b0a1" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">thora</text>
+
+  <!-- kch -> kuch -->
+  <rect x="370" y="544" width="72" height="22" fill="rgba(232,163,61,0.12)" stroke="#e8a33d" stroke-opacity="0.4" rx="3"/>
+  <text x="406" y="559" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">
+    <tspan fill="#6e685c" text-decoration="line-through" font-size="9">kch</tspan> kuch
+  </text>
+
+  <!-- kya (unchanged) -->
+  <rect x="450" y="544" width="44" height="22" fill="transparent" rx="3"/>
+  <text x="472" y="559" fill="#b8b0a1" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">kya</text>
+
+  <!-- second row -->
+  <!-- kr -> kar -->
+  <rect x="132" y="574" width="62" height="22" fill="rgba(232,163,61,0.12)" stroke="#e8a33d" stroke-opacity="0.4" rx="3"/>
+  <text x="163" y="589" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">
+    <tspan fill="#6e685c" text-decoration="line-through" font-size="9">kr</tspan> kar
+  </text>
+
+  <!-- rhe -> rahe -->
+  <rect x="202" y="574" width="70" height="22" fill="rgba(232,163,61,0.12)" stroke="#e8a33d" stroke-opacity="0.4" rx="3"/>
+  <text x="237" y="589" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">
+    <tspan fill="#6e685c" text-decoration="line-through" font-size="9">rhe</tspan> rahe
+  </text>
+
+  <!-- ho (unchanged) -->
+  <rect x="280" y="574" width="34" height="22" fill="transparent" rx="3"/>
+  <text x="297" y="589" fill="#b8b0a1" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">ho</text>
+
+  <!-- legend -->
+  <rect x="132" y="612" width="10" height="10" fill="#d4a056" rx="2"/>
+  <text x="148" y="621" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10">variant map</text>
+
+  <rect x="232" y="612" width="10" height="10" fill="#5fb39a" rx="2"/>
+  <text x="248" y="621" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10">phonetic</text>
+
+  <rect x="318" y="612" width="10" height="10" fill="#b8b0a1" rx="2"/>
+  <text x="334" y="621" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10">unchanged</text>
+
+  <rect x="408" y="612" width="10" height="10" fill="#c97a4c" rx="2"/>
+  <text x="424" y="621" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10">unknown</text>
+
+  <!-- right panel: normalized output -->
+  <rect x="613" y="500" width="475" height="140" fill="#0f0e0c" stroke="#2a261f" stroke-width="1" rx="4"/>
+  <text x="633" y="528" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5">
+    NORMALIZED OUTPUT
+  </text>
+  <text x="1068" y="528" fill="#e8a33d" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="end">62% NORMALIZED</text>
+
+  <text x="633" y="568" fill="#f5efe3" font-family="'JetBrains Mono', monospace" font-size="14">
+    yaar bahut thora kuch kya kar
+  </text>
+  <text x="633" y="592" fill="#f5efe3" font-family="'JetBrains Mono', monospace" font-size="14">
+    rahe ho
+  </text>
+
+  <!-- bottom meta -->
+  <text x="80" y="700" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="11">
+    FastAPI · Python 3.10+ · 29 tests passing · Mughirah Nasir · NUST SEECS
+  </text>
+</svg>
