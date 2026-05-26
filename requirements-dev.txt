@@ -1,0 +1,8 @@
+# Test runner
+pytest==9.0.3
+pytest-cov==6.0.0
+httpx==0.27.2          # required by fastapi.testclient
+
+# Linting / formatting (optional but documented)
+ruff==0.13.0
+mypy==1.18.0
