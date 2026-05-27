@@ -33,3 +33,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Local-only delivery artifacts (in zip but not on GitHub)
+PUSH-NOW.md
