@@ -1,0 +1,310 @@
+{"id": "g001", "category": "sms_basic",     "input": "yr kya ho rha h", "expected": "yaar kya ho raha hai", "notes": "everyday SMS — heavy vowel dropping"}
+{"id": "g002", "category": "sms_basic",     "input": "bht thora kch khaya", "expected": "bahut thora kuch khaya", "notes": "quantity + verb past"}
+{"id": "g003", "category": "sms_basic",     "input": "kese ho yr", "expected": "kaise ho yaar", "notes": "greeting question"}
+{"id": "g004", "category": "sms_basic",     "input": "abhi tk nhi aya", "expected": "abhi tak nahi aaya", "notes": "still hasn't come"}
+{"id": "g005", "category": "sms_basic",     "input": "main aj ghr ja rha hu", "expected": "main aaj ghar ja raha hun", "notes": "I am going home today"}
+{"id": "g006", "category": "sms_basic",     "input": "kl mil te hain", "expected": "kal mil te hain", "notes": "let's meet tomorrow"}
+{"id": "g007", "category": "sms_basic",     "input": "tm kahan ho", "expected": "tum kahan ho", "notes": "where are you"}
+{"id": "g008", "category": "sms_basic",     "input": "shukrya yaar", "expected": "shukriya yaar", "notes": "thanks bro"}
+{"id": "g009", "category": "sms_basic",     "input": "ap kese hen", "expected": "aap kaise hain", "notes": "formal how-are-you"}
+{"id": "g010", "category": "sms_basic",     "input": "mere paas time nhi h", "expected": "mere paas time nahi hai", "notes": "I don't have time"}
+
+{"id": "g011", "category": "question",      "input": "kya khaya tum ne", "expected": "kya khaya tum ne", "notes": "what did you eat — already canonical"}
+{"id": "g012", "category": "question",      "input": "kahn ho abi", "expected": "kahan ho abhi", "notes": "where are you now"}
+{"id": "g013", "category": "question",      "input": "kb a rhe ho", "expected": "kab aa rahe ho", "notes": "when are you coming"}
+{"id": "g014", "category": "question",      "input": "kis ne kha", "expected": "kis ne kaha", "notes": "who said — homograph: kha could be kha or khaya"}
+{"id": "g015", "category": "question",      "input": "kyun nhi aya tu", "expected": "kyun nahi aaya tu", "notes": "why didn't you come"}
+{"id": "g016", "category": "question",      "input": "kitna time lge ga", "expected": "kitna time lage ga", "notes": "how much time will it take"}
+{"id": "g017", "category": "question",      "input": "kese pta chla", "expected": "kaise pata chala", "notes": "how did you find out"}
+{"id": "g018", "category": "question",      "input": "kya hua tumhe", "expected": "kya hua tumhe", "notes": "what happened to you"}
+
+{"id": "g019", "category": "negation",      "input": "main nhi ja rha", "expected": "main nahi ja raha", "notes": "I'm not going"}
+{"id": "g020", "category": "negation",      "input": "mjhe nai pta", "expected": "mujhe nahi pata", "notes": "I don't know"}
+{"id": "g021", "category": "negation",      "input": "wo nahin a sakta", "expected": "wo nahi aa sakta", "notes": "he can't come"}
+{"id": "g022", "category": "negation",      "input": "kch nahi hua", "expected": "kuch nahi hua", "notes": "nothing happened"}
+
+{"id": "g023", "category": "verb_progressive", "input": "kya kr rhe ho", "expected": "kya kar rahe ho", "notes": "what are you doing — progressive aspect"}
+{"id": "g024", "category": "verb_progressive", "input": "main parh rha hun", "expected": "main padh raha hun", "notes": "I am studying"}
+{"id": "g025", "category": "verb_progressive", "input": "wo so rhi hai", "expected": "wo so rahi hai", "notes": "she is sleeping"}
+{"id": "g026", "category": "verb_progressive", "input": "hum kha rhe the", "expected": "hum kha rahe the", "notes": "we were eating — past progressive"}
+
+{"id": "g027", "category": "homograph",     "input": "us ne kha kya", "expected": "us ne kaha kya", "notes": "kha is ambiguous (said vs ate) — context says said"}
+{"id": "g028", "category": "homograph",     "input": "wo kha gya hai", "expected": "wo kha gaya hai", "notes": "he ate/has gone — true ambiguity, normalizer should not over-resolve"}
+{"id": "g029", "category": "homograph",     "input": "tum kahan ja rhe ho", "expected": "tum kahan ja rahe ho", "notes": "where are you going — homograph guard should protect kahan"}
+
+{"id": "g030", "category": "greeting",      "input": "aslam o alaikum", "expected": "salam o alaikum", "notes": "greeting variant"}
+{"id": "g031", "category": "greeting",      "input": "khuda hafiz yr", "expected": "khuda hafiz yaar", "notes": "goodbye"}
+{"id": "g032", "category": "greeting",      "input": "shukria bhai", "expected": "shukriya bhai", "notes": "thanks brother"}
+{"id": "g033", "category": "greeting",      "input": "mubarak ho", "expected": "mubarak ho", "notes": "congratulations — already canonical"}
+
+{"id": "g034", "category": "family",        "input": "ami ghar pe hain", "expected": "ammi ghar pe hain", "notes": "mom is home"}
+{"id": "g035", "category": "family",        "input": "abu ne kha", "expected": "abu ne kaha", "notes": "dad said — note kha→kaha disambiguation"}
+{"id": "g036", "category": "family",        "input": "behn ki shaadi hai", "expected": "behan ki shaadi hai", "notes": "sister's wedding"}
+{"id": "g037", "category": "family",        "input": "chacha kese hen", "expected": "chacha kaise hain", "notes": "how is uncle"}
+
+{"id": "g038", "category": "school",        "input": "skool ja rha hun", "expected": "school ja raha hun", "notes": "going to school"}
+{"id": "g039", "category": "school",        "input": "test bht mushkil tha", "expected": "test bahut mushkil tha", "notes": "test was very hard"}
+{"id": "g040", "category": "school",        "input": "klg me class chl rhi h", "expected": "college me class chal rahi hai", "notes": "class is going on at college"}
+{"id": "g041", "category": "school",        "input": "kitab parh lo", "expected": "kitab padh lo", "notes": "read the book"}
+
+{"id": "g042", "category": "food",          "input": "khana kha lia", "expected": "khana kha liya", "notes": "ate food"}
+{"id": "g043", "category": "food",          "input": "chai pi lo yar", "expected": "chai pi lo yaar", "notes": "drink tea bro"}
+{"id": "g044", "category": "food",          "input": "biryani bnai h", "expected": "biryani banai hai", "notes": "made biryani"}
+{"id": "g045", "category": "food",          "input": "paani de do plz", "expected": "paani de do please", "notes": "give water please"}
+
+{"id": "g046", "category": "time",          "input": "subh subh kahan ja rhe ho", "expected": "subah subah kahan ja rahe ho", "notes": "where are you going so early"}
+{"id": "g047", "category": "time",          "input": "raat ko mil te hen", "expected": "raat ko mil te hain", "notes": "let's meet at night"}
+{"id": "g048", "category": "time",          "input": "sham ko ana", "expected": "shaam ko ana", "notes": "come in the evening"}
+{"id": "g049", "category": "time",          "input": "abhi hi ata hun", "expected": "abhi hi ata hun", "notes": "I'm coming right now"}
+
+{"id": "g050", "category": "emotion",       "input": "main bht khush hun", "expected": "main bahut khush hun", "notes": "I'm very happy"}
+{"id": "g051", "category": "emotion",       "input": "wo bohat udas thi", "expected": "wo bahut udaas thi", "notes": "she was very sad"}
+{"id": "g052", "category": "emotion",       "input": "thaka hua hun", "expected": "thaka hua hun", "notes": "I'm tired"}
+{"id": "g053", "category": "emotion",       "input": "ghussa mt karo", "expected": "ghussa mat karo", "notes": "don't be angry"}
+
+{"id": "g054", "category": "polite",        "input": "maf krna yaar", "expected": "maaf karna yaar", "notes": "sorry friend"}
+{"id": "g055", "category": "polite",        "input": "plz help krdo", "expected": "please help kar do", "notes": "please help"}
+{"id": "g056", "category": "polite",        "input": "ji bilkul", "expected": "ji bilkul", "notes": "yes absolutely"}
+{"id": "g057", "category": "polite",        "input": "tk hai bs", "expected": "theek hai bas", "notes": "ok that's it"}
+
+{"id": "g058", "category": "long_sentence", "input": "yr aj bht thora kch khaya kyun k mjhe bukh nhi thi", "expected": "yaar aaj bahut thora kuch khaya kyunki mujhe bukh nahi thi", "notes": "today I ate very little because I wasn't hungry"}
+{"id": "g059", "category": "long_sentence", "input": "wo bht der se ja rha tha lekin ab a gya hai", "expected": "wo bahut der se ja raha tha lekin ab aa gaya hai", "notes": "he was leaving very late but now he has come"}
+{"id": "g060", "category": "long_sentence", "input": "agr tm chaho to hum ksi or jagah b mil skte hen", "expected": "agar tum chaho to hum kisi aur jagah bhi mil sakte hain", "notes": "if you want we can meet somewhere else too"}
+
+{"id": "g061", "category": "code_switch",   "input": "the test was bht easy yaar", "expected": "the test was bahut easy yaar", "notes": "English + Roman Urdu mix — only Urdu words normalized"}
+{"id": "g062", "category": "code_switch",   "input": "kal meeting hai office me", "expected": "kal meeting hai office me", "notes": "Urdu with English nouns — words pass through"}
+{"id": "g063", "category": "code_switch",   "input": "send krdo plz documents", "expected": "send kar do please documents", "notes": "mixed: send/documents are English"}
+
+{"id": "g064", "category": "punctuation",   "input": "kya?? bs!!!", "expected": "kya?? bas!!!", "notes": "punctuation preserved exactly"}
+{"id": "g065", "category": "punctuation",   "input": "yr, suno na...", "expected": "yaar, suno na...", "notes": "comma and ellipsis preserved"}
+{"id": "g066", "category": "punctuation",   "input": "haan bilkul (sahi baat)", "expected": "haan bilkul (sahi baat)", "notes": "parentheses preserved"}
+
+{"id": "g067", "category": "casing",        "input": "Yaar Kya Bat Hai", "expected": "Yaar Kya Baat Hai", "notes": "title case preserved on canonical words"}
+{"id": "g068", "category": "casing",        "input": "BHT THORA", "expected": "bahut thora", "notes": "all-caps SMS shorthand normalizes to lowercase canonical"}
+
+{"id": "g069", "category": "future",        "input": "main kl ja rha hun", "expected": "main kal ja raha hun", "notes": "I'll go tomorrow"}
+{"id": "g070", "category": "future",        "input": "ye ho jae ga", "expected": "ye ho jae ga", "notes": "this will happen"}
+{"id": "g071", "category": "future",        "input": "agle hafte mile ge", "expected": "agle hafte mile ge", "notes": "we'll meet next week"}
+
+{"id": "g072", "category": "imperative",    "input": "yahan a", "expected": "yahan aa", "notes": "come here"}
+{"id": "g073", "category": "imperative",    "input": "bs kr yr", "expected": "bas kar yaar", "notes": "stop it friend"}
+{"id": "g074", "category": "imperative",    "input": "suno ye baat", "expected": "suno ye baat", "notes": "listen to this"}
+
+{"id": "g075", "category": "conditional",   "input": "agr tm a jao to btana", "expected": "agar tum aa jao to batana", "notes": "if you come, let me know"}
+{"id": "g076", "category": "conditional",   "input": "wese to thk hai", "expected": "waise to theek hai", "notes": "anyway it's fine"}
+
+{"id": "g077", "category": "marketplace",   "input": "kitne ka diya", "expected": "kitne ka diya", "notes": "how much did you give — Urdu shopping context"}
+{"id": "g078", "category": "marketplace",   "input": "bhai discount krdo", "expected": "bhai discount kar do", "notes": "bro give a discount"}
+
+{"id": "g079", "category": "compliment",    "input": "mashallah bht acha", "expected": "mashallah bahut accha", "notes": "compliment with religious phrase"}
+{"id": "g080", "category": "compliment",    "input": "ye kamaal hai", "expected": "ye kamaal hai", "notes": "this is amazing"}
+
+{"id": "g081", "category": "edge_short",    "input": "k", "expected": "k", "notes": "single letter — must NOT resolve (short-key guard)"}
+{"id": "g082", "category": "edge_short",    "input": "h", "expected": "hai", "notes": "common 1-char SMS for hai — variant_map handles it"}
+{"id": "g083", "category": "edge_short",    "input": "?", "expected": "?", "notes": "punctuation-only — pass through"}
+
+{"id": "g084", "category": "edge_unknown",  "input": "qwerty xyzabc", "expected": "qwerty xyzabc", "notes": "complete gibberish — must pass through unchanged"}
+{"id": "g085", "category": "edge_unknown",  "input": "Mughirah Nasir NUST", "expected": "Mughirah Nasir NUST", "notes": "proper nouns — pass through"}
+
+{"id": "g086", "category": "edge_empty",    "input": "", "expected": "", "notes": "empty string"}
+{"id": "g087", "category": "edge_empty",    "input": "     ", "expected": "     ", "notes": "whitespace only"}
+
+{"id": "g088", "category": "numbers",       "input": "tin baje milte hen", "expected": "teen baje milte hain", "notes": "meet at 3 — number normalization"}
+{"id": "g089", "category": "numbers",       "input": "5 minute me ata hun", "expected": "5 minute me ata hun", "notes": "Arabic digit preserved"}
+
+{"id": "g090", "category": "religious",     "input": "inshallah mile ge", "expected": "inshallah mile ge", "notes": "god willing we'll meet"}
+{"id": "g091", "category": "religious",     "input": "alhamdulillah sab acha h", "expected": "alhamdulillah sab accha hai", "notes": "thank God all is well"}
+{"id": "g092", "category": "religious",     "input": "jzk yr", "expected": "jzk yaar", "notes": "jazakallah abbreviation — pass through if not in variant map"}
+
+{"id": "g093", "category": "regional",      "input": "tussi ki haal e", "expected": "tussi ki haal e", "notes": "Punjabi-influenced — should mostly pass through"}
+{"id": "g094", "category": "regional",      "input": "wadda bhai", "expected": "wadda bhai", "notes": "Punjabi big brother — pass through"}
+
+{"id": "g095", "category": "casual",        "input": "hahaha kya mazay h", "expected": "hahaha kya mazay hai", "notes": "what fun"}
+{"id": "g096", "category": "casual",        "input": "lol yr serious bat h", "expected": "lol yaar serious baat hai", "notes": "lol bro serious matter"}
+
+{"id": "g097", "category": "complex",       "input": "agr tmne wo kam nhi kya to abu bht ghussa ho jaen ge", "expected": "agar tumne wo kaam nahi kiya to abu bahut ghussa ho jayen ge", "notes": "if you didn't do that work, dad will be very angry"}
+{"id": "g098", "category": "complex",       "input": "ami ne kha k khana taza bna kr lao", "expected": "ammi ne kaha ke khana taaza bana kar lao", "notes": "mom said make fresh food and bring it"}
+{"id": "g099", "category": "complex",       "input": "main soch rha tha k tm kese pta chla wo kahan gya", "expected": "main soch raha tha ke tum kaise pata chala wo kahan gaya", "notes": "I was thinking how you found out where he went"}
+{"id": "g100", "category": "complex",       "input": "jo kch b ho jae main hamesha apke sath hun yar", "expected": "jo kuch bhi ho jae main hamesha aapke sath hun yaar", "notes": "whatever happens I'm always with you friend"}
+
+{"id": "g101", "category": "emoji", "input": "yr bht acha hai 😂", "expected": "yaar bahut accha hai 😂", "notes": "emoji preservation — common"}
+{"id": "g102", "category": "emoji", "input": "🔥 kya scene hai 🔥", "expected": "🔥 kya scene hai 🔥", "notes": "flame emoji wrapping"}
+{"id": "g103", "category": "emoji", "input": "😭😭 mjhe nai pta", "expected": "😭😭 mujhe nahi pata", "notes": "crying emojis"}
+{"id": "g104", "category": "emoji", "input": "bht khush hun 🥳🎉", "expected": "bahut khush hun 🥳🎉", "notes": "celebration emojis"}
+{"id": "g105", "category": "emoji", "input": "❤️ ami ko bht miss kr rha hun", "expected": "❤️ ammi ko bahut miss kar raha hun", "notes": "missing mom"}
+{"id": "g106", "category": "emoji", "input": "wo aya 👀", "expected": "wo aaya 👀", "notes": "eyes emoji"}
+{"id": "g107", "category": "emoji", "input": "🌙 chand raat mubarak", "expected": "🌙 chand raat mubarak", "notes": "Eid greeting"}
+{"id": "g108", "category": "emoji", "input": "shukria ❤️🙏", "expected": "shukriya ❤️🙏", "notes": "double emoji"}
+{"id": "g109", "category": "emoji", "input": "kya 🤔 ye sahi hai", "expected": "kya 🤔 ye sahi hai", "notes": "thinking emoji inline"}
+{"id": "g110", "category": "emoji", "input": "main aa rha hun 🏃‍♂️", "expected": "main aa raha hun 🏃‍♂️", "notes": "running emoji with ZWJ"}
+
+{"id": "g111", "category": "repeated_letters", "input": "kyaaaa kr rahyyyy ho", "expected": "kyaaaa kar rahyyyy ho", "notes": "extreme vowel stretch — common WhatsApp"}
+{"id": "g112", "category": "repeated_letters", "input": "bhttttt acha", "expected": "bhttttt accha", "notes": "trailing T storm"}
+{"id": "g113", "category": "repeated_letters", "input": "yarrrr aja", "expected": "yarrrr aja", "notes": "stretched yar"}
+{"id": "g114", "category": "repeated_letters", "input": "hahahaha kya bat hai", "expected": "hahahaha kya baat hai", "notes": "laughter"}
+{"id": "g115", "category": "repeated_letters", "input": "ohhh wahhh", "expected": "ohhh wahhh", "notes": "expression with repeated H"}
+{"id": "g116", "category": "repeated_letters", "input": "bsssss bs", "expected": "bsssss bas", "notes": "stop already, ironic stretch"}
+{"id": "g117", "category": "repeated_letters", "input": "achhaaa to ye baat hai", "expected": "achhaaa to ye baat hai", "notes": "drawn out 'achha'"}
+{"id": "g118", "category": "repeated_letters", "input": "noooo aisa nai kro", "expected": "noooo aisa nahi karo", "notes": "english stretch + Urdu"}
+
+{"id": "g119", "category": "hashtag", "input": "kya scene hai aj #karachi", "expected": "kya scene hai aaj #karachi", "notes": "hashtag preservation"}
+{"id": "g120", "category": "hashtag", "input": "#PSL11 zabardast match tha", "expected": "#PSL11 zabardast match tha", "notes": "hashtag at start"}
+{"id": "g121", "category": "hashtag", "input": "bht thanda mosam #lahore #winter", "expected": "bahut thanda mosam #lahore #winter", "notes": "multiple hashtags"}
+{"id": "g122", "category": "hashtag", "input": "@ali aja yr", "expected": "@ali aja yaar", "notes": "twitter mention"}
+{"id": "g123", "category": "hashtag", "input": "follow karo @MughirahNasir", "expected": "follow karo @MughirahNasir", "notes": "mention with proper noun"}
+{"id": "g124", "category": "hashtag", "input": "url link: https://example.pk", "expected": "url link: https://example.pk", "notes": "URL must pass through"}
+
+{"id": "g125", "category": "code_switch_heavy", "input": "the meeting kal hai dont forget", "expected": "the meeting kal hai dont forget", "notes": "mostly English with kal"}
+{"id": "g126", "category": "code_switch_heavy", "input": "main office me hun rn", "expected": "main office me hun rn", "notes": "I am at office right now"}
+{"id": "g127", "category": "code_switch_heavy", "input": "lets meet for chai soon", "expected": "lets meet for chai soon", "notes": "English with chai"}
+{"id": "g128", "category": "code_switch_heavy", "input": "team report submit krdo asap", "expected": "team report submit kar do asap", "notes": "office Pakistani English"}
+{"id": "g129", "category": "code_switch_heavy", "input": "kal client call hai 10am p", "expected": "kal client call hai 10am pe", "notes": "p → pe (at/on)"}
+{"id": "g130", "category": "code_switch_heavy", "input": "good morning bhai kese ho", "expected": "good morning bhai kaise ho", "notes": "English greeting + Urdu question"}
+{"id": "g131", "category": "code_switch_heavy", "input": "we should plan ye trip together", "expected": "we should plan ye trip together", "notes": "English sentence with ye"}
+{"id": "g132", "category": "code_switch_heavy", "input": "actually mjhe lagta hai galat hai", "expected": "actually mujhe lagta hai galat hai", "notes": "English transition word"}
+
+{"id": "g133", "category": "named_entity", "input": "Ali bhai ny kha kahan jana hai", "expected": "Ali bhai ne kaha kahan jana hai", "notes": "person name preserved, kha→kaha"}
+{"id": "g134", "category": "named_entity", "input": "Karachi me bht garmi hai", "expected": "Karachi me bahut garmi hai", "notes": "city name"}
+{"id": "g135", "category": "named_entity", "input": "Sara ki shaadi me jana hai", "expected": "Sara ki shaadi me jana hai", "notes": "person + event"}
+{"id": "g136", "category": "named_entity", "input": "Lahore se Islamabad ja rha hun", "expected": "Lahore se Islamabad ja raha hun", "notes": "two cities"}
+{"id": "g137", "category": "named_entity", "input": "PSL ka final Karachi me hoga", "expected": "PSL ka final Karachi me hoga", "notes": "acronym + city"}
+{"id": "g138", "category": "named_entity", "input": "Imran Khan ne kha", "expected": "Imran Khan ne kaha", "notes": "political figure"}
+{"id": "g139", "category": "named_entity", "input": "NUST SEECS bht acha univ hai", "expected": "NUST SEECS bahut accha univ hai", "notes": "institution acronyms"}
+{"id": "g140", "category": "named_entity", "input": "ye Mughirah hai NUST se", "expected": "ye Mughirah hai NUST se", "notes": "author's name + institution"}
+
+{"id": "g141", "category": "numbers", "input": "2 din me a jaen ge", "expected": "2 din me aa jayen ge", "notes": "digit + Urdu word for day"}
+{"id": "g142", "category": "numbers", "input": "kal 5 bje milte hen", "expected": "kal 5 baje milte hain", "notes": "time with digit"}
+{"id": "g143", "category": "numbers", "input": "100 ka note de do", "expected": "100 ka note de do", "notes": "currency note"}
+{"id": "g144", "category": "numbers", "input": "wo 3 sal se yahan rh rha hai", "expected": "wo 3 saal se yahan rah raha hai", "notes": "duration"}
+{"id": "g145", "category": "numbers", "input": "lecture 9:30 pe shuru hota hai", "expected": "lecture 9:30 pe shuru hota hai", "notes": "time format"}
+{"id": "g146", "category": "numbers", "input": "20% discount mil rha hai", "expected": "20% discount mil raha hai", "notes": "percentage"}
+{"id": "g147", "category": "numbers", "input": "phone number 0300-1234567 hai", "expected": "phone number 0300-1234567 hai", "notes": "phone number preserved"}
+{"id": "g148", "category": "numbers", "input": "wo 1st position pe aya tha", "expected": "wo 1st position pe aaya tha", "notes": "ordinal"}
+
+{"id": "g149", "category": "arabic_script", "input": "السلام علیکم kese ho", "expected": "السلام علیکم kaise ho", "notes": "Arabic-script Salam should pass through"}
+{"id": "g150", "category": "arabic_script", "input": "ماشاءاللہ bht acha", "expected": "ماشاءاللہ bahut accha", "notes": "Arabic mashaAllah pass through"}
+{"id": "g151", "category": "arabic_script", "input": "میں ٹھیک ہوں thank you", "expected": "میں ٹھیک ہوں thank you", "notes": "full Arabic-script sentence + English"}
+{"id": "g152", "category": "arabic_script", "input": "yr دیکھو scene off hai", "expected": "yaar دیکھو scene off hai", "notes": "Urdu word in script + roman"}
+{"id": "g153", "category": "arabic_script", "input": "shukria جزاک اللہ", "expected": "shukriya جزاک اللہ", "notes": "roman + arabic religious"}
+
+{"id": "g154", "category": "slang_polite", "input": "scene off hai yr", "expected": "scene off hai yaar", "notes": "Pakistani slang scene off"}
+{"id": "g155", "category": "slang_polite", "input": "tota off ho gya", "expected": "tota off ho gaya", "notes": "tota off (frustrated)"}
+{"id": "g156", "category": "slang_polite", "input": "bs yr scene", "expected": "bas yaar scene", "notes": "scene = situation"}
+{"id": "g157", "category": "slang_polite", "input": "ghatiya bndy ho", "expected": "ghatiya bande ho", "notes": "mild insult"}
+{"id": "g158", "category": "slang_polite", "input": "ye kya bakwas hai", "expected": "ye kya bakwaas hai", "notes": "complaint slang"}
+{"id": "g159", "category": "slang_polite", "input": "bhai chill kr", "expected": "bhai chill kar", "notes": "borrowed English slang"}
+{"id": "g160", "category": "slang_polite", "input": "set ho gya kam", "expected": "set ho gaya kaam", "notes": "set = sorted"}
+{"id": "g161", "category": "slang_polite", "input": "thora sa wait kro", "expected": "thora sa wait karo", "notes": "wait kro = wait do"}
+
+{"id": "g162", "category": "office", "input": "boss ne meeting bulai hai 11 bje", "expected": "boss ne meeting bulai hai 11 baje", "notes": "office Pakistani English-Urdu"}
+{"id": "g163", "category": "office", "input": "kal off hai chuti", "expected": "kal off hai chuti", "notes": "day off / holiday"}
+{"id": "g164", "category": "office", "input": "presentation tyar hai", "expected": "presentation tayar hai", "notes": "presentation ready"}
+{"id": "g165", "category": "office", "input": "client ne approval de di", "expected": "client ne approval de di", "notes": "approval given"}
+{"id": "g166", "category": "office", "input": "salary kal a jae gi", "expected": "salary kal aa jae gi", "notes": "salary tomorrow"}
+
+{"id": "g167", "category": "marketplace_haggle", "input": "ye kitne ka diya hai", "expected": "ye kitne ka diya hai", "notes": "how much sold"}
+{"id": "g168", "category": "marketplace_haggle", "input": "bhai sahab kuch km krdo", "expected": "bhai sahab kuch kam kar do", "notes": "reduce price"}
+{"id": "g169", "category": "marketplace_haggle", "input": "asli mal hai ya nakli", "expected": "asli maal hai ya nakli", "notes": "real or fake"}
+{"id": "g170", "category": "marketplace_haggle", "input": "warranty kitne din ki hai", "expected": "warranty kitne din ki hai", "notes": "how many days warranty"}
+{"id": "g171", "category": "marketplace_haggle", "input": "online order ki delivery kab a gi", "expected": "online order ki delivery kab aa gi", "notes": "delivery timing"}
+{"id": "g172", "category": "marketplace_haggle", "input": "cash on delivery accept krte ho", "expected": "cash on delivery accept karte ho", "notes": "COD question"}
+
+{"id": "g173", "category": "religious_phrase", "input": "alhamdulillah sab ka shukr hai", "expected": "alhamdulillah sab ka shukar hai", "notes": "thanks God"}
+{"id": "g174", "category": "religious_phrase", "input": "inshallah mile ge eid pe", "expected": "inshallah mile ge eid pe", "notes": "see you Eid"}
+{"id": "g175", "category": "religious_phrase", "input": "Allah hafiz yr", "expected": "Allah hafiz yaar", "notes": "goodbye religious"}
+{"id": "g176", "category": "religious_phrase", "input": "namaz parh li", "expected": "namaz padh li", "notes": "prayed"}
+{"id": "g177", "category": "religious_phrase", "input": "ramzan mubarak ho ap ko", "expected": "ramzan mubarak ho aap ko", "notes": "Ramadan greeting"}
+
+{"id": "g178", "category": "ambiguity_kal", "input": "kal milta hun", "expected": "kal milta hun", "notes": "kal is ambiguous (yesterday/tomorrow); preserve"}
+{"id": "g179", "category": "ambiguity_kal", "input": "wo kal aya tha", "expected": "wo kal aaya tha", "notes": "kal here = yesterday (past tense aya tha) — preserve word"}
+{"id": "g180", "category": "ambiguity_kal", "input": "main kal jaon ga", "expected": "main kal jaon ga", "notes": "kal here = tomorrow (future jaon ga) — preserve word"}
+
+{"id": "g181", "category": "long_complex", "input": "agr ami ko pta chla to wo bht ghussa ho jaen gi or phir abu b mil jaen ge", "expected": "agar ammi ko pata chala to wo bahut ghussa ho jayen gi aur phir abu bhi mil jayen ge", "notes": "long compound sentence"}
+{"id": "g182", "category": "long_complex", "input": "main soch rha hun k jo kch b ho jae hum hamesha apke sath rhen ge", "expected": "main soch raha hun ke jo kuch bhi ho jae hum hamesha aapke sath rahen ge", "notes": "loyalty pledge style"}
+{"id": "g183", "category": "long_complex", "input": "tussi kese ho or tmhare ghr wale b thk hen na bhai", "expected": "tussi kaise ho aur tumhare ghar wale bhi theek hain na bhai", "notes": "polite checking-in with Punjabi flavor"}
+
+{"id": "g184", "category": "weather", "input": "bht garmi hai aj", "expected": "bahut garmi hai aaj", "notes": "very hot today"}
+{"id": "g185", "category": "weather", "input": "barish ho rhi hai bahar", "expected": "barish ho rahi hai bahar", "notes": "raining outside"}
+{"id": "g186", "category": "weather", "input": "thand bht hai is week", "expected": "thand bahut hai is week", "notes": "cold this week"}
+
+{"id": "g187", "category": "education", "input": "assignment submit krdi hai", "expected": "assignment submit kar di hai", "notes": "submitted"}
+{"id": "g188", "category": "education", "input": "exam ki tyari nai ho rhi", "expected": "exam ki tayari nahi ho rahi", "notes": "exam prep not happening"}
+{"id": "g189", "category": "education", "input": "result kab a rha hai", "expected": "result kab aa raha hai", "notes": "when result"}
+{"id": "g190", "category": "education", "input": "professor sahab ny attendance lgai", "expected": "professor sahab ne attendance lagai", "notes": "professor took attendance"}
+
+{"id": "g191", "category": "tech", "input": "wifi nai chl rha", "expected": "wifi nahi chal raha", "notes": "wifi not working"}
+{"id": "g192", "category": "tech", "input": "phone hang ho gya", "expected": "phone hang ho gaya", "notes": "phone hung"}
+{"id": "g193", "category": "tech", "input": "screen pe error a rha hai", "expected": "screen pe error aa raha hai", "notes": "error on screen"}
+{"id": "g194", "category": "tech", "input": "update install krdo", "expected": "update install kar do", "notes": "install update"}
+{"id": "g195", "category": "tech", "input": "battery jaldi khtm ho jati hai", "expected": "battery jaldi khatam ho jati hai", "notes": "battery drains fast"}
+
+{"id": "g196", "category": "transport", "input": "rikshay wala bht mehnga le rha hai", "expected": "rikshay wala bahut mehnga le raha hai", "notes": "rickshaw driver charging too much"}
+{"id": "g197", "category": "transport", "input": "uber book krdo plz", "expected": "uber book kar do please", "notes": "book Uber"}
+{"id": "g198", "category": "transport", "input": "bike pe a rha hun", "expected": "bike pe aa raha hun", "notes": "coming on bike"}
+{"id": "g199", "category": "transport", "input": "traffic me phans gye", "expected": "traffic me phans gaye", "notes": "stuck in traffic"}
+{"id": "g200", "category": "transport", "input": "stop pe utar jana", "expected": "stop pe utar jana", "notes": "get off at stop"}
+
+{"id": "g201", "category": "social_media", "input": "post share krdo plz", "expected": "post share kar do please", "notes": "share my post"}
+{"id": "g202", "category": "social_media", "input": "story dekhi meri", "expected": "story dekhi meri", "notes": "Instagram story"}
+{"id": "g203", "category": "social_media", "input": "live a rha hun 8 bje", "expected": "live aa raha hun 8 baje", "notes": "going live"}
+{"id": "g204", "category": "social_media", "input": "like or comment krna", "expected": "like aur comment karna", "notes": "engagement ask"}
+{"id": "g205", "category": "social_media", "input": "follow back krdo na", "expected": "follow back kar do na", "notes": "follow back request"}
+
+{"id": "g206", "category": "freelance", "input": "fiverr pe new gig laga di", "expected": "fiverr pe new gig laga di", "notes": "freelance gig"}
+{"id": "g207", "category": "freelance", "input": "upwork client ny msg kya", "expected": "upwork client ne message kiya", "notes": "client messaged"}
+{"id": "g208", "category": "freelance", "input": "payment kal a jae gi", "expected": "payment kal aa jae gi", "notes": "payment tomorrow"}
+{"id": "g209", "category": "freelance", "input": "scope creep ho rha hai is project me", "expected": "scope creep ho raha hai is project me", "notes": "freelance frustration"}
+{"id": "g210", "category": "freelance", "input": "revision request a gai phr se", "expected": "revision request aa gayi phir se", "notes": "another revision"}
+
+{"id": "g211", "category": "ambiguity_main", "input": "main aa rha hun", "expected": "main aa raha hun", "notes": "main = I (pronoun)"}
+{"id": "g212", "category": "ambiguity_main", "input": "main office me hun", "expected": "main office me hun", "notes": "ambiguous: main = I OR English 'main' adj — preserve unchanged"}
+{"id": "g213", "category": "ambiguity_main", "input": "ye main road pe hai", "expected": "ye main road pe hai", "notes": "main road — English adj, preserve"}
+
+{"id": "g214", "category": "ambiguity_nai", "input": "main nai jaonga", "expected": "main nahi jaonga", "notes": "nai → nahi (negation)"}
+{"id": "g215", "category": "ambiguity_nai", "input": "ye nai shirt hai", "expected": "ye nai shirt hai", "notes": "nai = nayi (new) — context dependent — preserve"}
+
+{"id": "g216", "category": "punctuation_chaos", "input": "kya??? bs!!!!!!", "expected": "kya??? bas!!!!!!", "notes": "excess punctuation preserved"}
+{"id": "g217", "category": "punctuation_chaos", "input": "yr,, suno,, na...", "expected": "yaar,, suno,, na...", "notes": "doubled commas + ellipsis"}
+{"id": "g218", "category": "punctuation_chaos", "input": ":) yr scene set hai :D", "expected": ":) yaar scene set hai :D", "notes": "ASCII emoticons"}
+
+{"id": "g219", "category": "interjection", "input": "uff yr ye kya hua", "expected": "uff yaar ye kya hua", "notes": "uff = ugh"}
+{"id": "g220", "category": "interjection", "input": "aray ye to bht acha hai", "expected": "aray ye to bahut accha hai", "notes": "aray = hey"}
+{"id": "g221", "category": "interjection", "input": "haw kya bat hai", "expected": "haw kya baat hai", "notes": "haw = wow (south asian)"}
+{"id": "g222", "category": "interjection", "input": "achaa to is liye late ho gaye", "expected": "achaa to is liye late ho gaye", "notes": "achaa = oh / I see"}
+
+{"id": "g223", "category": "intensifier", "input": "bohat bohat shukria", "expected": "bahut bahut shukriya", "notes": "doubled bohat for emphasis"}
+{"id": "g224", "category": "intensifier", "input": "thora sa thora", "expected": "thora sa thora", "notes": "tiny tiny"}
+{"id": "g225", "category": "intensifier", "input": "bilkul thk", "expected": "bilkul theek", "notes": "completely fine"}
+
+{"id": "g226", "category": "permission_request", "input": "kya main ander a sakta hun", "expected": "kya main ander aa sakta hun", "notes": "may I come in"}
+{"id": "g227", "category": "permission_request", "input": "thora ruk skte ho", "expected": "thora ruk sakte ho", "notes": "can you wait a bit"}
+{"id": "g228", "category": "permission_request", "input": "ek question pooch sakta hun", "expected": "ek question pooch sakta hun", "notes": "can I ask one"}
+
+{"id": "g229", "category": "comparative", "input": "ye us se bht acha hai", "expected": "ye us se bahut accha hai", "notes": "this is much better than that"}
+{"id": "g230", "category": "comparative", "input": "mera ghr tmhare ghr se bara hai", "expected": "mera ghar tumhare ghar se bara hai", "notes": "my house is bigger"}
+{"id": "g231", "category": "comparative", "input": "Lahore Karachi se zyada thanda hai", "expected": "Lahore Karachi se zyada thanda hai", "notes": "Lahore colder than Karachi"}
+
+{"id": "g232", "category": "negative_emotion", "input": "mn nai a rha", "expected": "mann nahi aa raha", "notes": "not in the mood"}
+{"id": "g233", "category": "negative_emotion", "input": "tora dard ho rha", "expected": "tora dard ho raha", "notes": "a bit of pain"}
+{"id": "g234", "category": "negative_emotion", "input": "bohat preshan hun yr", "expected": "bahut preshan hun yaar", "notes": "really worried"}
+{"id": "g235", "category": "negative_emotion", "input": "akela feel ho rha hai", "expected": "akela feel ho raha hai", "notes": "feeling lonely"}
+
+{"id": "g236", "category": "encouragement", "input": "tum kr sakti ho", "expected": "tum kar sakti ho", "notes": "you can do it (f)"}
+{"id": "g237", "category": "encouragement", "input": "himmat na haaro", "expected": "himmat na haaro", "notes": "don't lose hope"}
+{"id": "g238", "category": "encouragement", "input": "main tmhare sath hun", "expected": "main tumhare sath hun", "notes": "I'm with you"}
+
+{"id": "g239", "category": "request_help", "input": "yr help krdo plz", "expected": "yaar help kar do please", "notes": "help me bro"}
+{"id": "g240", "category": "request_help", "input": "ek favour chahye tha", "expected": "ek favour chahiye tha", "notes": "needed a favor"}
+{"id": "g241", "category": "request_help", "input": "code debug krne me help kr de", "expected": "code debug karne me help kar de", "notes": "help with debugging"}
+
+{"id": "g242", "category": "agreement", "input": "ji bilkul sahi kha", "expected": "ji bilkul sahi kaha", "notes": "yes absolutely right"}
+{"id": "g243", "category": "agreement", "input": "haan haan thk hai", "expected": "haan haan theek hai", "notes": "yes yes ok"}
+{"id": "g244", "category": "agreement", "input": "sahi farmaya ap ny", "expected": "sahi farmaya aap ne", "notes": "well said"}
+
+{"id": "g245", "category": "disagreement", "input": "nai aisa nai hai", "expected": "nahi aisa nahi hai", "notes": "no it's not like that"}
+{"id": "g246", "category": "disagreement", "input": "main is bat se ittefaq nai krta", "expected": "main is baat se ittefaq nahi karta", "notes": "I don't agree"}
+{"id": "g247", "category": "disagreement", "input": "ye ghalat ho rha hai", "expected": "ye ghalat ho raha hai", "notes": "this is wrong"}
+
+{"id": "g248", "category": "edge_punctuation_only", "input": "...", "expected": "...", "notes": "ellipsis only"}
+{"id": "g249", "category": "edge_punctuation_only", "input": "!!!", "expected": "!!!", "notes": "exclamation only"}
+{"id": "g250", "category": "edge_punctuation_only", "input": "??!!", "expected": "??!!", "notes": "mixed punctuation"}
