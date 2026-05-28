@@ -93,6 +93,18 @@ VARIANT_MAP = {
     "koi": "koi", "ki": "koi",  # context-dependent; phonetic layer handles "ki" otherwise
     "har": "har",
     "apna": "apna", "apni": "apni", "apne": "apne",
+    "mjhe": "mujhe", "mujhe": "mujhe", "muje": "mujhe",
+    "tumhe": "tumhe", "tmhe": "tumhe", "tumhein": "tumhe",
+    "humein": "humein", "hmein": "humein", "hume": "hume",
+    "ksi": "kisi", "kisi": "kisi",
+    "or": "aur", "aur": "aur",
+    "b": "bhi", "bh": "bhi",  # very common SMS "b" for "bhi"
+    "mt": "mat", "mat": "mat",  # don't / negative imperative
+    "wese": "waise", "wsl": "waise", "waise": "waise",
+    "bs": "bas", "bas": "bas",  # 'bas' = just/stop, common SMS bs
+    "krdo": "kar do", "krde": "kar de", "krlo": "kar lo",  # compound action verbs
+    "krdi": "kar di", "krdiya": "kar diya",
+    "krna": "karna", "krni": "karni", "krne": "karne",
 
     # --- be / have / aux ---
     "hai": "hai", "h": "hai", "hy": "hai", "hi": "hai",
@@ -111,15 +123,24 @@ VARIANT_MAP = {
     "rha": "raha", "rhi": "rahi", "rhe": "rahe",
     "gya": "gaya", "gyi": "gayi", "gye": "gaye",
     "aaya": "aaya", "ayi": "ayi", "aye": "aye",
+    "aya": "aaya", "ai": "aayi",
     "khaya": "khaya", "khayi": "khayi", "khaye": "khaye",
     "piya": "piya", "piyi": "piyi",
     "dekh": "dekh", "dkh": "dekh",
     "dkha": "dekha", "dekha": "dekha", "dekhi": "dekhi",
     "sun": "sun", "sn": "sun", "suna": "suna", "suni": "suni",
     "bol": "bol", "bola": "bola", "boli": "boli",
-    "keh": "keh", "kha": "keh",  # informal/colloquial
+    "keh": "keh", "kha": "kaha",
     "soch": "soch", "socha": "socha", "sochi": "sochi",
     "samjh": "samajh", "smjh": "samajh", "samjha": "samjha", "samjhi": "samjhi",
+    "lge": "lage", "lga": "laga", "lgi": "lagi",
+    "lae": "laye", "lao": "lao",
+    "bna": "bana", "bnai": "banai", "bnaya": "banaya", "bne": "bane",
+    "pta": "pata", "ptaa": "pata",
+    "chla": "chala", "chli": "chali", "chle": "chale",
+    "skta": "sakta", "skti": "sakti", "skte": "sakte",
+    "jae": "jae", "jaen": "jayen",
+    "ho jae": "ho jae", "hoja": "ho ja",
 
     # --- greetings / courtesy ---
     "salam": "salam", "aslam": "salam", "slam": "salam", "asalam": "salam",
@@ -134,7 +155,8 @@ VARIANT_MAP = {
     # --- pleasantries / discourse ---
     "acha": "accha", "achha": "accha", "achi": "acchi", "achhi": "acchi",
     "achay": "acche", "achhe": "acche",
-    "theek": "theek", "tk": "theek", "thk": "theek", "thik": "theek",
+    "theek": "theek", "thk": "theek", "thik": "theek",
+    "tk": "tak", "tak": "tak",  # SMS "tk" almost always means "tak" (until)
     "ok": "theek", "okay": "theek",
     "matlab": "matlab", "mtlb": "matlab",
     "yani": "yani", "yaani": "yani",
@@ -170,10 +192,16 @@ VARIANT_MAP = {
     "abhi": "abhi", "abi": "abhi", "abh": "abhi",
     "ab": "ab",
     "phir": "phir",
-    "subah": "subah", "sbh": "subah", "subha": "subah",
+    "subah": "subah", "sbh": "subah", "subha": "subah", "subh": "subah",
     "shaam": "shaam", "sham": "shaam",
     "raat": "raat", "rat": "raat",
     "dopahar": "dopahar", "dophar": "dopahar",
+    "udaas": "udaas", "udas": "udaas",
+    "bukh": "bukh", "bhuk": "bukh",
+    "taza": "taaza", "taaza": "taaza",
+    "bat": "baat", "baat": "baat",  # word/talk
+    "haal": "haal", "hal": "haal",
+    "mazay": "mazay", "maza": "maza",
 
     # --- days (Roman Urdu names) ---
     "pir": "pir", "peer": "pir",
@@ -185,15 +213,20 @@ VARIANT_MAP = {
     "itwar": "itwar", "itvar": "itwar",
 
     # --- numbers ---
-    "ek": "ek", "1": "ek",
-    "do": "do", "2": "do",
-    "teen": "teen", "tin": "teen", "3": "teen",
-    "char": "char", "chr": "char", "4": "char",
-    "panch": "panch", "paanch": "panch", "5": "panch",
-    "che": "che", "chhe": "che", "chay": "che", "6": "che",
-    "saat": "saat", "sat": "saat", "7": "saat",
-    "aath": "aath", "ath": "aath", "8": "aath",
-    "nau": "nau", "9": "nau",
+    # Number words — Roman Urdu spellings. Digits intentionally NOT mapped:
+    # "5 baje" should stay "5 baje", not become "panch baje" (the digit is
+    # clearer and matches how Pakistanis actually write it on phones).
+    "ek": "ek",
+    "do": "do",
+    "teen": "teen", "tin": "teen",
+    "char": "char", "chr": "char",
+    "panch": "panch", "paanch": "panch",
+    "che": "che", "chhe": "che", "chay": "che",
+    "saat": "saat", "sat": "saat",
+    "aath": "aath", "ath": "aath",
+    "nau": "nau",
+    "das": "das", "dus": "das",
+    "bje": "baje", "baje": "baje",
     "dus": "dus", "das": "dus", "10": "dus",
 }
 
@@ -359,6 +392,8 @@ _NOUNS = {
     "nafrat", "ghussa", "khauf", "umeed", "hosla",
     "imaan", "sach", "jhoot", "fikar", "salah", "raah",
     "manzil", "safar", "kahaani", "khwaab",
+    "haal", "baat", "bukh", "maza", "mazay",
+    "discount", "test",  # English loanwords commonly used
 }
 
 _ADJECTIVES = {
