@@ -192,7 +192,7 @@
       <dt>GitHub</dt><dd>https://github.com/MughirahNasir</dd>
       <dt>Project</dt><dd>Roman Urdu Normalizer (portfolio piece B1 of 8)</dd>
       <dt>Build window</dt><dd>2026-05-19 → 2026-05-27</dd>
-      <dt>Version</dt><dd>v1.0.0</dd>
+      <dt>Version</dt><dd>v1.1.0</dd>
     </dl>
   </div>
 
@@ -202,8 +202,9 @@
       I, <strong>Mughirah Nasir</strong>, certify that I am the originator and sole
       author of this project. I conceived the problem framing, designed the
       three-layer resolution architecture, wrote the phonetic encoding algorithm,
-      curated every entry in the canonical lexicon and variant map, designed
-      the homograph guard, wrote all 87 tests including the regression suite,
+      curated every entry in the canonical lexicon, variant map, and benchmark
+      dataset, designed the homograph guard, wrote all 135 tests including the
+      regression and adversarial suites, designed the production hardening,
       and produced every piece of documentation in this repository.
     </p>
   </div>
@@ -214,21 +215,26 @@
       <li>Three-layer resolution pipeline (variant map → phonetic → unchanged)</li>
       <li>Phonetic encoding algorithm — every digraph rule and vowel-class choice</li>
       <li>Curated canonical lexicon — 655 words across 13 POS categories</li>
-      <li>Curated variant map — 344 SMS shorthand entries from real Pakistani usage</li>
+      <li>Curated variant map — ~430 SMS shorthand entries from real Pakistani usage</li>
       <li>Homograph guard — 6 registered ambiguous-pair groups</li>
       <li>"Never silently guess" rule — design constraint, not afterthought</li>
+      <li>250-example hand-curated gold-standard benchmark dataset (50+ categories)</li>
+      <li>Adversarial perturbation generator producing 242 more eval examples</li>
+      <li>Benchmark scoring harness, latency suite, and baseline comparison study</li>
       <li>Both regression-tested bugs, found by feeding the live demo real text</li>
-      <li>All 87 tests across 5 test files</li>
+      <li>All 135 tests across 7 test files (incl. 35 adversarial + 13 client SDK)</li>
+      <li>Python client SDK with zero third-party deps, retries, batch chunking</li>
+      <li>Production hardening: CORS allowlist, request-size limit, rate limit, /metrics endpoint</li>
       <li>API contract — endpoint shapes, batch semantics, error responses</li>
       <li>Dark editorial frontend — typography, color tokens, offline fallback</li>
-      <li>All documentation including this certificate</li>
+      <li>All documentation including this certificate, DESIGN.md, and four docs/ markdown files</li>
     </ul>
   </div>
 
   <div class="panel">
     <div class="panel-title">Project fingerprint (SHA-256)</div>
-    <div class="fingerprint-label">Computed over the manifest of all 32 tracked files</div>
-    <div class="fingerprint">7cf0517f6114f927fa43f3ec1cd11ef07a2c6dd91d80434715dbb207999cf095</div>
+    <div class="fingerprint-label">Computed over the manifest of all 57 tracked files</div>
+    <div class="fingerprint">a393737309a24abb6fac3974134be1f78fd3c0ba5ce8c8dbcf22579ae278e140</div>
     <p style="color: var(--mute); font-size: 13px; margin-top: 12px;">
       Any change to any tracked file (even a single character) produces a
       completely different fingerprint. This value uniquely identifies the

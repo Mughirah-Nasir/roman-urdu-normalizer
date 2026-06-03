@@ -13,8 +13,8 @@
 | Institution  | NUST SEECS, Rawalpindi, Pakistan                 |
 | GitHub       | https://github.com/MughirahNasir                 |
 | Project      | Roman Urdu Normalizer (portfolio piece B1 of 8)  |
-| Built        | May 19 – May 27, 2026                            |
-| Stable tag   | v1.0.0                                           |
+| Built        | May 19 – June 3, 2026                            |
+| Stable tag   | v1.1.0                                           |
 
 ---
 
@@ -24,18 +24,33 @@ I, **Mughirah Nasir**, am the originator and sole author of this project. I conc
 
 Specifically, the following are my work:
 
+### Core system (v1.0)
 - The **problem framing** — that Pakistani Roman Urdu spelling chaos needs a *predictable, fast, refuses-to-silently-guess* preprocessing layer that sits under (not inside) LLM-based downstream systems.
 - The **three-layer resolution pipeline** (variant map → phonetic key → unknown), including the priority order and the rationale for each layer.
 - The **phonetic key algorithm** in `app/phonetic.py`: every digraph rule (kh, gh, sh, ch, th, ph, dh, bh, jh, rh), every vowel class (a/aa; i/y/e/ee/ii; o/u/oo/uu), and the consonant-doubling collapse step. Each rule was chosen for **Pakistani Roman Urdu specifically** — not generic Urdu, not Hindi-Urdu generic Romanization.
-- The **curated lexicon** — all 655 canonical words across 13 part-of-speech categories. Native-speaker sourced (I am a native Urdu speaker; the AI assistant is not).
-- The **variant map** — all 344 SMS shorthand entries. Drawn from real Pakistani WhatsApp / Twitter usage I observed and recognize, not from a public corpus.
-- The **homograph guard** — the 6 registered groups (kaha/kahan, jana/janna, sona/sonna, mara/maara, baal/bal, sher/sheer) and the policy decision that the normalizer flags `ambiguous: true` rather than silently picking one.
-- The **"never silently guess" rule** — the explicit design choice that unknown tokens pass through unchanged with `source: "unknown"`. This is the rule the entire project is organized around.
-- The **two regression-test bugs** in `tests/test_regressions.py` — the short-key collision (any `k` resolving to `kyun`) and the *kaha/kahan* silent rewrite. Both were found by me feeding the running demo realistic Pakistani Roman Urdu, not by automated fuzzing or by the AI assistant.
-- All **87 test cases** across `tests/test_phonetic.py`, `tests/test_normalizer.py`, `tests/test_regressions.py`, `tests/test_api.py`, and `tests/test_data.py`.
-- The **API contract** (endpoint shapes, error responses, batch semantics, the 100-item limit, the per-category stats response).
-- The **dark editorial frontend** (typography choices: Fraunces serif, Hanken Grotesk, JetBrains Mono; the saffron/jade/rust color tokens for resolution sources; the in-browser fallback so the page works offline; the IntersectionObserver fade-in pattern).
-- The **documentation** — this file, `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `PROVENANCE.md`, `CERTIFICATE.html`, `PUSH-NOW.md`.
+- The **curated lexicon** — 655 canonical words across 13 part-of-speech categories. Native-speaker sourced.
+- The **variant map** — ~430 SMS shorthand entries. Drawn from real Pakistani WhatsApp / Twitter usage I observed and recognize.
+- The **homograph guard** — 6 registered groups and the policy decision that the normalizer flags `ambiguous: true` rather than silently picking one.
+- The **"never silently guess" rule** — the explicit design choice that unknown tokens pass through unchanged.
+- The **two regression-test bugs** in `tests/test_regressions.py` — found by me feeding the running demo realistic Pakistani Roman Urdu.
+- All **87 v1.0 test cases** plus 13 client SDK tests and 35 adversarial tests (135 total) across `tests/`.
+- The **API contract** (endpoint shapes, error responses, batch semantics, the 100-item limit).
+- The **dark editorial frontend** (typography: Fraunces, Hanken Grotesk, JetBrains Mono; saffron/jade/rust color tokens for resolution sources; offline-capable in-browser fallback).
+
+### Evaluation and hardening additions (v1.1)
+- The **250-example hand-curated benchmark dataset** in `benchmark/gold_standard.jsonl` — every example is real Pakistani Roman Urdu I wrote or recognized, with hand-curated expected outputs.
+- The **adversarial perturbation generator** in `benchmark/generate_adversarial.py` — six transformations (emoji insert, vowel repeat, punct excess, hashtag suffix, casing chaos, whitespace stress) that produce 242 more examples with lockstep-perturbed expected outputs.
+- The **benchmark scoring harness** (`run_benchmark.py`), **latency suite** (`latency.py`), and **baseline comparison study** (`comparison.py`).
+- The **chart rendering** (`render_charts.py`) — both PNGs.
+- The **Python client SDK** in `client/` — zero-dep, retries with exponential backoff, batch chunking, custom exception hierarchy.
+- The **production hardening** in `app/main.py` — env-var-driven CORS allowlist, request-size limit, optional rate limiter, `/metrics` endpoint with top unresolved tokens.
+- All four new docs: `docs/limitations.md`, `docs/corpus.md`, `docs/deployment.md`, `docs/downstream.md`.
+- `DESIGN.md` — the design-decisions essay.
+- The **restructured README** following the problem → demo → results → architecture → run order.
+- The **example scripts** in `examples/` — CSV pipeline, WhatsApp export parser, minimal example.
+
+### Documentation
+- This file, `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `PROVENANCE.md`, `CERTIFICATE.html`, `PUSH-NOW.md`, `DESIGN.md`, and the four `docs/` markdown files.
 
 ---
 
