@@ -1,0 +1,40 @@
+# Render.com one-click deploy configuration.
+#
+# Reviewers and recruiters can click "Deploy to Render" from the README
+# and have a live URL within ~2 minutes. The free tier sleeps after 15
+# minutes of inactivity (~30 second cold start on the next request) —
+# fine for portfolio demos.
+#
+# To use:
+#   1. Sign in to https://render.com with GitHub
+#   2. Click "New +" → "Blueprint"
+#   3. Pick your fork of this repo
+#   4. Render reads this file and provisions everything automatically
+#
+# See docs/deployment.md for env-var details and production hardening.
+
+services:
+  - type: web
+    name: roman-urdu-normalizer
+    runtime: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      # CORS — opened to wildcard for the public portfolio demo.
+      # Tighten this if you're forking for real use.
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      # Modest per-IP rate limit so a script kiddie can't spam the
+      # free tier into oblivion.
+      - key: RATE_LIMIT_PER_MIN
+        value: "60"
+      # 1 MB max request size — sane default for any text-normalizer use.
+      - key: MAX_REQUEST_BYTES
+        value: "1048576"
+      - key: PYTHON_VERSION
+        value: "3.12.3"
