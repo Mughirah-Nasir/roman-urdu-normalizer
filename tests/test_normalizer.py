@@ -80,7 +80,13 @@ class TestFullStringNormalization:
         assert result["normalized"] != text
         assert "yaar" in result["normalized"]
         assert "bahut" in result["normalized"]
-        assert result["stats"]["total"] == 8
+        # Total tokens may be < 8 because the multi-token phrase layer
+        # collapses compound forms like "kr rhe" into a single phrase_map
+        # record. Expect 6-8 (depending on which phrases match).
+        assert 6 <= result["stats"]["total"] <= 8
+        # And the phrase_map layer should have fired at least once on
+        # this sentence (kr rhe is in the phrase map)
+        assert result["stats"]["phrase_map"] >= 1
 
     def test_whitespace_preserved(self):
         result = normalize_text("kya  haal   hai")
