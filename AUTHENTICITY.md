@@ -13,8 +13,8 @@
 | Institution  | NUST SEECS, Rawalpindi, Pakistan                 |
 | GitHub       | https://github.com/MughirahNasir                 |
 | Project      | Roman Urdu Normalizer (portfolio piece B1 of 8)  |
-| Built        | May 19 – June 3, 2026                            |
-| Stable tag   | v1.1.0                                           |
+| Built        | May 19 – June 4, 2026                            |
+| Stable tag   | v1.2.0                                           |
 
 ---
 
@@ -51,6 +51,14 @@ Specifically, the following are my work:
 
 ### Documentation
 - This file, `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `PROVENANCE.md`, `CERTIFICATE.html`, `PUSH-NOW.md`, `DESIGN.md`, and the four `docs/` markdown files.
+
+### Phrase-layer and confidence additions (v1.2)
+- The **multi-token phrase rewrite layer** (`app/multitoken.py`) — 125+ hand-curated compound forms covering progressive aspect, past tense, verb+particle, negation pairs, and idioms. The longest-match scanning algorithm.
+- **Per-token confidence scoring** — every resolution carries a 0.0–1.0 score plus `avg_confidence` and `min_confidence` in the response stats.
+- The **TF-IDF char n-gram ML baseline** in `benchmark/comparison.py` — using `sklearn` TfidfVectorizer with char-wb 2-4-grams against the canonical lexicon, cosine-similarity nearest neighbor with a 0.45 threshold.
+- 27 new tests in `tests/test_multitoken.py` covering phrase map integrity, scanning behavior, end-to-end multi-token resolution, and confidence-scoring invariants.
+- The **`render.yaml`** Render.com Blueprint for one-click deployment.
+- The **`examples/search_recall_demo.py`** integration showcase — a 25-review corpus with 8 queries demonstrating measurable recall lift on Pakistani Roman Urdu search.
 
 ---
 

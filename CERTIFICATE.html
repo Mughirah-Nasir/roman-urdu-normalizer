@@ -192,7 +192,7 @@
       <dt>GitHub</dt><dd>https://github.com/MughirahNasir</dd>
       <dt>Project</dt><dd>Roman Urdu Normalizer (portfolio piece B1 of 8)</dd>
       <dt>Build window</dt><dd>2026-05-19 → 2026-05-27</dd>
-      <dt>Version</dt><dd>v1.1.0</dd>
+      <dt>Version</dt><dd>v1.2.0</dd>
     </dl>
   </div>
 
@@ -212,7 +212,9 @@
   <div class="panel">
     <div class="panel-title">Items authored personally</div>
     <ul class="acts">
-      <li>Three-layer resolution pipeline (variant map → phonetic → unchanged)</li>
+      <li>Four-layer resolution pipeline (phrase → variant → phonetic → unchanged)</li>
+      <li>Multi-token phrase rewrite layer — 125+ curated compound forms</li>
+      <li>Per-token confidence scoring (0.0–1.0) preserving never-silently-guess</li>
       <li>Phonetic encoding algorithm — every digraph rule and vowel-class choice</li>
       <li>Curated canonical lexicon — 655 words across 13 POS categories</li>
       <li>Curated variant map — ~430 SMS shorthand entries from real Pakistani usage</li>
@@ -220,11 +222,14 @@
       <li>"Never silently guess" rule — design constraint, not afterthought</li>
       <li>250-example hand-curated gold-standard benchmark dataset (50+ categories)</li>
       <li>Adversarial perturbation generator producing 242 more eval examples</li>
-      <li>Benchmark scoring harness, latency suite, and baseline comparison study</li>
+      <li>Benchmark scoring harness, latency suite, and 4-baseline comparison study</li>
+      <li>TF-IDF char n-gram ML baseline (sklearn-trained, cosine similarity)</li>
       <li>Both regression-tested bugs, found by feeding the live demo real text</li>
-      <li>All 135 tests across 7 test files (incl. 35 adversarial + 13 client SDK)</li>
+      <li>All 162 tests across 8 test files (incl. 27 multitoken + 35 adversarial + 13 client SDK)</li>
       <li>Python client SDK with zero third-party deps, retries, batch chunking</li>
       <li>Production hardening: CORS allowlist, request-size limit, rate limit, /metrics endpoint</li>
+      <li>One-click Render.com deploy (render.yaml Blueprint)</li>
+      <li>Search recall integration showcase (examples/search_recall_demo.py)</li>
       <li>API contract — endpoint shapes, batch semantics, error responses</li>
       <li>Dark editorial frontend — typography, color tokens, offline fallback</li>
       <li>All documentation including this certificate, DESIGN.md, and four docs/ markdown files</li>
@@ -233,8 +238,8 @@
 
   <div class="panel">
     <div class="panel-title">Project fingerprint (SHA-256)</div>
-    <div class="fingerprint-label">Computed over the manifest of all 57 tracked files</div>
-    <div class="fingerprint">a393737309a24abb6fac3974134be1f78fd3c0ba5ce8c8dbcf22579ae278e140</div>
+    <div class="fingerprint-label">Computed over the manifest of all 61 tracked files</div>
+    <div class="fingerprint">488fd8a2a7981b1ccea9353ceaa53604684f0198dff86778844d5ceada4412c8</div>
     <p style="color: var(--mute); font-size: 13px; margin-top: 12px;">
       Any change to any tracked file (even a single character) produces a
       completely different fingerprint. This value uniquely identifies the
