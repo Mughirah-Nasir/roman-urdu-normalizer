@@ -1,8 +1,8 @@
 # Roman Urdu Normalizer
 
-**A three-layer phonetic normalizer that turns Pakistani Roman Urdu spelling chaos — `kya / kia / kyaa`, `bht / bohat / bahut`, `nhi / nahin / nai` — into one canonical form. Hand-curated lexicon, never silently guesses, F1 88.8% on a 492-example held-out benchmark.**
+**A four-layer phonetic normalizer with phrase-aware rewrites that turns Pakistani Roman Urdu spelling chaos — `kya / kia / kyaa`, `bht / bohat / bahut`, `nhi / nahin / nai` — into one canonical form. Hand-curated lexicon, never silently guesses, F1 90.1% on a 492-example held-out benchmark.**
 
-[![tests](https://img.shields.io/badge/tests-135%2F135%20passing-5fb39a)]() [![python](https://img.shields.io/badge/python-3.10%2B-e8a33d)]() [![F1](https://img.shields.io/badge/F1-88.8%25-5fb39a)]() [![latency](https://img.shields.io/badge/p50%20latency-7.8µs-e8a33d)]() [![license](https://img.shields.io/badge/license-MIT-b8b0a1)]()
+[![tests](https://img.shields.io/badge/tests-162%2F162%20passing-5fb39a)]() [![python](https://img.shields.io/badge/python-3.10%2B-e8a33d)]() [![F1](https://img.shields.io/badge/F1-90.1%25-5fb39a)]() [![latency](https://img.shields.io/badge/p50%20latency-29.9µs-e8a33d)]() [![license](https://img.shields.io/badge/license-MIT-b8b0a1)]()
 
 ---
 
@@ -44,15 +44,16 @@ Measured on a held-out 492-example benchmark dataset (250 hand-curated + 242 adv
 
 ![baseline comparison](docs/benchmark_vs_baselines.png)
 
-| Strategy                       | Sentence accuracy |  Token F1 |
-| ------------------------------ | -----------------:| --------:|
-| Baseline · `naive_replace`     |              7.0% |    34.2% |
-| Baseline · `levenshtein`       |             12.0% |    46.9% |
-| **Three-layer pipeline (ours)**| **58.9%**         | **88.8%** |
+| Strategy                            | Sentence accuracy |  Token F1 |
+| ----------------------------------- | -----------------:| --------:|
+| Baseline · `naive_replace`          |              4.8% |    38.6% |
+| Baseline · `levenshtein_nearest`    |             12.4% |    51.6% |
+| Baseline · `tfidf_char_ngram` (ML)  |             18.4% |    61.0% |
+| **Four-layer pipeline (ours)**      | **63.2%**         | **90.1%** |
 
-The pipeline beats Levenshtein-nearest by **42 F1 points** and a naive replace loop by **55 F1 points** — while preserving the "never silently guess" contract that the baselines cannot.
+The four-layer pipeline beats the **TF-IDF char n-gram ML baseline** by 29 F1 points, Levenshtein-nearest by 38 points, and naive replace by 51 points — while preserving the "never silently guess" contract none of them can offer.
 
-**Latency** in-process (no HTTP): median **7.83 µs**, p99 36 µs, throughput **105,061 calls/sec** on a single thread. Reproduce with `python -m benchmark.latency`.
+**Latency** in-process (no HTTP): median **29.9 µs**, p99 99 µs, throughput **29,376 calls/sec** on a single thread (multi-token scan adds overhead). Reproduce with `python -m benchmark.latency`.
 
 ### Per-category breakdown
 
@@ -66,27 +67,34 @@ The pipeline beats Levenshtein-nearest by **42 F1 points** and a naive replace l
 
 ![architecture diagram](docs/architecture.png)
 
-Each input token runs through three layers in order. The first layer that produces a confident answer wins; anything that reaches Layer 3 passes through unchanged and is flagged. Full design rationale in [`DESIGN.md`](DESIGN.md):
+Each input runs through four layers. The first layer that produces a confident answer wins; anything that reaches Layer 4 passes through unchanged and is flagged. Full design rationale in [`DESIGN.md`](DESIGN.md):
 
-1. **`VARIANT_MAP` (exact lookup)** — 430+ hand-curated SMS shorthand entries
-2. **Phonetic key match** — digraph-folding algorithm with vowel-class collapse, against 655 canonical words
-3. **Unknown — pass through with a flag** — the explicit "never guess" layer
+1. **`PHRASE_MAP` (multi-token longest-match)** — 125+ curated compound forms scanned left-to-right (e.g. `kr de → kar de`, `ja rha → ja raha`, `ho gya → ho gaya`). Confidence 1.0.
+2. **`VARIANT_MAP` (exact lookup)** — 430+ SMS shorthand entries. Confidence 1.0.
+3. **Phonetic key match** — digraph-folding algorithm against 655 canonical words. Confidence 0.85 for clean matches, 0.65 for non-homograph collisions, 0.40 for registered homographs (returned with `ambiguous: true`).
+4. **Unknown — pass through with a flag** — confidence 0.0, the explicit "never guess" layer.
+
+Every token resolution carries a `confidence` field (0.0–1.0). Downstream systems can threshold — e.g. "drop tokens below 0.7 from the search index" — without losing the "never silently guess" contract.
 
 ---
 
 ## Features
 
-- **Three-layer pipeline** — `variant_map` → `phonetic_key` → `unknown` flagging
+- **Four-layer pipeline** — `phrase_map` → `variant_map` → `phonetic_key` → `unknown` flagging
+- **Multi-token compound rewrites** — 125+ curated phrases handle `pi lo`, `kr de`, `ja rha`, `ho gya` and similar forms that strict per-token resolution cannot
+- **Per-token confidence scores** (0.0–1.0) — thresholdable signal for downstream systems
 - **655 canonical words** across 13 part-of-speech categories
 - **~430 SMS shorthand entries** from real Pakistani WhatsApp/Twitter usage
 - **6 registered homograph groups** — `kaha`/`kahan`, `jana`/`janna`, etc. — return `ambiguous: true` rather than silently picking
 - **Batch endpoint** for up to 100 strings per round trip
 - **`/metrics` endpoint** exposing top unresolved tokens (lexicon growth feedback loop)
 - **Restricted CORS, request-size limit, optional rate limiting** — env-var configurable, production-safe defaults
+- **One-click Render.com deploy** via `render.yaml` — live demo URL in ~2 minutes
 - **CLI tool** with stdin, JSON output, and `--stats` mode
 - **Python client SDK** in [`client/`](client/) — zero third-party deps, retries + timeout + batch chunking
-- **135 tests** including 35 adversarial tests for emoji, repeated letters, hashtags, Arabic-script, numbers, code-switching, URLs
-- **492-example benchmark** with hand-curated + programmatic-adversarial dataset, scoring harness, latency suite, baseline comparison
+- **162 tests** — phonetic, normalizer, regressions, API, data, client SDK, multi-token, adversarial
+- **492-example benchmark** with **4-baseline comparison incl. a real ML baseline** (TF-IDF char n-gram, sklearn-trained)
+- **Concrete downstream demo** in `examples/search_recall_demo.py` showing measurable recall lift
 - **Docker image** (multi-stage, non-root, healthcheck) and **GitHub Actions CI** matrix on Python 3.10/3.11/3.12
 
 ---
@@ -122,7 +130,7 @@ pip install -r requirements-dev.txt
 python -m pytest tests/ -v
 ```
 
-Expected: **135 passed in ~0.6s**.
+Expected: **162 passed in ~0.6s**.
 
 ### Run the benchmarks
 

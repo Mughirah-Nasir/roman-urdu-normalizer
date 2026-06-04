@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] — 2026-06-04
+
+Architectural upgrade in response to a second external technical review.
+Focus: phrase-aware rewrites, confidence scoring, ML baseline, hosted-demo
+parity.
+
+### Added
+- **Multi-token phrase rewrite layer** (`app/multitoken.py`) — new Layer 0.5 of the pipeline. Scans input left-to-right for known compound forms with longest-match semantics. 125+ curated phrases covering compound verbs (`kr de`, `kr lo`, `kha lo`, `pi lo`), progressive aspect (`ja rha`, `ho rha`, `kar rha`), past tense compounds (`ho gya`, `a gya`), negation pairs (`kuch nai`, `nai aya`), time compounds (`abhi tk`, `ab tak`), intensifiers (`bht zyada`, `thora sa`), and common idioms (`kese ho`, `scene off`).
+- **Per-token confidence scores** (0.0–1.0) on every resolution record. Scale: 1.0 for explicit map matches (variant, phrase, unchanged), 0.85 for phonetic single match, 0.65 for phonetic non-homograph collision, 0.40 for known homograph (ambiguous), 0.00 for unknown.
+- **`avg_confidence` and `min_confidence`** in the response `stats` block — aggregates across all word tokens. Callers can threshold either at the per-token level or at the response level.
+- **TF-IDF char n-gram ML baseline** in `benchmark/comparison.py` — a real trained model using `sklearn`'s TfidfVectorizer with char-wb 2-4-grams, cosine similarity against the canonical lexicon, threshold 0.45. Result: F1 61.0% — substantially better than the trivial baselines but still 30 F1 points below the four-layer pipeline.
+- **One-click deploy spec** (`render.yaml`) — Render.com Blueprint config. A reviewer can fork, click Deploy, and have a live URL in ~2 minutes with sane production defaults (CORS open, rate limit 60/min, body cap 1 MB).
+- **Search recall integration demo** (`examples/search_recall_demo.py`) — a self-contained script that builds a 25-review Pakistani e-commerce corpus, runs 8 queries against both raw and normalized versions, and prints a measurable recall lift table. Concrete proof of the downstream value claim.
+- **27 new tests** in `tests/test_multitoken.py`:
+  - phrase map integrity (size, casing, token-count bounds)
+  - phrase scanning (empty input, no match, longest match wins, non-overlapping)
+  - multi-token end-to-end (kr rhe → kar rahe, ja rha → ja raha, ho gya → ho gaya)
+  - confidence scoring (variant map 1.0, phonetic 0.85, unknown 0.0, ordering invariants)
+
+### Changed
+- **Pipeline diagram** in README and DESIGN.md updated to reflect 4 layers (phrase_map prepended).
+- **API response schema**: `TokenRecord` now includes `confidence: float` (required) and `span_tokens: int` (default 1, >1 for phrase matches). `Stats` gains `phrase_map: int`, `avg_confidence: float?`, `min_confidence: float?`. Existing callers won't break — new fields have defaults — but they're worth using.
+- **Source enum** extended from `{variant_map, phonetic, unchanged, unknown}` to include `phrase_map`.
+- **Benchmark numbers improved** on combined dataset: F1 88.8% → **90.1%**, sentence accuracy 58.9% → **63.2%** — the phrase layer is the cause.
+- **Latency increased** due to the phrase scan: p50 7.83 µs → 29.93 µs, p99 36 µs → 99 µs, throughput 105K → 29K calls/sec. Still well under 100 µs at p99; documented honestly in `docs/limitations.md`.
+
+### Notes
+- 162 tests passing (was 135). 4-layer pipeline. Total commits 38.
+- Pipeline architectural shape: explicit n-gram pre-pass + per-token resolver + confidence-aware unknown fallback. Reachable from the original 3-layer design without breaking existing API consumers.
+
+---
+
 ## [1.1.0] — 2026-06-03
 
 Major upgrade in response to external technical review. Focus: empirical
