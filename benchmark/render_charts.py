@@ -21,7 +21,6 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 from benchmark.run_benchmark import run_benchmark
-from benchmark.comparison import score_strategy, naive_replace, levenshtein_nearest, three_layer
 from benchmark.run_benchmark import load_gold_standard
 
 
@@ -92,16 +91,21 @@ def render_by_category(out_path: Path) -> None:
 def render_vs_baselines(out_path: Path) -> None:
     gold_path = Path(__file__).parent / "gold_standard.jsonl"
     gold = load_gold_standard(gold_path)
+    from benchmark.comparison import (
+        score_strategy, naive_replace, levenshtein_nearest,
+        tfidf_char_ngram, four_layer,
+    )
     results = [
         score_strategy("naive_replace",   naive_replace,        gold),
         score_strategy("levenshtein",     levenshtein_nearest,  gold),
-        score_strategy("three_layer",     three_layer,          gold),
+        score_strategy("tfidf (ML)",      tfidf_char_ngram,     gold),
+        score_strategy("four_layer",      four_layer,           gold),
     ]
     labels = [r["strategy"] for r in results]
     sentence_acc = [r["sentence_accuracy"] * 100 for r in results]
     f1 = [r["f1"] * 100 for r in results]
 
-    fig, ax = plt.subplots(figsize=(9, 6))
+    fig, ax = plt.subplots(figsize=(10, 6))
     _apply_dark_theme(fig, ax)
 
     x = range(len(labels))
@@ -113,7 +117,7 @@ def render_vs_baselines(out_path: Path) -> None:
 
     ax.set_ylim(0, 105)
     ax.set_ylabel("Score (%)", fontsize=11)
-    ax.set_title("Baseline comparison — 100-example gold-standard dataset",
+    ax.set_title("Baseline comparison — incl. TF-IDF char n-gram ML baseline",
                  fontsize=13, pad=18, loc="left")
     ax.set_xticks(list(x))
     ax.set_xticklabels(labels, color=INK, fontsize=10)
