@@ -61,6 +61,30 @@ The four-layer pipeline beats the **TF-IDF char n-gram ML baseline** by 29 F1 po
 
 100% F1 on greetings, religious phrases, basic SMS shorthand, edge cases. 60–80% on harder territory: code-switching, long sentences, multi-token compound verbs. See [`benchmark/results.md`](benchmark/results.md) for the full table and [`docs/limitations.md`](docs/limitations.md) for an honest map of where the system breaks.
 
+### Blind held-out evaluation
+
+The numbers above are on the dataset that informed lexicon expansion. To test generalization, there's a **separate 100-example held-out set** (`benchmark/heldout.jsonl`) written specifically for evaluation and never used to inform the variant map. Score:
+
+| Metric | In-sample (combined 492) | Blind held-out (100) |
+|---|---:|---:|
+| Token F1 | 90.1% | **89.3%** |
+| Sentence accuracy | 63.2% | **44.0%** |
+
+The F1 holds within a single point on unseen data. Sentence accuracy falls more (because the held-out set has more complex sentences with more chances to miss). Run it:
+
+```bash
+python -m benchmark.run_benchmark --dataset heldout.jsonl
+```
+
+### See it work — measurable downstream value
+
+The most concrete demonstration is `examples/search_recall_demo.py`. It builds a 25-review Pakistani e-commerce corpus, runs 8 queries against both raw and normalized text, and prints the recall lift. Headline: a search for `"nahi"` finds 1 of 25 raw reviews but 5 of 25 after normalization — a **5× recall lift** from preprocessing alone.
+
+```bash
+python -m uvicorn app.main:app &       # start the API
+python examples/search_recall_demo.py  # run the demo
+```
+
 ---
 
 ## Architecture
@@ -210,6 +234,105 @@ returns
 
 ---
 
+## Performance trade-offs (honest)
+
+The multi-token phrase layer added in v1.2 isn't free. Numbers before and after:
+
+| Metric | v1.1 (3 layers) | v1.2 (4 layers) | Change |
+|---|---:|---:|---:|
+| F1 (combined 492-example dataset) | 88.8% | **90.1%** | +1.3 |
+| Sentence accuracy (combined) | 58.9% | **63.2%** | +4.3 |
+| Median latency (in-process) | 7.83 µs | 29.93 µs | **+22.1 µs** |
+| p99 latency | 36 µs | 99 µs | +63 µs |
+| Throughput (single-thread) | 105K/sec | 29K/sec | -72% |
+
+The phrase scan is O(N × phrase_max_length) on top of the per-token resolver. For any realistic application — search preprocessing, dedup, sentiment cleaning — 29K calls/sec on one thread is overkill anyway. The trade was made deliberately: a measurable accuracy gain on the dimension users actually care about, paid for in latency we have to spare.
+
+---
+
+## What still breaks (failure examples)
+
+Honest documentation of where the system gets it wrong. These are from the held-out blind eval set.
+
+```
+Input:     "kal scene off tha"
+Output:    "kal scene off tha"
+Got:       passes through unchanged
+Wanted:    same — this is correct, but the *meaning* requires context
+           (was it yesterday or tomorrow? scene off = bad mood, idiom)
+Limitation: idiom recognition and tense disambiguation are out of scope
+```
+
+```
+Input:     "tnxa pay ke baad le lena leave"
+Output:    "tnxa pay ke baad le lena leave"
+Got:       "tnxa" passes through as unknown (correct behavior)
+Wanted:    "thanks pay ke baad le lena leave"
+Limitation: rare/regional shorthand not yet in variant map. The
+            /metrics endpoint surfaces this for lexicon growth.
+```
+
+```
+Input:     "main office main hun"
+Output:    "main office main hun"
+Got:       both "main" tokens preserved (correct: ambiguous, no silent guess)
+Wanted:    context-aware resolution — first "main" is Urdu pronoun,
+           second is English adjective ("main office")
+Limitation: no context-aware homograph resolution yet. Documented in
+            DESIGN.md as future work.
+```
+
+```
+Input:     "ye nai shirt hai"
+Output:    "ye nahi shirt hai"
+Got:       "nai" → "nahi" (negation) via variant map
+Wanted:    "ye nai shirt hai" — here "nai" is short for "nayi" (new fem.)
+Limitation: variant map picks the high-frequency sense; ~1% precision
+            loss on ambiguous short tokens. Same context-awareness gap.
+```
+
+The held-out blind evaluation set (`benchmark/heldout.jsonl`, 100 examples never used to inform the lexicon) scores **F1 89.3% / sentence accuracy 44.0%**. Run it: `python -m benchmark.run_benchmark --dataset heldout.jsonl`.
+
+---
+
+## Why not just use an LLM?
+
+This is the question every reviewer asks. The answer is fast / deterministic / cheap / auditable / safe-as-preprocessing:
+
+| Dimension | LLM call (GPT-4 / Llama-70B / etc.) | This normalizer |
+|---|---|---|
+| **Latency** | 200-2000 ms per call | **30 µs in-process** |
+| **Cost per 1M tokens** | $1-30 | **~$0** (CPU only) |
+| **Determinism** | non-deterministic; same input → varying output | **deterministic; same input → byte-identical output** |
+| **Failure mode** | silently hallucinates plausible-looking rewrites | **passes unknown tokens through and flags them** |
+| **Auditability** | opaque weights; can't explain a single resolution | **point at the exact dictionary entry or phonetic rule** |
+| **Native-speaker knowledge** | reflects training-data distribution (probably Indian-Hindi-leaning) | **Pakistani Urdu specifically curated by a native speaker** |
+| **Offline / edge** | requires API or GPU | runs on any laptop |
+
+**This normalizer is meant to sit *under* an LLM-based system, not replace one.** If you're building a Roman Urdu chatbot, sentiment analyzer, search engine, or content moderation pipeline, this is the cheap, deterministic preprocessing layer that makes the LLM's job easier and its outputs more consistent. The two are complementary, not competing.
+
+Where the LLM still wins: semantic understanding, intent classification, multi-turn context, idiom resolution, code-mixing translation. Where this normalizer wins: everything you'd want to do *before* the LLM call.
+
+---
+
+## A note on confidence scores
+
+Each token resolution carries a `confidence` field in 0.0–1.0. **The scale is currently heuristic, not statistically calibrated** — meaning the buckets reflect the *type* of resolution (which layer fired), not an observed accuracy distribution:
+
+| Source | Confidence | Meaning |
+|---|---:|---|
+| `phrase_map` | 1.00 | Explicit multi-token curation |
+| `variant_map` | 1.00 | Explicit single-token curation |
+| `unchanged` | 1.00 | Already canonical |
+| `phonetic` (single match) | 0.85 | Phonetic algorithm with unique candidate |
+| `phonetic` (multi match) | 0.65 | Phonetic algorithm with multiple non-homograph candidates, picked deterministically |
+| `phonetic` (homograph) | 0.40 | Known ambiguous group — returned with `ambiguous: true` |
+| `unknown` | 0.00 | No layer matched; passed through |
+
+A calibrated version would map each bucket to its observed precision on a held-out set (so 0.85 would mean "this layer is right ~85% of the time"). That's planned work but not yet shipped. For now, treat confidence as a sortable / thresholdable signal that respects the layer hierarchy, not as a probability estimate.
+
+---
+
 ## Documentation
 
 | Document | What it covers |
@@ -249,7 +372,7 @@ returns
 │   └── results.md                # captured results
 ├── examples/                     # CSV / WhatsApp export pipelines
 ├── docs/                         # screenshots + diagrams + 4 markdown docs
-├── tests/                        # 135 tests across 7 files
+├── tests/                        # 162 tests across 8 files
 ├── static/index.html             # dark editorial demo frontend
 ├── .github/workflows/tests.yml   # CI matrix
 ├── Dockerfile                    # multi-stage, non-root, healthcheck
@@ -268,7 +391,7 @@ returns
 
 ## What I built myself
 
-The three-layer resolution logic, the phonetic key algorithm, the entire curated variant map and canonical lexicon, the 6 homograph groups, the 250-example hand-curated benchmark dataset, the adversarial perturbation generator, the baseline-comparison study, the latency suite, the Python client SDK, the 135 tests, the custom exception hierarchy, the CLI tool, the demo frontend, the Dockerfile, GitHub Actions CI, the production hardening (CORS / rate-limit / size-limit / `/metrics`), every diagram, and every word of documentation including this README.
+The four-layer resolution logic (phrase + variant + phonetic + unknown), the phonetic key algorithm, the multi-token phrase rewrite layer, the per-token confidence scoring, the entire curated variant map and canonical lexicon, the 6 homograph groups, the 250-example hand-curated benchmark dataset, the adversarial perturbation generator, the 4-baseline comparison study (including the sklearn TF-IDF char n-gram ML baseline), the latency suite, the Python client SDK, all 162 tests across 8 files, the custom exception hierarchy, the CLI tool, the demo frontend, the Dockerfile, the `render.yaml` Blueprint, GitHub Actions CI, the production hardening (CORS / rate-limit / size-limit / `/metrics`), the search-recall integration showcase, every diagram, and every word of documentation including this README.
 
 I used Claude as a coding partner during the build. AI scaffolded boilerplate (Pydantic field definitions, FastAPI route stubs, standard pytest setup). All language data — variant map entries, lexicon words, homograph groups, phonetic rules, gold-standard dataset — was curated by me as a native Pakistani Urdu speaker. Every line was reviewed. The two regression-test bugs were found by me running the live demo with realistic input.
 
