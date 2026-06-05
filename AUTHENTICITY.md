@@ -24,16 +24,18 @@ I, **Mughirah Nasir**, am the originator and sole author of this project. I conc
 
 Specifically, the following are my work:
 
-### Core system (v1.0)
+### Core system (v1.0 — historical baseline)
+> The original architecture, preserved here for the historical record. v1.2 evolved this into a four-layer pipeline by adding the multi-token phrase rewrite layer; see the "Phrase-layer and confidence additions (v1.2)" section below for the current shape.
+
 - The **problem framing** — that Pakistani Roman Urdu spelling chaos needs a *predictable, fast, refuses-to-silently-guess* preprocessing layer that sits under (not inside) LLM-based downstream systems.
-- The **three-layer resolution pipeline** (variant map → phonetic key → unknown), including the priority order and the rationale for each layer.
+- The **original three-layer resolution pipeline** (variant map → phonetic key → unknown), including the priority order and the rationale for each layer. (Now four layers after v1.2; see below.)
 - The **phonetic key algorithm** in `app/phonetic.py`: every digraph rule (kh, gh, sh, ch, th, ph, dh, bh, jh, rh), every vowel class (a/aa; i/y/e/ee/ii; o/u/oo/uu), and the consonant-doubling collapse step. Each rule was chosen for **Pakistani Roman Urdu specifically** — not generic Urdu, not Hindi-Urdu generic Romanization.
 - The **curated lexicon** — 655 canonical words across 13 part-of-speech categories. Native-speaker sourced.
 - The **variant map** — ~430 SMS shorthand entries. Drawn from real Pakistani WhatsApp / Twitter usage I observed and recognize.
 - The **homograph guard** — 6 registered groups and the policy decision that the normalizer flags `ambiguous: true` rather than silently picking one.
 - The **"never silently guess" rule** — the explicit design choice that unknown tokens pass through unchanged.
 - The **two regression-test bugs** in `tests/test_regressions.py` — found by me feeding the running demo realistic Pakistani Roman Urdu.
-- All **87 v1.0 test cases** plus 13 client SDK tests and 35 adversarial tests (135 total) across `tests/`.
+- All **87 v1.0 test cases** (later expanded to 162 by v1.2) across `tests/`.
 - The **API contract** (endpoint shapes, error responses, batch semantics, the 100-item limit).
 - The **dark editorial frontend** (typography: Fraunces, Hanken Grotesk, JetBrains Mono; saffron/jade/rust color tokens for resolution sources; offline-capable in-browser fallback).
 

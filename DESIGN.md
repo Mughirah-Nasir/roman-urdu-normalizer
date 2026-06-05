@@ -18,21 +18,26 @@ This is the rule the architecture is organized around. If you're tempted to add 
 
 ---
 
-## Why three layers instead of one
+## Why four layers instead of one
+
+> **Architecture note:** v1.0 shipped with three layers (variant map → phonetic → unknown). v1.2 added a fourth — the multi-token phrase rewrite layer that runs first. The reasoning below covers the original three-layer split *plus* the v1.2 addition. Both are preserved because both decisions are defensible on their own.
 
 The first version I built had one layer: a flat dictionary `{wrong_spelling: right_spelling}`. It failed within an hour of real-world testing.
 
-The problem: there are two completely different *kinds* of misspelling, and a single map can't handle both well.
+The problem: there are *three* completely different *kinds* of misspelling, and a single map can't handle any of them well.
+
+**Kind 0 — Multi-token compound forms.** `pi lo` (drink it), `kr de` (do it), `ja rha` (going), `ho gya` (became). The correct resolution of the *second* token depends on what came before — `rha` after `ja` means "going" (progressive), `rha` standing alone is unresolvable. These need an **n-gram pre-pass** that recognizes the *phrase* before resolving the parts. This is what the multi-token phrase layer (Layer 0.5) does.
 
 **Kind 1 — SMS vowel-dropping.** `bht`, `nhi`, `kch`, `yr`. Native Urdu speakers drop vowels aggressively in informal writing. These have no phonetic relationship to their canonical forms — you cannot recover `bahut` from `bht` with any phonetic algorithm because the algorithm has no vowels to work with. These need an **explicit dictionary**.
 
 **Kind 2 — Spelling variation on the same sound.** `kya`/`kia`/`kyaa`/`kayya`. These all encode the same Urdu phoneme; the spellings differ only in vowel choice (the same `kaaf-yaa-alif` letter sequence). A flat dictionary scales O(n²) here — every new canonical word adds dozens of plausible misspellings. These need a **phonetic algorithm** that collapses the variation automatically.
 
-The three-layer pipeline maps these onto the right tool:
+The four-layer pipeline maps these onto the right tool:
 
-1. **`VARIANT_MAP` (exact lookup)** — the dictionary, for Kind 1
-2. **Phonetic key** — the algorithm, for Kind 2
-3. **Unknown** — the honest fallback when nothing matched
+1. **`PHRASE_MAP` (multi-token longest match)** — the n-gram pre-pass, for Kind 0
+2. **`VARIANT_MAP` (exact lookup)** — the dictionary, for Kind 1
+3. **Phonetic key** — the algorithm, for Kind 2
+4. **Unknown** — the honest fallback when nothing matched
 
 Layers run in order, first match wins, no looking back. Each layer is debuggable on its own — when something goes wrong, the `source` field on the output tells you which layer rewrote it (or didn't).
 
@@ -46,7 +51,7 @@ I considered fine-tuning a small transformer (BERT-style) to learn Roman Urdu sp
 
 2. **Native-speaker advantage.** I am a native Urdu speaker. I know that `bht` is overwhelmingly `bahut` and not `bahot` (a less-common variant), that `yr` is `yaar` and not `yar` (the latter being a different Hindi word). These intuitions are exactly what training data either doesn't capture or doesn't preserve consistently. The lexicon encodes them deterministically.
 
-3. **Resource cost.** A 7B-parameter LLM call per token at scale would cost hundreds of dollars in API fees per day for any non-trivial input volume. The rule-based pipeline runs at 105,000+ calls/sec on a single thread.
+3. **Resource cost.** A 7B-parameter LLM call per token at scale would cost hundreds of dollars in API fees per day for any non-trivial input volume. The rule-based pipeline runs at ~29,000 calls/sec on a single thread (after the phrase-layer overhead in v1.2).
 
 4. **Composition.** This normalizer is meant to sit *under* an LLM-based system as a fast, deterministic preprocessing step. If the preprocessing layer is itself non-deterministic and slow, the architecture loses its main benefit.
 
