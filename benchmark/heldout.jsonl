@@ -1,0 +1,132 @@
+{"id": "h001", "category": "blind_sms",          "input": "yr ksi or ko bhejna ye msg",                        "expected": "yaar kisi aur ko bhejna ye message",                "notes": "blind: send msg to someone else"}
+{"id": "h002", "category": "blind_sms",          "input": "msg krna agr free ho jao to",                        "expected": "message karna agar free ho jao to",                "notes": "text me when you're free"}
+{"id": "h003", "category": "blind_sms",          "input": "main soch rha hun k aj nai jaon ga",                 "expected": "main soch raha hun ke aaj nahi jaon ga",            "notes": "I'm thinking I won't go today"}
+{"id": "h004", "category": "blind_sms",          "input": "tmhe pta hai mjhe ye bilkul psnd nai",               "expected": "tumhe pata hai mujhe ye bilkul pasand nahi",        "notes": "you know I don't like this at all"}
+{"id": "h005", "category": "blind_sms",          "input": "bhai ye scene to bilkul ulta hai",                   "expected": "bhai ye scene to bilkul ulta hai",                  "notes": "this is completely opposite"}
+{"id": "h006", "category": "blind_sms",          "input": "kch krna parey to btana mjhe",                       "expected": "kuch karna pare to batana mujhe",                   "notes": "if anything needs doing tell me"}
+{"id": "h007", "category": "blind_sms",          "input": "wo ldki bht acha gati hai yr",                       "expected": "wo ladki bahut accha gati hai yaar",                "notes": "that girl sings really well"}
+{"id": "h008", "category": "blind_sms",          "input": "abhi tk ami ka phone nai aya",                       "expected": "abhi tak ammi ka phone nahi aaya",                  "notes": "still no call from mom"}
+
+{"id": "h009", "category": "blind_emotion",      "input": "uff ye to bohat preshani wali bat ho gai",           "expected": "uff ye to bahut preshani wali baat ho gayi",        "notes": "this has become a worrying matter"}
+{"id": "h010", "category": "blind_emotion",      "input": "main bilkul thak gya hun aj",                         "expected": "main bilkul thak gaya hun aaj",                     "notes": "I'm completely tired today"}
+{"id": "h011", "category": "blind_emotion",      "input": "is ki hairat nai k ye kese hua",                     "expected": "is ki hairat nahi ke ye kaise hua",                 "notes": "no surprise how this happened"}
+{"id": "h012", "category": "blind_emotion",      "input": "wo bohat dukhi tha is bat se",                       "expected": "wo bahut dukhi tha is baat se",                     "notes": "he was very upset about this"}
+
+{"id": "h013", "category": "blind_question",     "input": "tm kal kahan jana chahte ho",                        "expected": "tum kal kahan jana chahte ho",                      "notes": "where do you want to go tomorrow"}
+{"id": "h014", "category": "blind_question",     "input": "kya ap ne wo film dekhi h",                          "expected": "kya aap ne wo film dekhi hai",                      "notes": "have you seen that film"}
+{"id": "h015", "category": "blind_question",     "input": "ye sb kese ho gya itni jaldi",                       "expected": "ye sab kaise ho gaya itni jaldi",                   "notes": "how did all this happen so fast"}
+{"id": "h016", "category": "blind_question",     "input": "kitne din lge ge complete krne me",                   "expected": "kitne din lage ge complete karne me",               "notes": "how many days will it take to complete"}
+
+{"id": "h017", "category": "blind_emoji",        "input": "mubarak ho yr 🎉🎉",                                   "expected": "mubarak ho yaar 🎉🎉",                              "notes": "congrats bro with party emojis"}
+{"id": "h018", "category": "blind_emoji",        "input": "mjhe to bilkul samjh nai a rha 🙄",                  "expected": "mujhe to bilkul samajh nahi aa raha 🙄",            "notes": "I don't understand at all"}
+{"id": "h019", "category": "blind_emoji",        "input": "love ho gai is ko 💔",                                "expected": "love ho gayi is ko 💔",                             "notes": "broken heart emoji"}
+{"id": "h020", "category": "blind_emoji",        "input": "🤔 ye kya raaz hai",                                  "expected": "🤔 ye kya raaz hai",                                "notes": "what's the mystery"}
+
+{"id": "h021", "category": "blind_code_switch",  "input": "i think tmhe rest krna chahye",                       "expected": "i think tumhe rest karna chahiye",                  "notes": "English start + Urdu middle"}
+{"id": "h022", "category": "blind_code_switch",  "input": "let me check krta hun ye file",                       "expected": "let me check karta hun ye file",                    "notes": "let me check this file"}
+{"id": "h023", "category": "blind_code_switch",  "input": "actually mera plan tha k movie dekhen",               "expected": "actually mera plan tha ke movie dekhen",            "notes": "I had planned to watch a movie"}
+{"id": "h024", "category": "blind_code_switch",  "input": "the deadline kal hai don't forget",                   "expected": "the deadline kal hai don't forget",                 "notes": "mostly English with kal"}
+
+{"id": "h025", "category": "blind_food",         "input": "ami ne aj biryani bnai hai khane k liye",            "expected": "ammi ne aaj biryani banai hai khane ke liye",       "notes": "mom made biryani for food today"}
+{"id": "h026", "category": "blind_food",         "input": "yr chai pi lo phir bat krte hen",                    "expected": "yaar chai pi lo phir baat karte hain",              "notes": "drink chai first then we'll talk"}
+{"id": "h027", "category": "blind_food",         "input": "main ne kch nai khaya subh se",                       "expected": "main ne kuch nahi khaya subah se",                  "notes": "I haven't eaten anything since morning"}
+{"id": "h028", "category": "blind_food",         "input": "bohat tasty thi wo daal khichdi",                     "expected": "bahut tasty thi wo daal khichdi",                   "notes": "that daal khichdi was very tasty"}
+
+{"id": "h029", "category": "blind_office",       "input": "team lead ny meeting cancel krdi hai",                "expected": "team lead ne meeting cancel kar di hai",            "notes": "team lead cancelled meeting"}
+{"id": "h030", "category": "blind_office",       "input": "deadline tk ye complete nai ho payega",               "expected": "deadline tak ye complete nahi ho payega",           "notes": "won't be completed by deadline"}
+{"id": "h031", "category": "blind_office",       "input": "client ka feedback abhi tk nai aya",                  "expected": "client ka feedback abhi tak nahi aaya",             "notes": "client feedback hasn't come yet"}
+{"id": "h032", "category": "blind_office",       "input": "tnxa pay ke baad le lena leave",                      "expected": "tnxa pay ke baad le lena leave",                    "notes": "take leave after pay — tnxa is unknown"}
+
+{"id": "h033", "category": "blind_education",    "input": "kal exam hai aur tyari nai ho rhi",                   "expected": "kal exam hai aur tayari nahi ho rahi",              "notes": "exam tomorrow, prep not happening"}
+{"id": "h034", "category": "blind_education",    "input": "assignment time pe submit krna",                      "expected": "assignment time pe submit karna",                   "notes": "submit assignment on time"}
+{"id": "h035", "category": "blind_education",    "input": "lectures attend krne se grades behtar hote hen",      "expected": "lectures attend karne se grades behtar hote hain",  "notes": "attending lectures improves grades"}
+{"id": "h036", "category": "blind_education",    "input": "main ne ye chapter parh liya hai",                    "expected": "main ne ye chapter padh liya hai",                  "notes": "I have read this chapter"}
+
+{"id": "h037", "category": "blind_family",       "input": "behn ko phone krna parta hai roz",                    "expected": "behan ko phone karna parta hai roz",                "notes": "have to call sister daily"}
+{"id": "h038", "category": "blind_family",       "input": "abu ne kha k jaldi a jao ghar",                       "expected": "abu ne kaha ke jaldi aa jao ghar",                  "notes": "dad said come home early"}
+{"id": "h039", "category": "blind_family",       "input": "chacha kal ghar a rhe hen mulaqat ke liye",           "expected": "chacha kal ghar aa rahe hain mulaqat ke liye",      "notes": "uncle coming home tomorrow to meet"}
+{"id": "h040", "category": "blind_family",       "input": "bhai ki shaadi me bohat maza aya",                    "expected": "bhai ki shaadi me bahut maza aaya",                 "notes": "had lots of fun at brother's wedding"}
+
+{"id": "h041", "category": "blind_compound_verb","input": "main ne wo letter likh diya hai",                    "expected": "main ne wo letter likh diya hai",                   "notes": "I have written that letter"}
+{"id": "h042", "category": "blind_compound_verb","input": "tm ye soch lo phir btana",                            "expected": "tum ye soch lo phir batana",                        "notes": "think this over then tell"}
+{"id": "h043", "category": "blind_compound_verb","input": "wo aa gae hen finally",                                "expected": "wo aa gaye hain finally",                           "notes": "they finally came"}
+{"id": "h044", "category": "blind_compound_verb","input": "main thora ruk jaon ga yahan",                         "expected": "main thora ruk jaon ga yahan",                      "notes": "I'll stop here a bit"}
+
+{"id": "h045", "category": "blind_long",         "input": "yr mjhe aj bilkul man nai hai bahar nikalne ka kahin",   "expected": "yaar mujhe aaj bilkul mann nahi hai bahar nikalne ka kahin", "notes": "really don't want to go out anywhere today"}
+{"id": "h046", "category": "blind_long",         "input": "agr ami ko pta chla to wo bohat naraz ho jaen gi mjh se","expected": "agar ammi ko pata chala to wo bahut naraz ho jayen gi mujh se", "notes": "if mom finds out she'll be very upset with me"}
+{"id": "h047", "category": "blind_long",         "input": "main soch rha tha k hum log mil k movie dekh sakte hen", "expected": "main soch raha tha ke hum log mil ke movie dekh sakte hain",   "notes": "I was thinking we could watch movie together"}
+
+{"id": "h048", "category": "blind_homograph",    "input": "us ne kha bohat thora",                                "expected": "us ne khaya bahut thora",                           "notes": "he ate very little — kha→khaya here (food context)"}
+{"id": "h049", "category": "blind_homograph",    "input": "kya kha tum ne",                                       "expected": "kya kaha tum ne",                                   "notes": "what did you say — kha→kaha (speech context)"}
+{"id": "h050", "category": "blind_homograph",    "input": "ye mara koi nai hai meri",                             "expected": "ye mara koi nahi hai meri",                         "notes": "this is not mine — mara has multiple senses"}
+
+{"id": "h051", "category": "blind_repeated",     "input": "achhhha to ye baat hai",                              "expected": "achhhha to ye baat hai",                            "notes": "stretched 'achha' for surprise"}
+{"id": "h052", "category": "blind_repeated",     "input": "yaaarrr suno na ek minute",                            "expected": "yaaarrr suno na ek minute",                         "notes": "stretched yaar"}
+{"id": "h053", "category": "blind_repeated",     "input": "byeeee mil te hen later",                              "expected": "byeeee mil te hain later",                          "notes": "stretched bye"}
+
+{"id": "h054", "category": "blind_punctuation",  "input": "wait... kya ho rha hai??",                             "expected": "wait... kya ho raha hai??",                         "notes": "ellipsis + double question mark"}
+{"id": "h055", "category": "blind_punctuation",  "input": "yr!! suno!!! ye bohat zaroori hai!!!!",                "expected": "yaar!! suno!!! ye bahut zaroori hai!!!!",           "notes": "escalating exclamations"}
+
+{"id": "h056", "category": "blind_named_entity", "input": "Imran bhai ne kha k Karachi se Lahore jana hai",      "expected": "Imran bhai ne kaha ke Karachi se Lahore jana hai", "notes": "person + two cities"}
+{"id": "h057", "category": "blind_named_entity", "input": "wo NUST me parh rha hai 2nd year",                    "expected": "wo NUST me padh raha hai 2nd year",                 "notes": "institution acronym"}
+{"id": "h058", "category": "blind_named_entity", "input": "Allama Iqbal ki shayari bohat acha hai",              "expected": "Allama Iqbal ki shayari bahut accha hai",           "notes": "Pakistani historical figure"}
+
+{"id": "h059", "category": "blind_religious",    "input": "namaz parh kar a rha hun masjid se",                 "expected": "namaz padh kar aa raha hun masjid se",              "notes": "coming from masjid after prayers"}
+{"id": "h060", "category": "blind_religious",    "input": "subhanallah kya zabardast nazara hai",                "expected": "subhanallah kya zabardast nazara hai",              "notes": "religious praise + Urdu adjective"}
+{"id": "h061", "category": "blind_religious",    "input": "inshallah agle saal hajj ke liye jaen ge",            "expected": "inshallah agle saal hajj ke liye jayen ge",         "notes": "going for hajj next year"}
+
+{"id": "h062", "category": "blind_marketplace",  "input": "ye laptop kitne ka mil rha hai mart pe",             "expected": "ye laptop kitne ka mil raha hai mart pe",           "notes": "what price is this laptop"}
+{"id": "h063", "category": "blind_marketplace",  "input": "bhai sahab thora discount krdo na",                   "expected": "bhai sahab thora discount kar do na",               "notes": "give a discount please"}
+{"id": "h064", "category": "blind_marketplace",  "input": "delivery ka time kya hai cash on delivery hai",       "expected": "delivery ka time kya hai cash on delivery hai",     "notes": "delivery question + COD"}
+
+{"id": "h065", "category": "blind_tech",         "input": "system update ho rha hai abhi do minute",            "expected": "system update ho raha hai abhi do minute",          "notes": "system updating"}
+{"id": "h066", "category": "blind_tech",         "input": "internet bohat slow hai yr ye to",                    "expected": "internet bahut slow hai yaar ye to",                "notes": "internet very slow"}
+{"id": "h067", "category": "blind_tech",         "input": "main ne password change krdiya hai naya wala",        "expected": "main ne password change kar diya hai naya wala",    "notes": "I changed the password"}
+
+{"id": "h068", "category": "blind_weather",      "input": "aj barish bohat ho rahi hai bahar",                   "expected": "aaj barish bahut ho rahi hai bahar",                "notes": "lots of rain outside today"}
+{"id": "h069", "category": "blind_weather",      "input": "garmi me bilkul man nai krta bahar jane ka",         "expected": "garmi me bilkul mann nahi karta bahar jane ka",     "notes": "don't feel like going out in heat"}
+{"id": "h070", "category": "blind_weather",      "input": "winters me Lahore bohat acha lagta hai",              "expected": "winters me Lahore bahut accha lagta hai",           "notes": "Lahore is great in winters"}
+
+{"id": "h071", "category": "blind_freelance",    "input": "client ne kha k revisions krne hen kuch",             "expected": "client ne kaha ke revisions karne hain kuch",        "notes": "client wants revisions"}
+{"id": "h072", "category": "blind_freelance",    "input": "main ne fiverr pe naya gig lagaya hai",               "expected": "main ne fiverr pe naya gig lagaya hai",             "notes": "I created new gig on fiverr"}
+{"id": "h073", "category": "blind_freelance",    "input": "payment cleared ho gai hai paypal me",                 "expected": "payment cleared ho gayi hai paypal me",             "notes": "payment cleared in paypal"}
+
+{"id": "h074", "category": "blind_social",       "input": "story dekh li meri kya kha",                          "expected": "story dekh li meri kya kaha",                       "notes": "did you see my story, what'd you say"}
+{"id": "h075", "category": "blind_social",       "input": "follow krdo na meri profile",                         "expected": "follow kar do na meri profile",                     "notes": "follow my profile"}
+{"id": "h076", "category": "blind_social",       "input": "tweet pe bohat likes a gae",                          "expected": "tweet pe bahut likes aa gaye",                      "notes": "lots of likes on tweet"}
+
+{"id": "h077", "category": "blind_transport",    "input": "uber bohat mehnga le rha hai aj",                     "expected": "uber bahut mehnga le raha hai aaj",                 "notes": "uber charging too much today"}
+{"id": "h078", "category": "blind_transport",    "input": "bus stop pe ruk jaon ga yahan",                       "expected": "bus stop pe ruk jaon ga yahan",                     "notes": "I'll wait at the bus stop"}
+{"id": "h079", "category": "blind_transport",    "input": "traffic bohat heavy hai is route pe",                  "expected": "traffic bahut heavy hai is route pe",               "notes": "heavy traffic on this route"}
+
+{"id": "h080", "category": "blind_negative_emo", "input": "main bohat hurt feel kr rha hun is bat se",          "expected": "main bahut hurt feel kar raha hun is baat se",      "notes": "I'm hurt by this"}
+{"id": "h081", "category": "blind_negative_emo", "input": "kuch acha nai ho rha aj ki din me",                   "expected": "kuch accha nahi ho raha aaj ki din me",             "notes": "nothing good happening today"}
+
+{"id": "h082", "category": "blind_encouragement","input": "ap ye kr sakte ho main ne dekha hai",                "expected": "aap ye kar sakte ho main ne dekha hai",             "notes": "you can do this I've seen"}
+{"id": "h083", "category": "blind_encouragement","input": "himmat rakhna sab acha ho ga inshallah",              "expected": "himmat rakhna sab accha ho ga inshallah",           "notes": "keep courage, everything will be fine"}
+
+{"id": "h084", "category": "blind_polite",       "input": "thora intezar krna pls",                              "expected": "thora intezar karna please",                        "notes": "please wait a bit"}
+{"id": "h085", "category": "blind_polite",       "input": "maaf krna mjhe late ho gya",                          "expected": "maaf karna mujhe late ho gaya",                     "notes": "sorry I got late"}
+
+{"id": "h086", "category": "blind_request",      "input": "ek baar phr try kr lo na",                            "expected": "ek baar phir try kar lo na",                        "notes": "try one more time"}
+{"id": "h087", "category": "blind_request",      "input": "help kr do is project me thora",                       "expected": "help kar do is project me thora",                   "notes": "help me a bit with this project"}
+
+{"id": "h088", "category": "blind_agreement",    "input": "haan ji bilkul sahi bat hai ap ki",                   "expected": "haan ji bilkul sahi baat hai aap ki",               "notes": "yes you're absolutely right"}
+{"id": "h089", "category": "blind_agreement",    "input": "main bhi yahi soch rha tha",                          "expected": "main bhi yahi soch raha tha",                       "notes": "I was thinking the same"}
+
+{"id": "h090", "category": "blind_disagreement", "input": "nai aisa nai hai jaise tm soch rhe ho",               "expected": "nahi aisa nahi hai jaise tum soch rahe ho",         "notes": "no it's not what you think"}
+{"id": "h091", "category": "blind_disagreement", "input": "main is bat se ittefaq nai krta bilkul",               "expected": "main is baat se ittefaq nahi karta bilkul",         "notes": "I don't agree at all"}
+
+{"id": "h092", "category": "blind_arabic_mix",   "input": "ماشاءاللہ tum ne to commendable kam kya hai",         "expected": "ماشاءاللہ tum ne to commendable kaam kiya hai",      "notes": "religious Arabic + English + Urdu"}
+{"id": "h093", "category": "blind_arabic_mix",   "input": "السلام علیکم how are you doing yr",                    "expected": "السلام علیکم how are you doing yaar",                "notes": "Arabic greeting + English"}
+
+{"id": "h094", "category": "blind_hashtag",      "input": "kya scene hai aj #karachi #life",                     "expected": "kya scene hai aaj #karachi #life",                  "notes": "hashtags with city"}
+{"id": "h095", "category": "blind_hashtag",      "input": "@mughirah congrats yaar #proud",                       "expected": "@mughirah congrats yaar #proud",                    "notes": "mention + congratulation hashtag"}
+
+{"id": "h096", "category": "blind_numbers",      "input": "5 baje milte hen yahan",                              "expected": "5 baje milte hain yahan",                           "notes": "meet here at 5"}
+{"id": "h097", "category": "blind_numbers",      "input": "3 din se ye chl rha hai",                             "expected": "3 din se ye chal raha hai",                         "notes": "this has been going on 3 days"}
+
+{"id": "h098", "category": "blind_idiom",        "input": "scene off ho gya is ka",                              "expected": "scene off ho gaya is ka",                           "notes": "Pakistani slang"}
+{"id": "h099", "category": "blind_idiom",        "input": "set hai sab kch chill mood me hun",                   "expected": "set hai sab kuch chill mood me hun",                "notes": "everything is sorted"}
+
+{"id": "h100", "category": "blind_misc",         "input": "qwertyxyz kuch random gibberish text yahan",          "expected": "qwertyxyz kuch random gibberish text yahan",        "notes": "gibberish should pass through, surrounding Urdu normalizes"}
