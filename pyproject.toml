@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "roman-urdu-normalizer"
 version = "1.2.0"
-description = "A three-layer phonetic normalizer for Pakistani Roman Urdu text"
+description = "A four-layer phonetic normalizer for Pakistani Roman Urdu text (phrase → variant → phonetic → unknown)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

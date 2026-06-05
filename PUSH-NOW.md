@@ -11,7 +11,7 @@ Go to **https://github.com/new** and fill in:
 | Field | Value |
 |---|---|
 | Repository name | `roman-urdu-normalizer` |
-| Description | `A three-layer phonetic normalizer for Pakistani Roman Urdu. 655-word curated lexicon, 87 tests, FastAPI + CLI.` |
+| Description | `A four-layer phonetic normalizer for Pakistani Roman Urdu. 655-word curated lexicon, ~430 SMS shorthand entries, 125+ multi-token compound forms, 162 tests, FastAPI + CLI.` |
 | Visibility | **Public** |
 | Initialize | **Leave everything unchecked.** No README, no .gitignore, no license. The repo must start empty so your local commits become the entire history. |
 

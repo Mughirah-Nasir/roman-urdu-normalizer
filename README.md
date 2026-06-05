@@ -355,7 +355,7 @@ A calibrated version would map each bucket to its observed precision on a held-o
 ├── app/                          # the package
 │   ├── data.py                   # variant map + lexicon + homograph groups
 │   ├── phonetic.py               # phonetic key algorithm
-│   ├── normalizer.py             # three-layer resolver + batch
+│   ├── normalizer.py             # four-layer resolver + batch + confidence
 │   ├── exceptions.py             # custom exception hierarchy
 │   ├── models.py                 # Pydantic request/response models
 │   ├── main.py                   # FastAPI surface + middleware + /metrics
