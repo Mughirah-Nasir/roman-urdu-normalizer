@@ -1,6 +1,6 @@
 # PROVENANCE
 
-Cryptographic file manifest for **Roman Urdu Normalizer v1.2.0**.
+Cryptographic file manifest for **Roman Urdu Normalizer v1.2.1**.
 
 This document is generated from the working tree by hashing every tracked file with SHA-256 and combining the results into an aggregate fingerprint. It is meant to be:
 
@@ -35,18 +35,18 @@ The expected fingerprint is below.
 | Field        | Value                                                            |
 | ------------ | ---------------------------------------------------------------- |
 | Project      | roman-urdu-normalizer                                            |
-| Version      | **1.2.0**                                          |
+| Version      | **1.2.1**                                          |
 | Author       | Mughirah Nasir                                                   |
 | Email        | mnasir.bee25seecs@seecs.edu.pk                                   |
 | Institution  | NUST SEECS, Rawalpindi, Pakistan                                 |
 | GitHub       | https://github.com/MughirahNasir                                 |
-| Generated    | 2026-06-04T21:00:00+05:00                                        |
-| File count   | 61                                          |
+| Generated    | 2026-06-05T18:00:00+05:00                                        |
+| File count   | 64                                          |
 
 ## Aggregate Fingerprint
 
 ```
-488fd8a2a7981b1ccea9353ceaa53604684f0198dff86778844d5ceada4412c8
+a9e9a5fb9eff01f6fa529274aefc81497bf15fa8f6f419ad44f2e152333ab73b
 ```
 
 This is the SHA-256 of the concatenation of (relative path + file SHA-256) for every tracked file, computed in sorted-by-path order. Any single-byte change to any tracked file changes this fingerprint.
@@ -60,14 +60,14 @@ This is the SHA-256 of the concatenation of (relative path + file SHA-256) for e
 | `.dockerignore` | `e41ebd5a01d7f610...390ef6d9` | 286 |
 | `.github/workflows/tests.yml` | `a984815af9ae0668...b55eb981` | 1,203 |
 | `.gitignore` | `adddf39af130c3c0...26d110a3` | 349 |
-| `AUTHENTICITY.md` | `fe57d914ac12646d...47859831` | 9,296 |
-| `CHANGELOG.md` | `8cdcb8abdc561c6b...701c90d8` | 11,934 |
-| `CONTRIBUTING.md` | `5ec21ad14ce5c2e5...13f33857` | 3,062 |
-| `DESIGN.md` | `169b19a4c1825b47...b5231818` | 10,319 |
+| `AUTHENTICITY.md` | `e9a3c317478bf76d...8ddd3b2e` | 9,597 |
+| `CHANGELOG.md` | `b1d718c28a119e48...337c3a98` | 14,547 |
+| `CONTRIBUTING.md` | `04956172fdc2b79a...5c6e8da8` | 3,064 |
+| `DESIGN.md` | `f5c1ba6862f9e866...4f89ffce` | 11,213 |
 | `Dockerfile` | `2e2d716e819bcccb...5be4d24d` | 1,918 |
 | `LICENSE` | `4a96b2c3829c1aa7...5ffb45e2` | 1,071 |
-| `PUSH-NOW.md` | `4c6ea3ccdc0dc9d5...3eaeb9ad` | 4,148 |
-| `README.md` | `bd806883d8e2528b...8674414f` | 13,517 |
+| `PUSH-NOW.md` | `a2d90e047e3683ff...d781f643` | 4,167 |
+| `README.md` | `2e08fe6a64b4fbff...07af0629` | 20,288 |
 | `app/__init__.py` | `e0ab57f3decbdced...4e348ec4` | 85 |
 | `app/cli.py` | `4d85e3d8c89b5529...29b78ecc` | 2,810 |
 | `app/data.py` | `97f0ccf9dbccf260...dc6c6f4f` | 21,289 |
@@ -82,6 +82,7 @@ This is the SHA-256 of the concatenation of (relative path + file SHA-256) for e
 | `benchmark/generate_adversarial.py` | `a411d27754967218...7267d14c` | 7,804 |
 | `benchmark/gold_standard.jsonl` | `cb22b8ba7da589e5...4070a6ed` | 37,130 |
 | `benchmark/gold_standard_adversarial.jsonl` | `74b65dd407b0729d...aeb99126` | 65,058 |
+| `benchmark/heldout.jsonl` | `beb561e5d27417ae...0d19c6ae` | 21,975 |
 | `benchmark/latency.py` | `f94e910e4d0690aa...c019ecc9` | 5,422 |
 | `benchmark/render_charts.py` | `e05988ae2269c270...1e20989a` | 5,144 |
 | `benchmark/results.md` | `02e18fdfaf853061...73727695` | 7,154 |
@@ -103,11 +104,13 @@ This is the SHA-256 of the concatenation of (relative path + file SHA-256) for e
 | `examples/normalize_csv.py` | `3b1eb9405610ee5a...89da98f7` | 3,208 |
 | `examples/normalize_whatsapp.py` | `47fa0b6a1e2b2641...06ea6f5f` | 3,405 |
 | `examples/search_recall_demo.py` | `99735a026f09420f...473fcec8` | 5,543 |
-| `pyproject.toml` | `7bcbc6ea9e035996...7d240926` | 1,795 |
+| `pyproject.toml` | `7aa0c11dc8b57872...0fdfa582` | 1,795 |
 | `render.yaml` | `92953bba00e30571...e970ea3f` | 1,378 |
 | `requirements-dev.txt` | `e55bfa8b56a1a4fd...831640db` | 178 |
 | `requirements.txt` | `1afbb079464ee276...fa7df446` | 60 |
-| `run.sh` | `be5387ff8334e6cd...0942e113` | 532 |
+| `run.sh` | `6d52b96c7f76b45b...8486aea0` | 532 |
+| `scripts/__init__.py` | `760327dfd1583157...60f30e6a` | 200 |
+| `scripts/review_unknowns.py` | `28931b0bf8e6c805...dce14bfb` | 9,999 |
 | `static/index.html` | `13c340ed0fe59f9e...f0f6faad` | 19,989 |
 | `tests/__init__.py` | `e3b0c44298fc1c14...7852b855` | 0 |
 | `tests/test_adversarial.py` | `ef5a0a0d354bed02...dacb36fb` | 9,892 |

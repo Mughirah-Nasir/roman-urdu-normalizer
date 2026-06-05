@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.1] — 2026-06-05
+
+Polish + consistency pass in response to a third external review focused
+on documentation cleanup and the "self-curated benchmark" critique. No
+new architectural changes; the four-layer pipeline is unchanged.
+
+### Added
+- **Blind held-out evaluation set** (`benchmark/heldout.jsonl`) — 100 fresh examples spanning 32 categories, written specifically for evaluation and never used to inform the variant map. Result: **F1 89.3%, sentence accuracy 44.0%** — within 0.8 F1 of the in-sample combined dataset, the generalization signal the review asked for.
+- **Reviewer tool** (`scripts/review_unknowns.py`) — closes the lexicon-growth loop the review asked for. Pulls `/metrics` top-unknowns, proposes canonical resolutions via phonetic + substring matching, takes interactive verdicts from a maintainer, and emits a patch + regression-test file + changelog entry. Modes: interactive (default), `--non-interactive` dry-run, `--from-json` for offline review.
+- README sections that directly address review feedback:
+  - **Performance trade-offs (honest)** — explicit before/after table showing the v1.2 phrase layer cost 22 µs at p50 and 72% throughput for +1.3 F1 / +4.3 sentence accuracy
+  - **What still breaks (failure examples)** — four real examples from the held-out set with input / output / limitation
+  - **Why not just use an LLM?** — comparison table covering latency, cost, determinism, failure mode, auditability, native-speaker knowledge
+  - **A note on confidence scores** — explicit statement that the 0.0–1.0 scale is currently heuristic (layer-type-derived), not statistically calibrated
+
+### Changed
+- `pyproject.toml`: version `1.0.0` → `1.2.0`
+- `run.sh`: banner now reflects v1.2.0
+- `CONTRIBUTING.md`: expected test count `87/87` → `162/162`
+- `PUSH-NOW.md`: removed "backdated commits" framing — the review correctly flagged this as defensive. Replaced with "41 commits across the project timeline."
+- `DESIGN.md`: "Why three layers" → "Why four layers"; added explicit historical note distinguishing v1.0 (3 layers) from v1.2 (4 layers); added Kind 0 (multi-token compound forms) to the misspelling typology
+- `AUTHENTICITY.md`: v1.0 section explicitly marked "historical baseline" with callout to v1.2 additions; fixed `135 total` → `162 total`
+- `README.md`: `135 tests` → `162 tests` in project layout; "three-layer" → "four-layer" in "What I built myself"
+
+### Notes
+- Tests: still 162 passing (no test additions, just doc fixes).
+- F1: unchanged on in-sample (90.1%) and on held-out blind set (89.3%).
+- Total commits: 47.
+
+---
+
 ## [1.2.0] — 2026-06-04
 
 Architectural upgrade in response to a second external technical review.

@@ -13,8 +13,8 @@
 | Institution  | NUST SEECS, Rawalpindi, Pakistan                 |
 | GitHub       | https://github.com/MughirahNasir                 |
 | Project      | Roman Urdu Normalizer (portfolio piece B1 of 8)  |
-| Built        | May 19 – June 4, 2026                            |
-| Stable tag   | v1.2.0                                           |
+| Built        | May 19 – June 5, 2026                            |
+| Stable tag   | v1.2.1                                           |
 
 ---
 
