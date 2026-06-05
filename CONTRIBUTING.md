@@ -41,7 +41,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m pytest tests/ -v
 ```
 
-Expected: **87 / 87 passing.** Faster than 1 second.
+Expected: **162 / 162 passing.** Faster than 1 second.
 
 ## Style
 
