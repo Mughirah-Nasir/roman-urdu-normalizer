@@ -46,7 +46,7 @@ The expected fingerprint is below.
 ## Aggregate Fingerprint
 
 ```
-a9e9a5fb9eff01f6fa529274aefc81497bf15fa8f6f419ad44f2e152333ab73b
+6f7d73b0492d1c9d2c6004678d946438909900d42139e7455f02ef877b11d4f6
 ```
 
 This is the SHA-256 of the concatenation of (relative path + file SHA-256) for every tracked file, computed in sorted-by-path order. Any single-byte change to any tracked file changes this fingerprint.
