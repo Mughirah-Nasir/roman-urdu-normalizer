@@ -29,7 +29,7 @@ If a PR moves the project toward those things, it'll probably be rejected — no
 ## Dev setup
 
 ```bash
-git clone https://github.com/MughirahNasir/roman-urdu-normalizer.git
+git clone https://github.com/Mughirah-Nasir/roman-urdu-normalizer.git
 cd roman-urdu-normalizer
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt

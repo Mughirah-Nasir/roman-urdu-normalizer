@@ -88,8 +88,8 @@ class TestHashtagsAndMentions:
         assert "yaar" in result["normalized"]
 
     def test_mention_with_proper_noun(self):
-        result = normalize_text("follow karo @MughirahNasir")
-        assert "@MughirahNasir" in result["normalized"]
+        result = normalize_text("follow karo @Mughirah-Nasir")
+        assert "@Mughirah-Nasir" in result["normalized"]
 
 
 # -- 4. NUMBERS ------------------------------------------------------------

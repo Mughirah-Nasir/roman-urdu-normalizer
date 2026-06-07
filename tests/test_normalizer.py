@@ -1,4 +1,4 @@
-"""Tests for the three-layer normalizer.
+"""Tests for the four-layer normalizer.
 
 Each layer (variant map, phonetic, unknown) gets its own class, plus
 end-to-end string-normalization tests and batch tests.

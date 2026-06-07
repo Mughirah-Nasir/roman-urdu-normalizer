@@ -1,8 +1,15 @@
+# Includes runtime dependencies too so a single install works
+-r requirements.txt
+
 # Test runner
-pytest==9.0.3
-pytest-cov==6.0.0
-httpx==0.27.2          # required by fastapi.testclient
+pytest>=8.0.0
+pytest-cov>=4.1.0
+httpx>=0.27.0          # required by fastapi.testclient
+
+# Benchmark scripts
+scikit-learn>=1.3.0    # TF-IDF baseline in benchmark/comparison.py
+matplotlib>=3.7.0      # chart rendering in benchmark/render_charts.py
 
 # Linting / formatting (optional but documented)
-ruff==0.13.0
-mypy==1.18.0
+ruff>=0.13.0
+mypy>=1.10.0

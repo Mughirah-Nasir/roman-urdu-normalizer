@@ -11,7 +11,7 @@ source venv/bin/activate
 pip install -q -r requirements.txt
 
 echo ""
-echo "→ Roman Urdu Normalizer v1.2.0"
+echo "→ Roman Urdu Normalizer v1.2.1"
 echo "→ starting server on http://localhost:8000"
 echo "→ demo:        http://localhost:8000"
 echo "→ API docs:    http://localhost:8000/docs"

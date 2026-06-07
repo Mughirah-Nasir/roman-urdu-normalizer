@@ -11,7 +11,7 @@
 | Name         | **Mughirah Nasir**                               |
 | Email        | mnasir.bee25seecs@seecs.edu.pk                   |
 | Institution  | NUST SEECS, Rawalpindi, Pakistan                 |
-| GitHub       | https://github.com/MughirahNasir                 |
+| GitHub       | https://github.com/Mughirah-Nasir                 |
 | Project      | Roman Urdu Normalizer (portfolio piece B1 of 8)  |
 | Built        | May 19 – June 5, 2026                            |
 | Stable tag   | v1.2.1                                           |
@@ -107,7 +107,7 @@ This authorship claim is backed by four independent pieces of evidence:
 | "This file is exactly the one Mughirah committed."    | `sha256sum path/to/file` and match against `PROVENANCE.md`     |
 | "Mughirah authored this commit."                      | `git log --format="%H %an <%ae>" path/to/file`                 |
 | "This project state existed by date X."               | Check the OpenTimestamps `.ots` proof for `PROVENANCE.md`      |
-| "The tests pass."                                     | `pip install -r requirements.txt -r requirements-dev.txt && python -m pytest tests/ -v` (expect 87 passing) |
+| "The tests pass."                                     | `pip install -r requirements.txt -r requirements-dev.txt && python -m pytest tests/ -v` (expect 162 passing) |
 | "The lexicon is what the docs say it is."             | `python -m app.cli --stats`                                    |
 
 ---

@@ -1,402 +1,216 @@
 # Roman Urdu Normalizer
 
-**A four-layer phonetic normalizer with phrase-aware rewrites that turns Pakistani Roman Urdu spelling chaos — `kya / kia / kyaa`, `bht / bohat / bahut`, `nhi / nahin / nai` — into one canonical form. Hand-curated lexicon, never silently guesses, F1 90.1% on a 492-example held-out benchmark.**
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)]() [![tests](https://img.shields.io/badge/tests-162%20passing-success)]() [![F1](https://img.shields.io/badge/F1-90.1%25-success)]() [![License](https://img.shields.io/badge/License-MIT-yellow.svg)]() [![version](https://img.shields.io/badge/version-1.2.1-informational)]()
 
-[![tests](https://img.shields.io/badge/tests-162%2F162%20passing-5fb39a)]() [![python](https://img.shields.io/badge/python-3.10%2B-e8a33d)]() [![F1](https://img.shields.io/badge/F1-90.1%25-5fb39a)]() [![latency](https://img.shields.io/badge/p50%20latency-29.9µs-e8a33d)]() [![license](https://img.shields.io/badge/license-MIT-b8b0a1)]()
+## In simple words
 
----
+This project cleans messy Pakistani Roman Urdu spellings and converts common variations into one standard form.
+
+A few examples:
+
+| Input | Normalized |
+| --- | --- |
+| `nhi`, `nai`, `nahin` | `nahi` |
+| `bht`, `bohat`, `bhot` | `bahut` |
+| `yr`, `yar` | `yaar` |
+| `kr rha`, `kar raha` | `kar raha` |
+| `kch`, `kuch` | `kuch` |
+| `ho gya` | `ho gaya` |
+
+The goal is to make Roman Urdu text easier to search, analyze, and feed into NLP or AI systems. This is a normalizer, not a translator. It does not turn Urdu into English. It takes one informal Urdu spelling and gives you the canonical one.
 
 ## The problem
 
-Roman Urdu — Urdu written in Latin script — has no standardized spelling. The word *kya* ("what") shows up online as `kya`, `kia`, or `kyaa`. *Bahut* ("very") shows up as `bht`, `bohat`, `bhot`. SMS shorthand like `nhi`, `tk`, `bht`, `kch` drops vowels entirely. Any downstream NLP system that searches, classifies, or aggregates Roman Urdu text breaks immediately on this variation.
+Pakistani people write Urdu using English letters all the time. WhatsApp, Twitter, Instagram, comment sections, customer reviews, freelance project briefs, all of it is full of Roman Urdu. The trouble is that there are usually four or five accepted spellings for the same word. `nahi`, `nahin`, `nhi`, `nai`, `nae`, all mean the same thing. If you try to run search, deduplication, sentiment analysis, or any kind of analytics on this text, the spelling variation kills your recall before you even start.
 
-This service normalizes incoming text against a curated lexicon — but with one rule it refuses to break: **if it can't confidently resolve a word, it passes the word through unchanged and flags it.** Silent guessing is the failure mode this project guards against. See [`DESIGN.md`](DESIGN.md) for why, and [`docs/downstream.md`](docs/downstream.md) for why this matters.
+This project sits in front of those downstream systems and collapses the variation. After normalization, a search for `nahi` finds reviews that wrote `nhi`, and a sentiment classifier sees the same token whether the user typed `bohat` or `bht`.
 
----
+## How it works
+
+Four resolution layers in order. The first one that finds a confident answer wins. Anything that reaches the unknown layer is passed through unchanged with a flag.
+
+1. **Phrase layer.** Looks for multi-token compound forms first, things like `kr de`, `ja rha`, `ho gya`. These cannot be resolved one token at a time because the second token's meaning depends on the first. There are about 125 curated phrases in this layer.
+2. **Variant map.** A curated dictionary of around 430 SMS-style shorthand entries. `bht` to `bahut`, `nhi` to `nahi`, `yr` to `yaar`. This handles the cases where Urdu speakers drop vowels aggressively.
+3. **Phonetic match.** A phonetic key algorithm collapses vowel and digraph variation, then looks the result up against the canonical lexicon of 655 words. `kya`, `kia`, `kyaa` all reduce to the same key.
+4. **Unknown.** If nothing matched, the token passes through unchanged and the response marks it as unknown with confidence zero. The system never silently guesses.
+
+Each token in the response carries a `source` field telling you which layer produced it, and a `confidence` score from 0.0 to 1.0. Downstream code can threshold on that.
+
+The design rule that drives the whole thing is **never silently guess**. If the system isn't sure, it says so instead of pretending.
 
 ## Demo
 
-Run locally (see [Run it](#run-it)) and open `http://localhost:8000`.
-
-![demo screenshot](docs/demo-screenshot.png)
-
-**One-line example:**
-
-```
-Input:      yr bht thora kch kya kr rhe ho
-Output:     yaar bahut thora kuch kya kar rahe ho
-```
-
-**Trickier example:**
-
-```
-Input:      Ali bhai ny kha kahan jana hai 😂
-Output:     Ali bhai ne kaha kahan jana hai 😂
-            ^^^         ^^^   ^^^^^         ^
-            preserved   said  preserved     preserved
-```
-
----
-
-## Results
-
-Measured on a held-out 492-example benchmark dataset (250 hand-curated + 242 adversarial perturbations). Reproduce with `python -m benchmark.run_benchmark --dataset combined`.
-
-![baseline comparison](docs/benchmark_vs_baselines.png)
-
-| Strategy                            | Sentence accuracy |  Token F1 |
-| ----------------------------------- | -----------------:| --------:|
-| Baseline · `naive_replace`          |              4.8% |    38.6% |
-| Baseline · `levenshtein_nearest`    |             12.4% |    51.6% |
-| Baseline · `tfidf_char_ngram` (ML)  |             18.4% |    61.0% |
-| **Four-layer pipeline (ours)**      | **63.2%**         | **90.1%** |
-
-The four-layer pipeline beats the **TF-IDF char n-gram ML baseline** by 29 F1 points, Levenshtein-nearest by 38 points, and naive replace by 51 points — while preserving the "never silently guess" contract none of them can offer.
-
-**Latency** in-process (no HTTP): median **29.9 µs**, p99 99 µs, throughput **29,376 calls/sec** on a single thread (multi-token scan adds overhead). Reproduce with `python -m benchmark.latency`.
-
-### Per-category breakdown
-
-![F1 by category](docs/benchmark_by_category.png)
-
-100% F1 on greetings, religious phrases, basic SMS shorthand, edge cases. 60–80% on harder territory: code-switching, long sentences, multi-token compound verbs. See [`benchmark/results.md`](benchmark/results.md) for the full table and [`docs/limitations.md`](docs/limitations.md) for an honest map of where the system breaks.
-
-### Blind held-out evaluation
-
-The numbers above are on the dataset that informed lexicon expansion. To test generalization, there's a **separate 100-example held-out set** (`benchmark/heldout.jsonl`) written specifically for evaluation and never used to inform the variant map. Score:
-
-| Metric | In-sample (combined 492) | Blind held-out (100) |
-|---|---:|---:|
-| Token F1 | 90.1% | **89.3%** |
-| Sentence accuracy | 63.2% | **44.0%** |
-
-The F1 holds within a single point on unseen data. Sentence accuracy falls more (because the held-out set has more complex sentences with more chances to miss). Run it:
-
 ```bash
-python -m benchmark.run_benchmark --dataset heldout.jsonl
+curl -X POST http://localhost:8000/normalize \
+     -H 'Content-Type: application/json' \
+     -d '{"text": "yr bht thora kch kya kr rhe ho"}'
 ```
-
-### See it work — measurable downstream value
-
-The most concrete demonstration is `examples/search_recall_demo.py`. It builds a 25-review Pakistani e-commerce corpus, runs 8 queries against both raw and normalized text, and prints the recall lift. Headline: a search for `"nahi"` finds 1 of 25 raw reviews but 5 of 25 after normalization — a **5× recall lift** from preprocessing alone.
-
-```bash
-python -m uvicorn app.main:app &       # start the API
-python examples/search_recall_demo.py  # run the demo
-```
-
----
-
-## Architecture
-
-![architecture diagram](docs/architecture.png)
-
-Each input runs through four layers. The first layer that produces a confident answer wins; anything that reaches Layer 4 passes through unchanged and is flagged. Full design rationale in [`DESIGN.md`](DESIGN.md):
-
-1. **`PHRASE_MAP` (multi-token longest-match)** — 125+ curated compound forms scanned left-to-right (e.g. `kr de → kar de`, `ja rha → ja raha`, `ho gya → ho gaya`). Confidence 1.0.
-2. **`VARIANT_MAP` (exact lookup)** — 430+ SMS shorthand entries. Confidence 1.0.
-3. **Phonetic key match** — digraph-folding algorithm against 655 canonical words. Confidence 0.85 for clean matches, 0.65 for non-homograph collisions, 0.40 for registered homographs (returned with `ambiguous: true`).
-4. **Unknown — pass through with a flag** — confidence 0.0, the explicit "never guess" layer.
-
-Every token resolution carries a `confidence` field (0.0–1.0). Downstream systems can threshold — e.g. "drop tokens below 0.7 from the search index" — without losing the "never silently guess" contract.
-
----
-
-## Features
-
-- **Four-layer pipeline** — `phrase_map` → `variant_map` → `phonetic_key` → `unknown` flagging
-- **Multi-token compound rewrites** — 125+ curated phrases handle `pi lo`, `kr de`, `ja rha`, `ho gya` and similar forms that strict per-token resolution cannot
-- **Per-token confidence scores** (0.0–1.0) — thresholdable signal for downstream systems
-- **655 canonical words** across 13 part-of-speech categories
-- **~430 SMS shorthand entries** from real Pakistani WhatsApp/Twitter usage
-- **6 registered homograph groups** — `kaha`/`kahan`, `jana`/`janna`, etc. — return `ambiguous: true` rather than silently picking
-- **Batch endpoint** for up to 100 strings per round trip
-- **`/metrics` endpoint** exposing top unresolved tokens (lexicon growth feedback loop)
-- **Restricted CORS, request-size limit, optional rate limiting** — env-var configurable, production-safe defaults
-- **One-click Render.com deploy** via `render.yaml` — live demo URL in ~2 minutes
-- **CLI tool** with stdin, JSON output, and `--stats` mode
-- **Python client SDK** in [`client/`](client/) — zero third-party deps, retries + timeout + batch chunking
-- **162 tests** — phonetic, normalizer, regressions, API, data, client SDK, multi-token, adversarial
-- **492-example benchmark** with **4-baseline comparison incl. a real ML baseline** (TF-IDF char n-gram, sklearn-trained)
-- **Concrete downstream demo** in `examples/search_recall_demo.py` showing measurable recall lift
-- **Docker image** (multi-stage, non-root, healthcheck) and **GitHub Actions CI** matrix on Python 3.10/3.11/3.12
-
----
-
-## Run it
-
-Requirements: Python 3.10 or newer.
-
-```bash
-git clone https://github.com/MughirahNasir/roman-urdu-normalizer.git
-cd roman-urdu-normalizer
-python -m venv venv
-source venv/bin/activate         # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python -m uvicorn app.main:app --reload
-
-# http://localhost:8000              live demo
-# http://localhost:8000/docs         interactive API explorer
-# http://localhost:8000/metrics      top unresolved tokens
-```
-
-### With Docker
-
-```bash
-docker build -t roman-urdu-normalizer .
-docker run -p 8000:8000 -e ALLOWED_ORIGINS='*' roman-urdu-normalizer
-```
-
-### Run the tests
-
-```bash
-pip install -r requirements-dev.txt
-python -m pytest tests/ -v
-```
-
-Expected: **162 passed in ~0.6s**.
-
-### Run the benchmarks
-
-```bash
-python -m benchmark.run_benchmark                       # accuracy on hand-curated (250)
-python -m benchmark.run_benchmark --dataset combined    # full 492-example evaluation
-python -m benchmark.latency                             # p50/p95/p99 + throughput
-python -m benchmark.comparison                          # vs naive_replace, vs levenshtein
-python -m benchmark.render_charts                       # regenerate docs/benchmark_*.png
-python -m benchmark.generate_adversarial                # regenerate adversarial dataset
-```
-
-### Production deployment
-
-See [`docs/deployment.md`](docs/deployment.md) for Render, Fly.io, and Docker Compose guides — plus a production checklist (CORS, rate limiting, TLS, observability).
-
----
-
-## Use the CLI
-
-```bash
-echo "yr bht thora kch kya kr rhe ho" | python -m app.cli
-# -> yaar bahut thora kuch kya kar rahe ho
-
-python -m app.cli "kese ho?"           # one-shot
-python -m app.cli --json "yr bht"      # full token-level breakdown
-python -m app.cli --stats              # dictionary stats
-```
-
-## Use the Python client
-
-```python
-from client import RomanUrduNormalizerClient
-
-client = RomanUrduNormalizerClient("http://localhost:8000")
-result = client.normalize("yr bht thora kya")
-print(result["normalized"])     # "yaar bahut thora kya"
-
-# Auto-batches over 100-item API limit
-all_results = client.normalize_chunks(["yr kese ho", "bht khaya", ...])
-```
-
-More patterns in [`examples/`](examples/) — CSV pipelines, WhatsApp export parsers.
-
----
-
-## API
-
-### `POST /normalize`
-
-```json
-{ "text": "yr bht thora kch kya kr rhe ho" }
-```
-
-returns
 
 ```json
 {
   "input": "yr bht thora kch kya kr rhe ho",
   "normalized": "yaar bahut thora kuch kya kar rahe ho",
   "tokens": [
-    { "original": "yr",  "normalized": "yaar",  "source": "variant_map", "ambiguous": false, "candidates": [] }
+    {"original": "yr",    "normalized": "yaar",    "source": "variant_map", "confidence": 1.0,  "ambiguous": false},
+    {"original": "bht",   "normalized": "bahut",   "source": "variant_map", "confidence": 1.0,  "ambiguous": false},
+    {"original": "thora", "normalized": "thora",   "source": "unchanged",   "confidence": 1.0,  "ambiguous": false},
+    {"original": "kch",   "normalized": "kuch",    "source": "variant_map", "confidence": 1.0,  "ambiguous": false},
+    {"original": "kya",   "normalized": "kya",     "source": "unchanged",   "confidence": 1.0,  "ambiguous": false},
+    {"original": "kr rhe","normalized": "kar rahe","source": "phrase_map",  "confidence": 1.0,  "ambiguous": false, "span_tokens": 2},
+    {"original": "ho",    "normalized": "ho",      "source": "unchanged",   "confidence": 1.0,  "ambiguous": false}
   ],
-  "stats": { "total": 8, "variant_map": 6, "phonetic": 1, "unchanged": 1, "unknown": 0, "ambiguous": 0 }
+  "stats": {
+    "total": 7, "variant_map": 3, "phrase_map": 1,
+    "phonetic": 0, "unchanged": 3, "unknown": 0, "ambiguous": 0,
+    "avg_confidence": 1.0, "min_confidence": 1.0
+  }
 }
 ```
 
-### Other endpoints
+![Dashboard screenshot](docs/demo-screenshot.png)
 
-| Endpoint | Purpose |
-|---|---|
-| `POST /normalize/batch` | Normalize up to 100 strings per request |
-| `GET /stats` | Per-category dictionary counts |
-| `GET /health` | Lightweight readiness probe |
-| `GET /metrics` | Top unresolved tokens, request counts, runtime config |
-| `GET /docs` | Auto-generated interactive OpenAPI documentation |
+## How to run
 
----
+Tested on Python 3.10, 3.11, and 3.12. Clone or unzip the project, then:
 
-## Performance trade-offs (honest)
+```bash
+python -m venv venv
 
-The multi-token phrase layer added in v1.2 isn't free. Numbers before and after:
+# Windows
+venv\Scripts\activate
 
-| Metric | v1.1 (3 layers) | v1.2 (4 layers) | Change |
-|---|---:|---:|---:|
-| F1 (combined 492-example dataset) | 88.8% | **90.1%** | +1.3 |
-| Sentence accuracy (combined) | 58.9% | **63.2%** | +4.3 |
-| Median latency (in-process) | 7.83 µs | 29.93 µs | **+22.1 µs** |
-| p99 latency | 36 µs | 99 µs | +63 µs |
-| Throughput (single-thread) | 105K/sec | 29K/sec | -72% |
+# macOS or Linux
+source venv/bin/activate
 
-The phrase scan is O(N × phrase_max_length) on top of the per-token resolver. For any realistic application — search preprocessing, dedup, sentiment cleaning — 29K calls/sec on one thread is overkill anyway. The trade was made deliberately: a measurable accuracy gain on the dimension users actually care about, paid for in latency we have to spare.
-
----
-
-## What still breaks (failure examples)
-
-Honest documentation of where the system gets it wrong. These are from the held-out blind eval set.
-
-```
-Input:     "kal scene off tha"
-Output:    "kal scene off tha"
-Got:       passes through unchanged
-Wanted:    same — this is correct, but the *meaning* requires context
-           (was it yesterday or tomorrow? scene off = bad mood, idiom)
-Limitation: idiom recognition and tense disambiguation are out of scope
+pip install -r requirements.txt
+python -m uvicorn app.main:app --reload
 ```
 
-```
-Input:     "tnxa pay ke baad le lena leave"
-Output:    "tnxa pay ke baad le lena leave"
-Got:       "tnxa" passes through as unknown (correct behavior)
-Wanted:    "thanks pay ke baad le lena leave"
-Limitation: rare/regional shorthand not yet in variant map. The
-            /metrics endpoint surfaces this for lexicon growth.
-```
+Open `http://localhost:8000` in a browser for the dashboard, or `http://localhost:8000/docs` for the auto-generated FastAPI documentation.
 
-```
-Input:     "main office main hun"
-Output:    "main office main hun"
-Got:       both "main" tokens preserved (correct: ambiguous, no silent guess)
-Wanted:    context-aware resolution — first "main" is Urdu pronoun,
-           second is English adjective ("main office")
-Limitation: no context-aware homograph resolution yet. Documented in
-            DESIGN.md as future work.
+For tests:
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest tests/ -v
 ```
 
+You should see 162 tests pass in under two seconds.
+
+## CLI
+
+```bash
+python -m app.cli "yr bht kch"
+# yaar bahut kuch
+
+python -m app.cli --stats "yr bht kch"
+# adds a stats summary
+
+python -m app.cli --json "yr bht kch"
+# full JSON response on stdout
 ```
-Input:     "ye nai shirt hai"
-Output:    "ye nahi shirt hai"
-Got:       "nai" → "nahi" (negation) via variant map
-Wanted:    "ye nai shirt hai" — here "nai" is short for "nayi" (new fem.)
-Limitation: variant map picks the high-frequency sense; ~1% precision
-            loss on ambiguous short tokens. Same context-awareness gap.
+
+## Python client
+
+A small SDK lives in `client/`. It has zero third-party dependencies and uses `urllib`:
+
+```python
+from client import RomanUrduNormalizerClient
+
+c = RomanUrduNormalizerClient("http://localhost:8000")
+result = c.normalize("yr bht thora kch")
+print(result["normalized"])  # yaar bahut thora kuch
 ```
 
-The held-out blind evaluation set (`benchmark/heldout.jsonl`, 100 examples never used to inform the lexicon) scores **F1 89.3% / sentence accuracy 44.0%**. Run it: `python -m benchmark.run_benchmark --dataset heldout.jsonl`.
+## Benchmark and tests
 
----
+The benchmark dataset has 250 hand-curated examples plus 242 adversarial perturbations generated from them. Running the policy over the combined 492-example set gives F1 of 90.1 percent and sentence-level accuracy of 63.2 percent.
 
-## Why not just use an LLM?
+There is also a separate 100-example blind held-out set in `benchmark/heldout.jsonl`. This was written specifically for evaluation and was never used to inform the variant map or lexicon. Score on the blind set: F1 89.3 percent, sentence accuracy 44.0 percent. The blind number being within one F1 point of the in-sample number is the generalization signal.
 
-This is the question every reviewer asks. The answer is fast / deterministic / cheap / auditable / safe-as-preprocessing:
+Run them yourself:
 
-| Dimension | LLM call (GPT-4 / Llama-70B / etc.) | This normalizer |
-|---|---|---|
-| **Latency** | 200-2000 ms per call | **30 µs in-process** |
-| **Cost per 1M tokens** | $1-30 | **~$0** (CPU only) |
-| **Determinism** | non-deterministic; same input → varying output | **deterministic; same input → byte-identical output** |
-| **Failure mode** | silently hallucinates plausible-looking rewrites | **passes unknown tokens through and flags them** |
-| **Auditability** | opaque weights; can't explain a single resolution | **point at the exact dictionary entry or phonetic rule** |
-| **Native-speaker knowledge** | reflects training-data distribution (probably Indian-Hindi-leaning) | **Pakistani Urdu specifically curated by a native speaker** |
-| **Offline / edge** | requires API or GPU | runs on any laptop |
+```bash
+python -m benchmark.run_benchmark --dataset combined
+python -m benchmark.run_benchmark --dataset heldout.jsonl
+python -m benchmark.comparison
+python -m benchmark.latency
+```
 
-**This normalizer is meant to sit *under* an LLM-based system, not replace one.** If you're building a Roman Urdu chatbot, sentiment analyzer, search engine, or content moderation pipeline, this is the cheap, deterministic preprocessing layer that makes the LLM's job easier and its outputs more consistent. The two are complementary, not competing.
+The comparison study scores four strategies on the combined 492-example dataset (hand-curated + adversarial), reproducible by `python -m benchmark.comparison`:
 
-Where the LLM still wins: semantic understanding, intent classification, multi-turn context, idiom resolution, code-mixing translation. Where this normalizer wins: everything you'd want to do *before* the LLM call.
+| Strategy | Sentence accuracy | Token F1 |
+| --- | ---: | ---: |
+| Baseline: naive replace | 3.7% | 39.4% |
+| Baseline: Levenshtein nearest | 10.8% | 51.9% |
+| Baseline: TF-IDF char n-gram, sklearn-trained | 16.1% | 60.5% |
+| **Four-layer pipeline (this project)** | **63.2%** | **90.1%** |
 
----
+![Benchmark vs baselines](docs/benchmark_vs_baselines.png)
 
-## A note on confidence scores
+The ML baseline is a real character n-gram TF-IDF nearest-neighbor classifier. The pipeline still beats it by 29 F1 points, which is the comparison story.
 
-Each token resolution carries a `confidence` field in 0.0–1.0. **The scale is currently heuristic, not statistically calibrated** — meaning the buckets reflect the *type* of resolution (which layer fired), not an observed accuracy distribution:
+## Limitations
 
-| Source | Confidence | Meaning |
-|---|---:|---|
-| `phrase_map` | 1.00 | Explicit multi-token curation |
-| `variant_map` | 1.00 | Explicit single-token curation |
-| `unchanged` | 1.00 | Already canonical |
-| `phonetic` (single match) | 0.85 | Phonetic algorithm with unique candidate |
-| `phonetic` (multi match) | 0.65 | Phonetic algorithm with multiple non-homograph candidates, picked deterministically |
-| `phonetic` (homograph) | 0.40 | Known ambiguous group — returned with `ambiguous: true` |
-| `unknown` | 0.00 | No layer matched; passed through |
+This is documented in detail in `docs/limitations.md`. The short version:
 
-A calibrated version would map each bucket to its observed precision on a held-out set (so 0.85 would mean "this layer is right ~85% of the time"). That's planned work but not yet shipped. For now, treat confidence as a sortable / thresholdable signal that respects the layer hierarchy, not as a probability estimate.
+The system has no context awareness. Tokens are resolved with at most a two- or three-token look-around, and only for phrases that were curated up front. Homographs like `kaha` and `kahan` are flagged as ambiguous rather than disambiguated.
 
----
+The confidence scores are currently heuristic, not statistically calibrated. They reflect which layer produced the resolution, not an observed accuracy distribution.
 
-## Documentation
+The lexicon is hand-curated for Pakistani Urdu. It will under-perform on Indian Hindi-Urdu and on regional dialects without lexicon expansion.
 
-| Document | What it covers |
-|---|---|
-| [`DESIGN.md`](DESIGN.md) | Design decisions — why three layers, why curated, why FastAPI |
-| [`docs/limitations.md`](docs/limitations.md) | Honest map of where the system breaks |
-| [`docs/corpus.md`](docs/corpus.md) | How the lexicon and dataset were curated |
-| [`docs/deployment.md`](docs/deployment.md) | Render, Fly.io, Docker Compose, production checklist |
-| [`docs/downstream.md`](docs/downstream.md) | Why normalization matters: search, dedup, sentiment |
-| [`benchmark/results.md`](benchmark/results.md) | Full benchmark results + error analysis |
-| [`CHANGELOG.md`](CHANGELOG.md) | Versioned changelog (Keep a Changelog format) |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to add new variants, lexicon entries, homograph groups |
+Code-switching with English works for tokens the lexicon has seen, but rare English words get flagged as unknown.
 
----
+A handful of concrete failure examples are listed in `docs/limitations.md`.
 
-## Project layout
+## Project structure
 
 ```
-.
-├── app/                          # the package
-│   ├── data.py                   # variant map + lexicon + homograph groups
-│   ├── phonetic.py               # phonetic key algorithm
-│   ├── normalizer.py             # four-layer resolver + batch + confidence
-│   ├── exceptions.py             # custom exception hierarchy
-│   ├── models.py                 # Pydantic request/response models
-│   ├── main.py                   # FastAPI surface + middleware + /metrics
-│   └── cli.py                    # command-line tool
-├── client/                       # Python client SDK — zero deps
-├── benchmark/
-│   ├── gold_standard.jsonl       # 250 hand-curated examples
-│   ├── gold_standard_adversarial.jsonl  # 242 perturbations
-│   ├── run_benchmark.py          # P/R/F1 per category
-│   ├── latency.py                # p50/p95/p99 + throughput
-│   ├── comparison.py             # vs naive_replace, vs levenshtein
-│   ├── generate_adversarial.py   # perturbation script
-│   ├── render_charts.py          # PNG chart generation
-│   └── results.md                # captured results
-├── examples/                     # CSV / WhatsApp export pipelines
-├── docs/                         # screenshots + diagrams + 4 markdown docs
-├── tests/                        # 162 tests across 8 files
-├── static/index.html             # dark editorial demo frontend
-├── .github/workflows/tests.yml   # CI matrix
-├── Dockerfile                    # multi-stage, non-root, healthcheck
-├── DESIGN.md                     # design decisions essay
-├── CHANGELOG.md
-├── CONTRIBUTING.md
-├── LICENSE                       # MIT
+roman-urdu-normalizer/
+├── app/                      # the FastAPI application
+│   ├── __init__.py
+│   ├── main.py               # FastAPI entry point (uvicorn app.main:app)
+│   ├── normalizer.py         # the four-layer pipeline
+│   ├── phonetic.py           # phonetic key algorithm
+│   ├── multitoken.py         # phrase-layer rewrites
+│   ├── data.py               # canonical lexicon + variant map + homograph groups
+│   ├── models.py             # Pydantic request/response schemas
+│   ├── exceptions.py         # custom exceptions
+│   └── cli.py                # command-line interface
+├── tests/                    # 162 tests in 8 files
+├── benchmark/                # gold-standard, adversarial, held-out, comparison study
+├── client/                   # Python client SDK (zero third-party dependencies)
+├── examples/                 # runnable integration scripts
+├── docs/                     # design docs and benchmark charts
+├── scripts/
+│   └── review_unknowns.py    # operator tool: top unknowns to variant map entries
+├── static/index.html         # dashboard frontend
+├── .github/workflows/        # CI matrix on Python 3.10 / 3.11 / 3.12
+├── Dockerfile
+├── render.yaml
 ├── pyproject.toml
-├── AUTHENTICITY.md               # formal originality statement
-├── PROVENANCE.md                 # SHA-256 file manifest
-├── CERTIFICATE.html              # visual originality certificate
-└── README.md                     # this file
+└── README.md
 ```
 
----
+## What's in this repo and what is not
 
-## What I built myself
+Honest about scope.
 
-The four-layer resolution logic (phrase + variant + phonetic + unknown), the phonetic key algorithm, the multi-token phrase rewrite layer, the per-token confidence scoring, the entire curated variant map and canonical lexicon, the 6 homograph groups, the 250-example hand-curated benchmark dataset, the adversarial perturbation generator, the 4-baseline comparison study (including the sklearn TF-IDF char n-gram ML baseline), the latency suite, the Python client SDK, all 162 tests across 8 files, the custom exception hierarchy, the CLI tool, the demo frontend, the Dockerfile, the `render.yaml` Blueprint, GitHub Actions CI, the production hardening (CORS / rate-limit / size-limit / `/metrics`), the search-recall integration showcase, every diagram, and every word of documentation including this README.
+The variant map, the phonetic algorithm, the phrase map, the 250-example benchmark dataset, the adversarial generator, the four-layer pipeline, the FastAPI app, the CLI, the client SDK, all 162 tests, the dashboard frontend, the Dockerfile, and every word of documentation were all written for this project. AI assistance was used during development for editorial review and refactoring suggestions. Architectural decisions and the lexicon content are mine.
 
-I used Claude as a coding partner during the build. AI scaffolded boilerplate (Pydantic field definitions, FastAPI route stubs, standard pytest setup). All language data — variant map entries, lexicon words, homograph groups, phonetic rules, gold-standard dataset — was curated by me as a native Pakistani Urdu speaker. Every line was reviewed. The two regression-test bugs were found by me running the live demo with realistic input.
+The repo does not include a hosted demo URL. The `render.yaml` is a deployment template. If you fork and click Deploy on Render.com it should provision, but I have not kept a live demo running.
 
-For the full statement on what AI did and didn't contribute, plus the cryptographic originality trail, see [`AUTHENTICITY.md`](AUTHENTICITY.md), [`PROVENANCE.md`](PROVENANCE.md), and [`CERTIFICATE.html`](CERTIFICATE.html).
+The blind held-out evaluation is small at 100 examples. It supports the generalization claim but is not a substitute for evaluation on truly external user data, which I do not have.
 
----
+See `AUTHENTICITY.md` for the formal statement and `PROVENANCE.md` for the SHA-256 file manifest.
 
-**Author:** Mughirah Nasir · mnasir.bee25seecs@seecs.edu.pk · NUST SEECS, Pakistan
+## License
+
+MIT. See `LICENSE`.
+
+## Author
+
+**Mughirah Nasir** · NUST SEECS, Rawalpindi, Pakistan · mnasir.bee25seecs@seecs.edu.pk
+
+Repository: https://github.com/Mughirah-Nasir/roman-urdu-normalizer

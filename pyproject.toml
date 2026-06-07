@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "roman-urdu-normalizer"
-version = "1.2.0"
+version = "1.2.1"
 description = "A four-layer phonetic normalizer for Pakistani Roman Urdu text (phrase → variant → phonetic → unknown)"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -44,9 +44,9 @@ dev = [
 roman-urdu-normalizer = "app.cli:main"
 
 [project.urls]
-Repository = "https://github.com/MughirahNasir/roman-urdu-normalizer"
-Issues = "https://github.com/MughirahNasir/roman-urdu-normalizer/issues"
-Author = "https://github.com/MughirahNasir"
+Repository = "https://github.com/Mughirah-Nasir/roman-urdu-normalizer"
+Issues = "https://github.com/Mughirah-Nasir/roman-urdu-normalizer/issues"
+Author = "https://github.com/Mughirah-Nasir"
 
 [tool.setuptools.packages.find]
 include = ["app*"]

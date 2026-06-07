@@ -181,4 +181,4 @@ Before pointing real users at it:
 
 ---
 
-**Need help?** Open an issue at https://github.com/MughirahNasir/roman-urdu-normalizer/issues.
+**Need help?** Open an issue at https://github.com/Mughirah-Nasir/roman-urdu-normalizer/issues.

@@ -202,12 +202,20 @@ def score_strategy(name: str, fn, gold: list[dict]) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="comparison")
     parser.add_argument("--json", action="store_true")
-    parser.add_argument("--dataset", default="gold_standard.jsonl",
-                        help="benchmark dataset to score against")
+    parser.add_argument("--dataset", default="combined",
+                        help="benchmark dataset to score against. Use 'combined' "
+                             "(default) for hand-curated + adversarial, or a "
+                             "specific filename like 'gold_standard.jsonl'.")
     args = parser.parse_args(argv)
 
-    gold_path = Path(__file__).parent / args.dataset
-    gold = load_gold_standard(gold_path)
+    bench_dir = Path(__file__).parent
+    if args.dataset == "combined":
+        gold = load_gold_standard(bench_dir / "gold_standard.jsonl")
+        gold += load_gold_standard(bench_dir / "gold_standard_adversarial.jsonl")
+        dataset_label = "combined (hand-curated + adversarial)"
+    else:
+        gold = load_gold_standard(bench_dir / args.dataset)
+        dataset_label = args.dataset
 
     results = [
         score_strategy("Baseline A · naive_replace",       naive_replace,        gold),
@@ -224,7 +232,7 @@ def main(argv: list[str] | None = None) -> int:
     print()
     print("┌──────────────────────────────────────────────────────────────────────┐")
     print("│        ROMAN URDU NORMALIZER — BASELINE COMPARISON STUDY             │")
-    print(f"│        Dataset: {args.dataset:<55s}│")
+    print(f"│        Dataset: {dataset_label:<55s}│")
     print("├──────────────────────────────────────────────────────────────────────┤")
     print(f"│ {'strategy':<32s} {'exact':>7} {'P':>7} {'R':>7} {'F1':>7} │")
     print("├──────────────────────────────────────────────────────────────────────┤")

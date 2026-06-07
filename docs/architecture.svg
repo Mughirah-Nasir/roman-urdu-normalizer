@@ -1,92 +1,99 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 580" font-family="system-ui, sans-serif">
-  <rect width="1100" height="580" fill="#0f0e0c"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" font-family="system-ui, sans-serif">
+  <rect width="1100" height="720" fill="#0f0e0c"/>
   <radialGradient id="bg" cx="50%" cy="0%" r="80%">
     <stop offset="0%" stop-color="#e8a33d" stop-opacity="0.08"/>
     <stop offset="100%" stop-color="#0f0e0c" stop-opacity="0"/>
   </radialGradient>
-  <rect width="1100" height="580" fill="url(#bg)"/>
+  <rect width="1100" height="720" fill="url(#bg)"/>
 
   <text x="60" y="60" fill="#e8a33d" font-family="'JetBrains Mono', monospace" font-size="11" letter-spacing="2">
-    ROMAN URDU NORMALIZER · ARCHITECTURE
+    ROMAN URDU NORMALIZER · ARCHITECTURE · v1.2.1
   </text>
   <text x="60" y="100" fill="#f5efe3" font-family="Georgia, serif" font-size="28" font-weight="500" letter-spacing="-0.5">
-    Three-layer resolution pipeline
+    Four-layer resolution pipeline
+  </text>
+  <text x="60" y="128" fill="#b8b0a1" font-size="13">
+    Each token tried in order. First confident match wins. Never silently guesses.
   </text>
 
   <!-- Input -->
-  <rect x="60" y="160" width="200" height="80" fill="#181613" stroke="#2a261f" rx="4"/>
-  <text x="160" y="190" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1" text-anchor="middle">INPUT</text>
-  <text x="160" y="218" fill="#f5efe3" font-family="'JetBrains Mono', monospace" font-size="13" text-anchor="middle">"yr bht kya"</text>
+  <rect x="60" y="170" width="200" height="80" fill="#181613" stroke="#2a261f" rx="4"/>
+  <text x="160" y="200" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1" text-anchor="middle">INPUT</text>
+  <text x="160" y="228" fill="#f5efe3" font-family="'JetBrains Mono', monospace" font-size="13" text-anchor="middle">"yr kr rha hun"</text>
 
-  <!-- Arrow 1 -->
-  <line x1="260" y1="200" x2="320" y2="200" stroke="#e8a33d" stroke-width="2"/>
-  <polygon points="320,200 312,196 312,204" fill="#e8a33d"/>
+  <!-- Arrow into Layer 1 -->
+  <line x1="260" y1="210" x2="320" y2="210" stroke="#e8a33d" stroke-width="2"/>
+  <polygon points="320,210 312,206 312,214" fill="#e8a33d"/>
 
-  <!-- Layer 1 -->
-  <rect x="330" y="140" width="240" height="120" fill="#181613" stroke="#e8a33d" stroke-width="1.5" rx="4"/>
-  <text x="350" y="168" fill="#e8a33d" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5">LAYER 1</text>
-  <text x="350" y="194" fill="#f5efe3" font-family="Georgia, serif" font-size="18" font-weight="500">Variant map</text>
-  <text x="350" y="218" fill="#b8b0a1" font-size="12">Exact O(1) dictionary lookup.</text>
-  <text x="350" y="234" fill="#b8b0a1" font-size="12">Catches SMS shorthand:</text>
-  <text x="350" y="250" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11">  bht → bahut · yr → yaar</text>
+  <!-- Layer 1 — Phrase map -->
+  <rect x="330" y="160" width="260" height="100" fill="#181613" stroke="#e8a33d" stroke-width="1.5" rx="4"/>
+  <text x="350" y="186" fill="#e8a33d" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5">LAYER 1 · PHRASE MAP</text>
+  <text x="350" y="210" fill="#f5efe3" font-family="Georgia, serif" font-size="17" font-weight="500">Multi-token rewrites</text>
+  <text x="350" y="232" fill="#b8b0a1" font-size="12">Longest match wins, then per-token.</text>
+  <text x="350" y="250" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11">  kr rha → kar raha · ho gya → ho gaya</text>
 
-  <!-- Arrow miss -->
-  <line x1="450" y1="260" x2="450" y2="310" stroke="#5fb39a" stroke-width="2" stroke-dasharray="4 4"/>
-  <text x="460" y="285" fill="#5fb39a" font-family="'JetBrains Mono', monospace" font-size="10">no match →</text>
+  <!-- Arrow no match -->
+  <line x1="460" y1="260" x2="460" y2="300" stroke="#5fb39a" stroke-width="2" stroke-dasharray="4 4"/>
+  <text x="468" y="285" fill="#5fb39a" font-family="'JetBrains Mono', monospace" font-size="10">no match →</text>
 
-  <!-- Layer 2 -->
-  <rect x="330" y="320" width="240" height="140" fill="#181613" stroke="#5fb39a" stroke-width="1.5" rx="4"/>
-  <text x="350" y="348" fill="#5fb39a" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5">LAYER 2</text>
-  <text x="350" y="374" fill="#f5efe3" font-family="Georgia, serif" font-size="18" font-weight="500">Phonetic key</text>
-  <text x="350" y="398" fill="#b8b0a1" font-size="12">Reduce word to sound-skeleton:</text>
-  <text x="350" y="414" fill="#5fb39a" font-family="'JetBrains Mono', monospace" font-size="11">  digraph fold (kh, gh, sh, ch)</text>
-  <text x="350" y="430" fill="#5fb39a" font-family="'JetBrains Mono', monospace" font-size="11">  vowel collapse (a/aa, i/y/e)</text>
-  <text x="350" y="446" fill="#5fb39a" font-family="'JetBrains Mono', monospace" font-size="11">  index lookup over 655 words</text>
+  <!-- Layer 2 — Variant map -->
+  <rect x="330" y="310" width="260" height="100" fill="#181613" stroke="#e8a33d" stroke-width="1.5" rx="4"/>
+  <text x="350" y="336" fill="#e8a33d" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5">LAYER 2 · VARIANT MAP</text>
+  <text x="350" y="360" fill="#f5efe3" font-family="Georgia, serif" font-size="17" font-weight="500">Exact dictionary lookup</text>
+  <text x="350" y="382" fill="#b8b0a1" font-size="12">~430 curated SMS shorthand entries.</text>
+  <text x="350" y="400" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11">  bht → bahut · yr → yaar · nhi → nahi</text>
 
-  <!-- Arrow miss -->
-  <line x1="450" y1="460" x2="450" y2="500" stroke="#c97a4c" stroke-width="2" stroke-dasharray="4 4"/>
-  <text x="460" y="485" fill="#c97a4c" font-family="'JetBrains Mono', monospace" font-size="10">no match →</text>
+  <line x1="460" y1="410" x2="460" y2="450" stroke="#5fb39a" stroke-width="2" stroke-dasharray="4 4"/>
+  <text x="468" y="435" fill="#5fb39a" font-family="'JetBrains Mono', monospace" font-size="10">no match →</text>
 
-  <!-- Layer 3 -->
-  <rect x="330" y="510" width="240" height="50" fill="#181613" stroke="#c97a4c" stroke-width="1.5" rx="4"/>
-  <text x="350" y="535" fill="#c97a4c" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5">LAYER 3</text>
-  <text x="350" y="552" fill="#f5efe3" font-family="Georgia, serif" font-size="16" font-weight="500">Unknown — pass through, flag</text>
+  <!-- Layer 3 — Phonetic key -->
+  <rect x="330" y="460" width="260" height="100" fill="#181613" stroke="#5fb39a" stroke-width="1.5" rx="4"/>
+  <text x="350" y="486" fill="#5fb39a" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5">LAYER 3 · PHONETIC KEY</text>
+  <text x="350" y="510" fill="#f5efe3" font-family="Georgia, serif" font-size="17" font-weight="500">Algorithmic vowel collapse</text>
+  <text x="350" y="532" fill="#b8b0a1" font-size="12">Digraph + vowel-class folding, then lookup.</text>
+  <text x="350" y="550" fill="#7cc4ad" font-family="'JetBrains Mono', monospace" font-size="11">  kia / kyaa / kayya → "kya"</text>
 
-  <!-- Right side: outputs -->
-  <line x1="570" y1="200" x2="630" y2="200" stroke="#e8a33d" stroke-width="2"/>
-  <polygon points="630,200 622,196 622,204" fill="#e8a33d"/>
+  <line x1="460" y1="560" x2="460" y2="600" stroke="#c75d4f" stroke-width="2" stroke-dasharray="4 4"/>
+  <text x="468" y="585" fill="#c75d4f" font-family="'JetBrains Mono', monospace" font-size="10">still no match →</text>
 
-  <line x1="570" y1="390" x2="630" y2="390" stroke="#5fb39a" stroke-width="2"/>
-  <polygon points="630,390 622,386 622,394" fill="#5fb39a"/>
+  <!-- Layer 4 — Unknown -->
+  <rect x="330" y="610" width="260" height="80" fill="#181613" stroke="#c75d4f" stroke-width="1.5" rx="4"/>
+  <text x="350" y="636" fill="#c75d4f" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5">LAYER 4 · UNKNOWN (PASS-THROUGH)</text>
+  <text x="350" y="660" fill="#f5efe3" font-family="Georgia, serif" font-size="16" font-weight="500">Flag, do not guess</text>
+  <text x="350" y="680" fill="#b8b0a1" font-size="12">confidence=0.0, source="unknown"</text>
 
-  <line x1="570" y1="535" x2="630" y2="535" stroke="#c97a4c" stroke-width="2"/>
-  <polygon points="630,535 622,531 622,539" fill="#c97a4c"/>
+  <!-- Right side: output structure -->
+  <line x1="600" y1="210" x2="660" y2="210" stroke="#e8a33d" stroke-width="2"/>
+  <polygon points="660,210 652,206 652,214" fill="#e8a33d"/>
 
-  <!-- Output examples -->
-  <rect x="640" y="160" width="280" height="80" fill="#181613" stroke="#2a261f" rx="4"/>
-  <text x="660" y="186" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1">EXAMPLE OUTPUT (Layer 1)</text>
-  <text x="660" y="212" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="12">{ "yr": "yaar",</text>
-  <text x="660" y="228" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="12">  "source": "variant_map" }</text>
+  <rect x="670" y="160" width="370" height="530" fill="#181613" stroke="#2a261f" rx="4"/>
+  <text x="690" y="186" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5">JSON RESPONSE</text>
+  <text x="690" y="210" fill="#f5efe3" font-family="Georgia, serif" font-size="17" font-weight="500">Per-token transparency</text>
 
-  <rect x="640" y="350" width="280" height="80" fill="#181613" stroke="#2a261f" rx="4"/>
-  <text x="660" y="376" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1">EXAMPLE OUTPUT (Layer 2)</text>
-  <text x="660" y="402" fill="#5fb39a" font-family="'JetBrains Mono', monospace" font-size="12">{ "kyaa": "kya",</text>
-  <text x="660" y="418" fill="#5fb39a" font-family="'JetBrains Mono', monospace" font-size="12">  "source": "phonetic" }</text>
+  <text x="690" y="240" fill="#b8b0a1" font-size="12">Every token in the output carries:</text>
+  <text x="700" y="262" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11">  original</text>
+  <text x="700" y="280" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11">  normalized</text>
+  <text x="700" y="298" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11">  source       (which layer matched)</text>
+  <text x="700" y="316" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11">  confidence   (0.0 – 1.0)</text>
+  <text x="700" y="334" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11">  ambiguous    (homograph flag)</text>
+  <text x="700" y="352" fill="#d4a056" font-family="'JetBrains Mono', monospace" font-size="11">  span_tokens  (>1 for phrase matches)</text>
 
-  <rect x="640" y="495" width="280" height="80" fill="#181613" stroke="#2a261f" rx="4"/>
-  <text x="660" y="521" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1">EXAMPLE OUTPUT (Layer 3)</text>
-  <text x="660" y="547" fill="#c97a4c" font-family="'JetBrains Mono', monospace" font-size="12">{ "xyzqwerty": "xyzqwerty",</text>
-  <text x="660" y="563" fill="#c97a4c" font-family="'JetBrains Mono', monospace" font-size="12">  "source": "unknown" }</text>
+  <text x="690" y="396" fill="#b8b0a1" font-size="12">Plus per-response stats:</text>
+  <text x="700" y="418" fill="#7cc4ad" font-family="'JetBrains Mono', monospace" font-size="11">  total · variant_map · phrase_map</text>
+  <text x="700" y="436" fill="#7cc4ad" font-family="'JetBrains Mono', monospace" font-size="11">  phonetic · unchanged · unknown</text>
+  <text x="700" y="454" fill="#7cc4ad" font-family="'JetBrains Mono', monospace" font-size="11">  ambiguous · avg_confidence</text>
+  <text x="700" y="472" fill="#7cc4ad" font-family="'JetBrains Mono', monospace" font-size="11">  min_confidence</text>
 
-  <!-- Footer rule -->
-  <text x="60" y="290" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10">
-    Resolution stops at the first matching layer.
-  </text>
-  <text x="60" y="306" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10">
-    No silent guessing. No retroactive overrides.
-  </text>
+  <line x1="690" y1="510" x2="1020" y2="510" stroke="#2a261f"/>
+  <text x="690" y="540" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5">DESIGN CONTRACT</text>
+  <text x="690" y="562" fill="#f5efe3" font-family="Georgia, serif" font-size="14" font-style="italic">"Never silently guess."</text>
+  <text x="690" y="584" fill="#b8b0a1" font-size="12">If no layer is confident, the token</text>
+  <text x="690" y="602" fill="#b8b0a1" font-size="12">passes through unchanged and is flagged.</text>
+  <text x="690" y="620" fill="#b8b0a1" font-size="12">Downstream systems can threshold on</text>
+  <text x="690" y="638" fill="#b8b0a1" font-size="12">confidence and decide what to do.</text>
 
-  <text x="940" y="565" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="end">
-    M. Nasir · 2026 · v1.0.0
+  <!-- Footer -->
+  <text x="60" y="700" fill="#5b554a" font-family="'JetBrains Mono', monospace" font-size="10">
+    162 tests · F1 90.1% (combined) · F1 89.3% (blind held-out) · Mughirah Nasir · NUST SEECS · 2026
   </text>
 </svg>

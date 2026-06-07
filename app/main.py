@@ -80,7 +80,7 @@ TELEMETRY: dict[str, Counter | int] = {
 app = FastAPI(
     title="Roman Urdu Normalizer",
     description=(
-        "A three-layer phonetic normalizer for Roman Urdu text. Resolves "
+        "A four-layer phonetic normalizer (phrase + variant + phonetic + unknown) for Roman Urdu text. Resolves "
         "common spelling variants (kya / kia / kyaa) and SMS shorthand "
         "(bht, nhi, kch) to canonical forms. Built by Mughirah Nasir."
     ),

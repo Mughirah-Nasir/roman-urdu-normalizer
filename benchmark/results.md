@@ -1,128 +1,88 @@
-# Benchmark Results
+# Benchmark results
 
-Captured on **2026-05-27** from a clean build. Hardware: standard Linux laptop, Python 3.12.
-
-To reproduce these numbers locally:
-
-```bash
-python -m benchmark.run_benchmark    # accuracy
-python -m benchmark.latency          # latency
-python -m benchmark.comparison       # vs baselines
-```
-
----
+All numbers in this document are reproducible from the current repository. Each table is followed by the exact command that produced it. The system under test is the **four-layer pipeline** (phrase map → variant map → phonetic → unknown) at version **v1.2.1**.
 
 ## Headline numbers
 
-| Metric                          | Value |
-| ------------------------------- | ----- |
-| Examples evaluated              | 100   |
-| **Sentence-level accuracy**     | **67.0%** |
-| **Token-level F1**              | **87.8%** |
-| Token-level precision           | 88.1% |
-| Token-level recall              | 87.6% |
-| Median latency (in-process)     | **7.83 µs** |
-| p99 latency                     | 36.30 µs |
-| Throughput                      | 105,061 calls / sec |
+| Dataset | Examples | Token F1 | Sentence accuracy |
+| --- | ---: | ---: | ---: |
+| `combined` (hand-curated + adversarial perturbations) | 492 | 90.1% | 63.2% |
+| `gold_standard.jsonl` (hand-curated only) | 250 | 90.6% | 66.0% |
+| `gold_standard_adversarial.jsonl` (adversarial only) | 242 | 89.5% | 60.3% |
+| `heldout.jsonl` (blind held-out, never used to inform the lexicon) | 100 | 89.3% | 44.0% |
 
-Sentence-level accuracy is the strictest metric — *every* token must match for a sentence to count. Token-level F1 is the metric most NLP literature reports.
+Reproduce:
 
-The gap between 87.8% F1 and 67.0% sentence accuracy says something honest: when we get a sentence wrong, we usually get *most* of the tokens right but flub one or two. This is consistent with the design — the normalizer is conservative and flags uncertain tokens rather than guessing.
+```bash
+python -m benchmark.run_benchmark --dataset combined
+python -m benchmark.run_benchmark --dataset gold_standard.jsonl
+python -m benchmark.run_benchmark --dataset gold_standard_adversarial.jsonl
+python -m benchmark.run_benchmark --dataset heldout.jsonl
+```
 
----
+The blind held-out set is the most important number for honesty. It was written specifically for evaluation and never used to inform the variant map or canonical lexicon. F1 holding within one point of the in-sample combined number (89.3 vs 90.1) is the generalization signal.
 
-## Per-category breakdown
+## Comparison study
 
-Sorted by F1. The dataset (`benchmark/gold_standard.jsonl`) has 28 categories.
+Four strategies scored on the combined 492-example dataset. Reproduce with `python -m benchmark.comparison`.
 
-| category               |  N | exact |     P |     R |    F1 |
-| ---------------------- | --:| -----:| -----:| -----:| -----:|
-| compliment             |  2 |     2 | 100.0% | 100.0% | 100.0% |
-| edge_short             |  3 |     3 | 100.0% | 100.0% | 100.0% |
-| edge_unknown           |  2 |     2 | 100.0% | 100.0% | 100.0% |
-| future                 |  3 |     3 | 100.0% | 100.0% | 100.0% |
-| greeting               |  4 |     4 | 100.0% | 100.0% | 100.0% |
-| regional               |  2 |     2 | 100.0% | 100.0% | 100.0% |
-| religious              |  3 |     3 | 100.0% | 100.0% | 100.0% |
-| sms_basic              | 10 |     9 |  94.9% |  94.9% |  94.9% |
-| casual                 |  2 |     1 |  88.9% |  88.9% |  88.9% |
-| punctuation            |  3 |     2 |  88.9% |  88.9% |  88.9% |
-| emotion                |  4 |     2 |  85.7% |  85.7% |  85.7% |
-| family                 |  4 |     2 |  85.7% |  85.7% |  85.7% |
-| homograph              |  3 |     1 |  84.6% |  84.6% |  84.6% |
-| casing                 |  2 |     1 |  83.3% |  83.3% |  83.3% |
-| time                   |  4 |     2 |  83.3% |  83.3% |  83.3% |
-| school                 |  4 |     2 |  82.4% |  82.4% |  82.4% |
-| verb_progressive       |  4 |     1 |  81.2% |  81.2% |  81.2% |
-| negation               |  4 |     2 |  78.6% |  78.6% |  78.6% |
-| numbers                |  2 |     1 |  77.8% |  77.8% |  77.8% |
-| marketplace            |  2 |     1 |  83.3% |  71.4% |  76.9% |
-| imperative             |  3 |     1 |  75.0% |  75.0% |  75.0% |
-| question               |  8 |     2 |  75.0% |  75.0% |  75.0% |
-| complex                |  4 |     0 |  73.3% |  73.3% |  73.3% |
-| code_switch            |  3 |     1 |  73.3% |  68.8% |  71.0% |
-| long_sentence          |  3 |     0 |  69.4% |  71.4% |  70.4% |
-| conditional            |  2 |     0 |  70.0% |  70.0% |  70.0% |
-| polite                 |  4 |     2 |  72.7% |  66.7% |  69.6% |
-| food                   |  4 |     0 |  64.3% |  64.3% |  64.3% |
-| edge_empty             |  2 |     2 |   0.0% |   0.0% |   0.0% |
+| Strategy | Sentence accuracy | Token precision | Token recall | Token F1 |
+| --- | ---: | ---: | ---: | ---: |
+| Baseline A: `naive_replace` | 3.7% | 39.3% | 39.4% | 39.4% |
+| Baseline B: `levenshtein_nearest` | 10.8% | 52.1% | 51.7% | 51.9% |
+| Baseline C: `tfidf_char_ngram` (sklearn) | 16.1% | 60.7% | 60.4% | 60.5% |
+| **Ours: four-layer pipeline** | **63.2%** | **90.0%** | **90.1%** | **90.1%** |
 
-**Where it shines:** greetings, religious phrases, basic SMS shorthand, future tense.
-**Where it struggles:** food (lots of compound words), long sentences (more chances to miss), code-switching (English words intermixed).
+**Reading the table.**
 
-`edge_empty` shows 0% F1 because the empty string has zero tokens, so token-level precision/recall are undefined — sentence-level accuracy is 100% for those.
+`naive_replace` iterates the variant map and does dumb `str.replace` for each entry. It over-substitutes because earlier replacements interact with later ones. This is what someone might write in twenty minutes.
 
----
+`levenshtein_nearest` resolves each unknown token to the canonical lexicon word with smallest edit distance, bounded at distance 2. Recall-happy but precision-poor. It silently rewrites correct words to lexicon neighbors. This is the failure mode the "never silently guess" rule was designed against.
 
-## Baseline comparison
+`tfidf_char_ngram` is a real machine-learning baseline using scikit-learn. Vectorizes tokens as character bigrams through 4-grams (TF-IDF) and finds the canonical word with highest cosine similarity, with a 0.45 threshold. This is the kind of thing a senior engineer would actually try before writing custom rules. It scores 60.5% F1, substantially better than the rule-based baselines but still 29 F1 points below the four-layer pipeline.
 
-| Strategy                       | Sentence accuracy |   F1 |
-| ------------------------------ | -----------------:| ----:|
-| Baseline A — `naive_replace`   |              7.0% | 34.2% |
-| Baseline B — `levenshtein`     |             12.0% | 46.9% |
-| **Three-layer pipeline (ours)**| **67.0%**         | **87.8%** |
-
-**Naive replace** iterates the variant map and does `str.replace` for each entry. It's order-dependent and over-substitutes — replacing `ho` corrupts `kho`, `bohat`, etc. Cheap but wrong.
-
-**Levenshtein nearest** for every token, finds the canonical lexicon word with smallest edit distance and resolves to it. Recall-happy but precision-poor: it silently rewrites correct words to lexicon neighbors, which is the exact failure mode we designed the three-layer pipeline to avoid.
-
-**The three-layer pipeline** beats Levenshtein by **40.9 F1 points** and naive replace by **53.6 F1 points** — while preserving the *"never silently guess"* contract that Levenshtein cannot.
-
----
+The **four-layer pipeline** beats the ML baseline by 29 F1 points and the trivial baselines by 38 to 51 F1 points. More importantly, it preserves the "never silently guess" contract that none of the baselines can offer.
 
 ## Latency
 
-Measured **in-process** (not through HTTP) over 5,000 calls after 1,000 warmup runs, inputs sampled with replacement from the gold-standard dataset.
+| Percentile | Latency |
+| ---: | ---: |
+| p50 | ~30 μs per call (in-process) |
+| p99 | ~99 μs per call |
+| Throughput | ~29,000 calls per second per thread |
 
-| Percentile  | Latency |
-| ----------- | -------:|
-| min         | 1.22 µs |
-| p50 (median)| 7.83 µs |
-| p95         | 20.72 µs |
-| p99         | 36.30 µs |
-| max         | 81.13 µs |
+Reproduce with `python -m benchmark.latency`. Hardware affects absolute numbers, but the relative shape is stable.
 
-**Throughput: 105,061 calls/sec on a single thread.** Add FastAPI + Uvicorn overhead and you still get tens of thousands of requests/sec from a single worker. For the size of dataset typical Pakistani SMB applications process, this is effectively free.
+The phrase layer added in v1.2 increased p50 latency from roughly 7.8 μs to roughly 30 μs because of the multi-token scan. For any realistic preprocessing workload this is still fast enough that the normalizer is never the bottleneck. The trade was a measurable F1 gain (+1.3 points) for a latency cost the system has to spare.
+
+## Per-category breakdown
+
+The combined benchmark covers categories including: simple variants, SMS shorthand, emoji-mixed, repeated characters, code-switching with English, multi-token compound verbs, religious phrases, named entities, hashtags, Arabic-script mixing, punctuation, numbers, and long sentences.
+
+Run `python -m benchmark.run_benchmark --dataset combined --verbose` to see the per-category F1.
+
+Roughly:
+
+- 100% F1 on greetings, religious phrases, basic SMS shorthand, simple variants, emoji-mixed text.
+- 80 to 95% F1 on code-switching, named entities, hashtags, Arabic-script mixing, compound verbs.
+- 60 to 80% F1 on the hardest categories: long sentences with multiple ambiguous tokens, regional dialect, slang the lexicon has not yet absorbed.
+
+The honest failure cases for the 60 to 80% bracket are in `docs/limitations.md`.
+
+## How to extend the benchmark
+
+The benchmark is hand-curated, not generated. Each example in `gold_standard.jsonl` was written or vetted by a native Pakistani Urdu speaker. To add new examples, append JSON lines of the form:
+
+```jsonl
+{"id": "g300", "category": "new_category", "input": "your roman urdu text", "expected": "canonical form", "notes": "what this tests"}
+```
+
+Then rerun `python -m benchmark.run_benchmark --dataset combined` to see the impact on overall accuracy. If accuracy drops, either fix the variant map or document the case as a known limitation.
+
+## Charts
+
+The bar chart `docs/benchmark_vs_baselines.png` and the per-category chart `docs/benchmark_by_category.png` are regenerated by `python -m benchmark.render_charts`. That script needs `matplotlib`, which is in `requirements-dev.txt`.
 
 ---
 
-## Error analysis — what's left to fix
-
-The 33 sentences where we get every token right but the predicted output still differs from the gold standard cluster into a few patterns:
-
-1. **Spelling-doubling on long vowels** (`aya` vs `aaya`, `bat` vs `baat`) — these are valid alternative canonical spellings; the gold standard picks one and we sometimes pick the other. Could be resolved by widening the canonical set, at the cost of less-consistent output.
-
-2. **Compound verb particles** (`pi lo`, `kha lo`, `bna kr`) — these need multi-token rewriting that the current per-token resolver can't see. Would require an n-gram pass.
-
-3. **Long-sentence cascading errors** — one mistaken token in a 10-token sentence drops the sentence-accuracy score even though F1 stays high. This is by design of the metric, not a bug in the normalizer.
-
-These are documented as the planned roadmap in `CHANGELOG.md` under `[Unreleased]`.
-
----
-
-## Why these numbers are credible
-
-- The 100-example gold standard was curated by a native Pakistani Urdu speaker (Mughirah Nasir) drawing from real WhatsApp / Twitter / SMS patterns, not auto-generated.
-- Categories were chosen first, then examples filled into each — this prevents accidentally cherry-picking inputs the normalizer already handles.
-- Several categories deliberately include adversarial cases: `edge_unknown` (gibberish that must pass through), `edge_short` (single letters that must not over-resolve), `homograph` (ambiguous words that must not silently merge), `code_switch` (English words that must be left alone).
-- The benchmark harness is open-source in this repo. Run `python -m benchmark.run_benchmark` to reproduce.
+**Author:** Mughirah Nasir · NUST SEECS, Pakistan

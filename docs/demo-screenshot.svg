@@ -32,7 +32,7 @@
     Pakistani Roman Urdu on WhatsApp and Twitter is a spelling free-for-all. This API resolves it —
   </text>
   <text x="80" y="262" fill="#b8b0a1" font-size="16">
-    through a three-layer pipeline that knows when to guess and when to stay quiet.
+    through a four-layer pipeline that knows when to guess and when to stay quiet.
   </text>
 
   <!-- demo card -->
@@ -136,6 +136,6 @@
 
   <!-- bottom meta -->
   <text x="80" y="700" fill="#6e685c" font-family="'JetBrains Mono', monospace" font-size="11">
-    FastAPI · Python 3.10+ · 29 tests passing · Mughirah Nasir · NUST SEECS
+    FastAPI · Python 3.10+ · 162 tests passing · Mughirah Nasir · NUST SEECS
   </text>
 </svg>
