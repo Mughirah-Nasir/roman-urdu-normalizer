@@ -6,16 +6,16 @@ exactly as they would in production, without spinning up a real server.
 """
 
 import json
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
 
-from client import (
-    NormalizerAPIError, NormalizerClientError,
-    NormalizerTimeout, RomanUrduNormalizerClient,
-)
 from app.main import app
+from client import (
+    NormalizerAPIError,
+    RomanUrduNormalizerClient,
+)
 
 api_client = TestClient(app)
 

@@ -37,14 +37,14 @@ SMS, not formal/literary Urdu.
 VARIANT_MAP = {
     # --- negation / affirmation ---
     "nhi": "nahi", "nahin": "nahi", "nai": "nahi", "nahe": "nahi",
-    "haan": "haan", "han": "haan", "hn": "haan", "haa": "haan",
+    "haan": "haan", "han": "haan", "haa": "haan",
     "ji": "ji", "jee": "ji",
 
     # --- quantity / intensifiers ---
     "bht": "bahut", "bhot": "bahut", "bohat": "bahut", "bohot": "bahut", "buhat": "bahut",
     "thora": "thora", "thorra": "thora", "thoda": "thora", "thodi": "thori",
     "zyada": "zyada", "zayada": "zyada", "zada": "zyada", "ziada": "zyada",
-    "kam": "kam", "kum": "kam",
+    "kum": "kam",
     "sirf": "sirf", "srf": "sirf",
     "bilkul": "bilkul", "blkl": "bilkul", "bilkull": "bilkul",
     "zaroor": "zaroor", "zarur": "zaroor", "zroor": "zaroor",
@@ -111,14 +111,14 @@ VARIANT_MAP = {
     "hain": "hain", "hen": "hain", "hn": "hain",
     "ho": "ho",
     "hun": "hun", "hoon": "hun", "hu": "hun",
-    "tha": "tha", "tha": "tha", "th": "tha",
+    "tha": "tha", "th": "tha",
     "thi": "thi",
     "the": "the", "thay": "the",
     "hota": "hota", "hoti": "hoti", "hote": "hote",
     "hoga": "hoga", "hogi": "hogi", "honge": "honge",
 
     # --- common verb conjugations (SMS-dropped vowels) ---
-    "kr": "kar", "krna": "karna", "krta": "karta", "krti": "karti", "krte": "karte",
+    "kr": "kar", "krta": "karta", "krti": "karti", "krte": "karte",
     "kr rha": "kar raha", "kr rhi": "kar rahi", "kr rhe": "kar rahe",
     "rha": "raha", "rhi": "rahi", "rhe": "rahe",
     "gya": "gaya", "gyi": "gayi", "gye": "gaye",
@@ -191,7 +191,6 @@ VARIANT_MAP = {
     "parsoon": "parsoon", "prson": "parsoon",
     "abhi": "abhi", "abi": "abhi", "abh": "abhi",
     "ab": "ab",
-    "phir": "phir",
     "subah": "subah", "sbh": "subah", "subha": "subah", "subh": "subah",
     "shaam": "shaam", "sham": "shaam",
     "raat": "raat", "rat": "raat",
@@ -225,7 +224,6 @@ VARIANT_MAP = {
     "saat": "saat", "sat": "saat",
     "aath": "aath", "ath": "aath",
     "nau": "nau",
-    "das": "das", "dus": "das",
     "bje": "baje", "baje": "baje",
     "dus": "dus", "das": "dus", "10": "dus",
 }
@@ -288,7 +286,7 @@ _VERBS_INF = {
     "shuru-karna", "khatam-karna",
     # Mental
     "banaana", "banna", "todna", "tutna",
-    "dena", "milna", "kharidna", "bechna",
+    "kharidna", "bechna",
 }
 
 _VERBS_CONJ = {
@@ -445,8 +443,7 @@ _ADVERBS = {
 _CONJUNCTIONS = {
     "aur", "ya", "lekin", "magar", "agar", "warna",
     "kyunki", "is-liye", "jab", "tak",
-    "ke", "ki", "ka", "se", "ko", "mein", "par", "tak",
-    "to", "phir", "balke", "ya-phir",
+    "ke", "ki", "ka", "se", "ko", "mein", "par", "to", "phir", "balke", "ya-phir",
     "jab-bhi", "agar-bhi", "lekin-phir",
 }
 

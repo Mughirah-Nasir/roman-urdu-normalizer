@@ -12,8 +12,8 @@ import json
 import time
 import urllib.error
 import urllib.request
-from typing import Any, Iterable
-
+from collections.abc import Iterable
+from typing import Any
 
 DEFAULT_TIMEOUT = 5.0
 DEFAULT_MAX_RETRIES = 3

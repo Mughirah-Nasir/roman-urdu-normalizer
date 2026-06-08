@@ -8,14 +8,16 @@ Confidence scoring was added at the same time to give callers a thresholdable
 signal in addition to the source label.
 """
 
-import pytest
-from app.normalizer import (
-    normalize_text, normalize_token,
-    CONFIDENCE_EXACT, CONFIDENCE_PHONETIC, CONFIDENCE_PHONETIC_MULTI,
-    CONFIDENCE_AMBIGUOUS, CONFIDENCE_UNKNOWN,
-)
 from app.multitoken import PHRASE_MAP, find_phrase_matches
-
+from app.normalizer import (
+    CONFIDENCE_AMBIGUOUS,
+    CONFIDENCE_EXACT,
+    CONFIDENCE_PHONETIC,
+    CONFIDENCE_PHONETIC_MULTI,
+    CONFIDENCE_UNKNOWN,
+    normalize_text,
+    normalize_token,
+)
 
 # --- Phrase map integrity ---------------------------------------------------
 

@@ -5,7 +5,7 @@ seen in Pakistani Roman Urdu. If you change the algorithm, expect to fix
 some of these — they're a regression net, not a spec.
 """
 
-from app.phonetic import phonetic_key, phonetic_distance
+from app.phonetic import phonetic_distance, phonetic_key
 
 
 class TestVowelFolding:

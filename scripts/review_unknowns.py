@@ -41,8 +41,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app.data import VARIANT_MAP, CANONICAL_LEXICON, all_canonical_words
-from app.phonetic import phonetic_key
+from app.data import CANONICAL_LEXICON, VARIANT_MAP, all_canonical_words  # noqa: E402
+from app.phonetic import phonetic_key  # noqa: E402
 
 
 def fetch_metrics(api: str) -> dict:
@@ -168,7 +168,7 @@ def write_tests(accepted: dict[str, str], out_path: Path) -> None:
         lines.append(f"    def test_{safe_name}_resolves(self):")
         lines.append(f"        result = normalize_token({src!r})")
         lines.append(f"        assert result['normalized'] == {tgt!r}")
-        lines.append(f"        assert result['source'] == 'variant_map'")
+        lines.append("        assert result['source'] == 'variant_map'")
         lines.append("")
     out_path.write_text("\n".join(lines), encoding="utf-8")
 
@@ -239,16 +239,16 @@ def main() -> int:
     write_tests(accepted, tests_path)
     write_changelog_entry(accepted, chlg_path)
 
-    print(f"\nWrote:")
+    print("\nWrote:")
     print(f"  patch:     {patch_path}")
     print(f"  tests:     {tests_path}")
     print(f"  changelog: {chlg_path}")
-    print(f"\nNext steps:")
+    print("\nNext steps:")
     print(f"  1. Review {patch_path}")
-    print(f"  2. Copy entries into app/data.py::VARIANT_MAP")
+    print("  2. Copy entries into app/data.py::VARIANT_MAP")
     print(f"  3. Copy {tests_path} into tests/")
-    print(f"  4. Run pytest, verify the new tests pass and nothing regresses")
-    print(f"  5. Add the changelog entry, commit, PR")
+    print("  4. Run pytest, verify the new tests pass and nothing regresses")
+    print("  5. Add the changelog entry, commit, PR")
     return 0
 
 

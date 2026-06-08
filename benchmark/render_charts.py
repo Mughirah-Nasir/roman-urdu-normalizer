@@ -16,13 +16,11 @@ from __future__ import annotations
 from pathlib import Path
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 
-from benchmark.run_benchmark import run_benchmark
-from benchmark.run_benchmark import load_gold_standard
-
+from benchmark.run_benchmark import load_gold_standard, run_benchmark
 
 # Brand palette (matches the frontend + docs)
 SAFFRON = "#e8a33d"
@@ -66,10 +64,13 @@ def render_by_category(out_path: Path) -> None:
 
     bars = ax.bar(categories, f1s, color=SAFFRON, edgecolor=BORDER, linewidth=0.5)
     # Color bars by tier
-    for bar, f1 in zip(bars, f1s):
-        if f1 >= 90:    bar.set_color(JADE)
-        elif f1 >= 75:  bar.set_color(SAFFRON)
-        else:           bar.set_color(RUST)
+    for bar, f1 in zip(bars, f1s, strict=False):
+        if f1 >= 90:
+            bar.set_color(JADE)
+        elif f1 >= 75:
+            bar.set_color(SAFFRON)
+        else:
+            bar.set_color(RUST)
 
     ax.set_ylim(0, 105)
     ax.set_ylabel("F1 (%)", fontsize=11)
@@ -78,7 +79,7 @@ def render_by_category(out_path: Path) -> None:
     plt.setp(ax.get_xticklabels(), rotation=40, ha="right", fontsize=9)
 
     # Add value labels on bars
-    for bar, f1 in zip(bars, f1s):
+    for bar, f1 in zip(bars, f1s, strict=False):
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 1.5,
                 f"{f1:.0f}", ha="center", va="bottom", color=DIM, fontsize=8)
 
@@ -92,8 +93,11 @@ def render_vs_baselines(out_path: Path) -> None:
     gold_path = Path(__file__).parent / "gold_standard.jsonl"
     gold = load_gold_standard(gold_path)
     from benchmark.comparison import (
-        score_strategy, naive_replace, levenshtein_nearest,
-        tfidf_char_ngram, four_layer,
+        four_layer,
+        levenshtein_nearest,
+        naive_replace,
+        score_strategy,
+        tfidf_char_ngram,
     )
     results = [
         score_strategy("naive_replace",   naive_replace,        gold),

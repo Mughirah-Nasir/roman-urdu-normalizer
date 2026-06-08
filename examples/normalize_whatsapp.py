@@ -28,7 +28,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from client import RomanUrduNormalizerClient
 
-
 # WhatsApp export line format. Tolerant of common variants.
 LINE_RE = re.compile(
     r"^\[?(?P<date>\d{1,2}/\d{1,2}/\d{2,4})[, ]+(?P<time>\d{1,2}:\d{2}(?::\d{2})?)\]?\s*"
@@ -38,7 +37,7 @@ LINE_RE = re.compile(
 
 def parse_whatsapp_export(path: Path) -> list[dict]:
     records: list[dict] = []
-    with open(path, "r", encoding="utf-8") as fh:
+    with open(path, encoding="utf-8") as fh:
         for line in fh:
             line = line.strip()
             if not line:
@@ -85,12 +84,12 @@ def main() -> int:
     results = client.normalize_chunks(texts)
 
     with open(out_path, "w", encoding="utf-8") as fh:
-        for rec, result in zip(records, results):
+        for rec, result in zip(records, results, strict=False):
             rec["normalized"] = result["normalized"]
             rec["stats"] = result["stats"]
             fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
-    changed = sum(1 for r, res in zip(records, results)
+    changed = sum(1 for r, res in zip(records, results, strict=False)
                   if r["original"] != res["normalized"])
     print(f"wrote {out_path}")
     print(f"{changed}/{len(records)} messages changed at least one token")

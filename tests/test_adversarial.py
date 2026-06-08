@@ -19,7 +19,6 @@ Categories tested:
 
 from app.normalizer import normalize_text
 
-
 # -- 1. EMOJI --------------------------------------------------------------
 
 class TestEmojiPreservation:

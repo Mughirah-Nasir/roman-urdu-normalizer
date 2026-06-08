@@ -6,8 +6,8 @@ end-to-end string-normalization tests and batch tests.
 
 import pytest
 
-from app.normalizer import normalize_token, normalize_text, normalize_batch, MAX_BATCH_SIZE
 from app.exceptions import BatchSizeError, InvalidInputError
+from app.normalizer import MAX_BATCH_SIZE, normalize_batch, normalize_text, normalize_token
 
 
 class TestVariantMapLayer:

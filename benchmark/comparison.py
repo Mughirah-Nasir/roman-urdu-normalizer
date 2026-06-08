@@ -46,10 +46,9 @@ import re
 import sys
 from pathlib import Path
 
-from app.data import VARIANT_MAP, CANONICAL_LEXICON
+from app.data import CANONICAL_LEXICON, VARIANT_MAP
 from app.normalizer import normalize_text
-from benchmark.run_benchmark import load_gold_standard, score_pair, precision_recall_f1
-
+from benchmark.run_benchmark import load_gold_standard, precision_recall_f1, score_pair
 
 _TOKEN_RE = re.compile(r"(\w+|\W+)", re.UNICODE)
 
@@ -186,7 +185,9 @@ def score_strategy(name: str, fn, gold: list[dict]) -> dict:
     for rec in gold:
         predicted = fn(rec["input"])
         score = score_pair(predicted, rec["expected"])
-        tp += score["tp"]; fp += score["fp"]; fn_ += score["fn"]
+        tp += score["tp"]
+        fp += score["fp"]
+        fn_ += score["fn"]
         exact += int(score["exact"])
     p, r, f1 = precision_recall_f1(tp, fp, fn_)
     return {
@@ -228,7 +229,8 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(results, indent=2))
         return 0
 
-    pct = lambda x: f"{x*100:5.1f}%"
+    def pct(x):
+        return f"{x*100:5.1f}%"
     print()
     print("┌──────────────────────────────────────────────────────────────────────┐")
     print("│        ROMAN URDU NORMALIZER — BASELINE COMPARISON STUDY             │")

@@ -35,7 +35,6 @@ from typing import Any
 
 from app.normalizer import normalize_text
 
-
 # --------------------------------------------------------------------------
 # Scoring primitives
 # --------------------------------------------------------------------------
@@ -64,12 +63,13 @@ def score_pair(predicted: str, expected: str) -> dict[str, Any]:
     e_tokens = _tokens(expected)
 
     # Sentence-level exact match
-    norm = lambda s: " ".join(s.split()).lower()
+    def norm(s):
+        return " ".join(s.split()).lower()
     exact = norm(predicted) == norm(expected)
 
     # Token-level positional matching — we align by index, which is fair for
     # a normalizer that should not change word order or token count.
-    tp = sum(1 for p, e in zip(p_tokens, e_tokens) if p == e)
+    tp = sum(1 for p, e in zip(p_tokens, e_tokens, strict=False) if p == e)
     # Mismatches and missing alignment positions
     aligned_len = min(len(p_tokens), len(e_tokens))
     extra_predicted = max(0, len(p_tokens) - aligned_len)
@@ -98,7 +98,7 @@ def precision_recall_f1(tp: int, fp: int, fn: int) -> tuple[float, float, float]
 
 def load_gold_standard(path: Path) -> list[dict[str, Any]]:
     records = []
-    with open(path, "r", encoding="utf-8") as fh:
+    with open(path, encoding="utf-8") as fh:
         for line_no, line in enumerate(fh, 1):
             line = line.strip()
             if not line:
@@ -179,7 +179,8 @@ def run_benchmark(verbose: bool = False, dataset_name: str = "gold_standard.json
 # --------------------------------------------------------------------------
 
 def print_human(report: dict[str, Any]) -> None:
-    pct = lambda x: f"{x*100:5.1f}%"
+    def pct(x):
+        return f"{x*100:5.1f}%"
     print()
     print("┌─────────────────────────────────────────────────────────────┐")
     print("│           ROMAN URDU NORMALIZER — BENCHMARK RESULTS         │")

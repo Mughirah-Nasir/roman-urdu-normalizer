@@ -35,8 +35,6 @@ Author: Mughirah Nasir, 2026.
 from __future__ import annotations
 
 import re
-from typing import Iterable
-
 
 # ============================================================
 # Phrase map — multi-token compound forms

@@ -5,8 +5,8 @@ Kept deliberately thin — the normalizer returns plain dicts, and these
 schemas exist to make the OpenAPI docs useful and to validate input.
 """
 
-from typing import List, Dict, Optional
-from pydantic import BaseModel, Field, conlist
+
+from pydantic import BaseModel, Field
 
 
 class NormalizeRequest(BaseModel):
@@ -35,7 +35,7 @@ class TokenRecord(BaseModel):
                      "matches, 0.40 for ambiguous homographs, 0.0 for unknown."),
     )
     ambiguous: bool = False
-    candidates: List[str] = Field(default_factory=list)
+    candidates: list[str] = Field(default_factory=list)
     span_tokens: int = Field(
         default=1,
         ge=1,
@@ -51,10 +51,10 @@ class Stats(BaseModel):
     unchanged: int
     unknown: int
     ambiguous: int
-    avg_confidence: Optional[float] = Field(
+    avg_confidence: float | None = Field(
         default=None, description="Mean confidence across all word tokens, or null if no tokens."
     )
-    min_confidence: Optional[float] = Field(
+    min_confidence: float | None = Field(
         default=None, description="Minimum confidence across all word tokens, or null if no tokens."
     )
 
@@ -62,12 +62,12 @@ class Stats(BaseModel):
 class NormalizeResponse(BaseModel):
     input: str
     normalized: str
-    tokens: List[TokenRecord]
+    tokens: list[TokenRecord]
     stats: Stats
 
 
 class BatchNormalizeRequest(BaseModel):
-    texts: List[str] = Field(
+    texts: list[str] = Field(
         ...,
         description="A list of Roman Urdu strings to normalize. Maximum 100 items.",
         min_length=1,
@@ -76,7 +76,7 @@ class BatchNormalizeRequest(BaseModel):
 
 
 class BatchNormalizeResponse(BaseModel):
-    results: List[NormalizeResponse]
+    results: list[NormalizeResponse]
     count: int
 
 
@@ -91,7 +91,7 @@ class LexiconStatsResponse(BaseModel):
     canonical_total: int
     total_recognized_spellings: int
     homograph_groups: int
-    by_category: Dict[str, int]
+    by_category: dict[str, int]
 
 
 class ErrorResponse(BaseModel):

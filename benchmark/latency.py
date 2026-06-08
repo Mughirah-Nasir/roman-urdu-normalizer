@@ -35,7 +35,7 @@ def _load_inputs() -> list[str]:
     """Load realistic inputs from the gold-standard dataset."""
     path = Path(__file__).parent / "gold_standard.jsonl"
     inputs: list[str] = []
-    with open(path, "r", encoding="utf-8") as fh:
+    with open(path, encoding="utf-8") as fh:
         for line in fh:
             line = line.strip()
             if not line:

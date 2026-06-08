@@ -8,7 +8,7 @@ If you find yourself tempted to delete or weaken any of these, read the
 comment block above the test first.
 """
 
-from app.normalizer import normalize_token, normalize_text
+from app.normalizer import normalize_token
 
 
 class TestShortKeyCollisionBug:

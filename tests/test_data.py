@@ -7,8 +7,12 @@ production.
 """
 
 from app.data import (
-    VARIANT_MAP, CANONICAL_LEXICON, HOMOGRAPH_GROUPS, LEXICON_BY_CATEGORY,
-    all_canonical_words, lexicon_stats,
+    CANONICAL_LEXICON,
+    HOMOGRAPH_GROUPS,
+    LEXICON_BY_CATEGORY,
+    VARIANT_MAP,
+    all_canonical_words,
+    lexicon_stats,
 )
 
 

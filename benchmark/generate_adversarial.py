@@ -31,7 +31,6 @@ import re
 import sys
 from pathlib import Path
 
-
 EMOJIS = ["😂", "🤣", "😭", "❤️", "🔥", "👀", "🙏", "🥲", "😎", "🤔", "💯", "🎉"]
 HASHTAGS = ["#karachi", "#lahore", "#islamabad", "#pakistan", "#desi", "#urdu",
             "#PSL", "#WhatsApp", "#chai", "#student", "#NUST", "#monsoon"]
@@ -181,7 +180,7 @@ def main() -> int:
     out_path = Path(args.output)
 
     base = []
-    with open(in_path, "r", encoding="utf-8") as fh:
+    with open(in_path, encoding="utf-8") as fh:
         for line in fh:
             line = line.strip()
             if not line:

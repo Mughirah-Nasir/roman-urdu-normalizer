@@ -48,15 +48,14 @@ from collections import defaultdict
 from typing import Any
 
 from app.data import (
-    VARIANT_MAP,
     CANONICAL_LEXICON,
     HOMOGRAPH_GROUPS,
+    VARIANT_MAP,
     all_canonical_words,
 )
-from app.phonetic import phonetic_key
 from app.exceptions import BatchSizeError, InvalidInputError
-from app.multitoken import find_phrase_matches, PHRASE_MAP
-
+from app.multitoken import find_phrase_matches
+from app.phonetic import phonetic_key
 
 MAX_BATCH_SIZE = 100
 
@@ -206,7 +205,6 @@ def normalize_text(text: str) -> dict[str, Any]:
     stats = {"total": 0, "variant_map": 0, "phonetic": 0, "phrase_map": 0,
              "unchanged": 0, "unknown": 0, "ambiguous": 0}
 
-    cursor = 0
     seen_phrase_at: set[int] = set()
     pieces_with_offsets: list[tuple[int, int, str]] = []
     for m in _TOKEN_RE.finditer(text):

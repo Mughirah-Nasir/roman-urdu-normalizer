@@ -22,17 +22,23 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app import __version__
-from app.data import VARIANT_MAP, CANONICAL_LEXICON, lexicon_stats
+from app.data import CANONICAL_LEXICON, VARIANT_MAP, lexicon_stats
 from app.exceptions import (
-    BatchSizeError, DictionaryIntegrityError, InvalidInputError, NormalizerError,
+    BatchSizeError,
+    DictionaryIntegrityError,
+    InvalidInputError,
+    NormalizerError,
 )
 from app.models import (
-    BatchNormalizeRequest, BatchNormalizeResponse, ErrorResponse,
-    HealthResponse, LexiconStatsResponse,
-    NormalizeRequest, NormalizeResponse,
+    BatchNormalizeRequest,
+    BatchNormalizeResponse,
+    ErrorResponse,
+    HealthResponse,
+    LexiconStatsResponse,
+    NormalizeRequest,
+    NormalizeResponse,
 )
 from app.normalizer import normalize_batch, normalize_text
-
 
 # ----------------------------------------------------------------------------
 # Logging — single structured log line per request

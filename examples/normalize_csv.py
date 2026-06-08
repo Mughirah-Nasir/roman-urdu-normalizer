@@ -54,7 +54,7 @@ def main() -> int:
 
     client = RomanUrduNormalizerClient(args.api)
 
-    with open(in_path, "r", encoding="utf-8", newline="") as fh:
+    with open(in_path, encoding="utf-8", newline="") as fh:
         reader = csv.DictReader(fh)
         if args.column not in reader.fieldnames:
             print(f"error: column {args.column!r} not in CSV "
@@ -73,11 +73,11 @@ def main() -> int:
     with open(out_path, "w", encoding="utf-8", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=fieldnames)
         writer.writeheader()
-        for row, result in zip(rows, results):
+        for row, result in zip(rows, results, strict=False):
             row[out_field] = result["normalized"]
             writer.writerow(row)
 
-    n_changed = sum(1 for r, res in zip(rows, results)
+    n_changed = sum(1 for r, res in zip(rows, results, strict=False)
                     if r[args.column] != res["normalized"])
     print(f"wrote {out_path}")
     print(f"normalized {n_changed} / {len(rows)} rows changed at least one token")
