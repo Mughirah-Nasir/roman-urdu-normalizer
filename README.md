@@ -214,3 +214,7 @@ MIT. See `LICENSE`.
 **Mughirah Nasir** · NUST SEECS, Rawalpindi, Pakistan · mnasir.bee25seecs@seecs.edu.pk
 
 Repository: https://github.com/Mughirah-Nasir/roman-urdu-normalizer
+
+## Documentation maintenance
+
+This repository is maintained as a small, reviewable public project. Setup steps, verification commands, limitations, and security notes should stay clear enough for someone to inspect the project quickly before running it.
