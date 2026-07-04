@@ -1,6 +1,6 @@
 # Roman Urdu Normalizer
 
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue)]() [![tests](https://img.shields.io/badge/tests-162%20passing-success)]() [![F1](https://img.shields.io/badge/F1-90.1%25-success)]() [![License](https://img.shields.io/badge/License-MIT-yellow.svg)]() [![version](https://img.shields.io/badge/version-1.2.1-informational)]()
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)]() [![tests](https://img.shields.io/badge/tests-179%20passing-success)]() [![F1](https://img.shields.io/badge/F1-90.2%25-success)]() [![License](https://img.shields.io/badge/License-MIT-yellow.svg)]() [![version](https://img.shields.io/badge/version-1.2.2-informational)]()
 
 ## In simple words
 
@@ -95,7 +95,7 @@ pip install -r requirements-dev.txt
 python -m pytest tests/ -v
 ```
 
-You should see 162 tests pass in under two seconds.
+You should see 179 tests pass in under two seconds.
 
 ## CLI
 
@@ -124,9 +124,9 @@ print(result["normalized"])  # yaar bahut thora kuch
 
 ## Benchmark and tests
 
-The benchmark dataset has 250 hand-curated examples plus 242 adversarial perturbations generated from them. Running the policy over the combined 492-example set gives F1 of 90.1 percent and sentence-level accuracy of 63.2 percent.
+The benchmark dataset has 250 hand-curated examples plus 242 adversarial perturbations generated from them. Running the policy over the combined 492-example set gives F1 of 90.2 percent and sentence-level accuracy of 63.4 percent.
 
-There is also a separate 100-example blind held-out set in `benchmark/heldout.jsonl`. This was written specifically for evaluation and was never used to inform the variant map or lexicon. Score on the blind set: F1 89.3 percent, sentence accuracy 44.0 percent. The blind number being within one F1 point of the in-sample number is the generalization signal.
+There is also a separate 100-example blind held-out set in `benchmark/heldout.jsonl`. This was written specifically for evaluation and was never used to inform the variant map or lexicon. Score on the blind set: F1 90.8 percent, sentence accuracy 47.0 percent. The blind F1 holding level with the in-sample number is the generalization signal — but note the sentence-level accuracy is much lower on the blind set, which is the honest headline for unseen data.
 
 Run them yourself:
 
@@ -142,13 +142,13 @@ The comparison study scores four strategies on the combined 492-example dataset 
 | Strategy | Sentence accuracy | Token F1 |
 | --- | ---: | ---: |
 | Baseline: naive replace | 3.7% | 39.4% |
-| Baseline: Levenshtein nearest | 10.8% | 51.9% |
-| Baseline: TF-IDF char n-gram, sklearn-trained | 16.1% | 60.5% |
-| **Four-layer pipeline (this project)** | **63.2%** | **90.1%** |
+| Baseline: Levenshtein nearest | 10.4% | 51.8% |
+| Baseline: TF-IDF char n-gram, sklearn-trained | 15.7% | 60.4% |
+| **Four-layer pipeline (this project)** | **63.4%** | **90.2%** |
 
 ![Benchmark vs baselines](docs/benchmark_vs_baselines.png)
 
-The ML baseline is a real character n-gram TF-IDF nearest-neighbor classifier. The pipeline still beats it by 29 F1 points, which is the comparison story.
+The ML baseline is a real character n-gram TF-IDF nearest-neighbor classifier. The pipeline still beats it by about 30 F1 points, which is the comparison story.
 
 ## Limitations
 
@@ -178,7 +178,7 @@ roman-urdu-normalizer/
 │   ├── models.py             # Pydantic request/response schemas
 │   ├── exceptions.py         # custom exceptions
 │   └── cli.py                # command-line interface
-├── tests/                    # 162 tests in 8 files
+├── tests/                    # 179 tests in 8 files
 ├── benchmark/                # gold-standard, adversarial, held-out, comparison study
 ├── client/                   # Python client SDK (zero third-party dependencies)
 ├── examples/                 # runnable integration scripts
@@ -197,13 +197,11 @@ roman-urdu-normalizer/
 
 Honest about scope.
 
-The variant map, the phonetic algorithm, the phrase map, the 250-example benchmark dataset, the adversarial generator, the four-layer pipeline, the FastAPI app, the CLI, the client SDK, all 162 tests, the dashboard frontend, the Dockerfile, and every word of documentation were all written for this project. AI assistance was used during development for editorial review and refactoring suggestions. Architectural decisions and the lexicon content are mine.
+The variant map, the phonetic algorithm, the phrase map, the 250-example benchmark dataset, the adversarial generator, the four-layer pipeline, the FastAPI app, the CLI, the client SDK, all 179 tests, the dashboard frontend, the Dockerfile, and every word of documentation were all written for this project. AI assistance was used during development for editorial review and refactoring suggestions. Architectural decisions and the lexicon content are mine.
 
 The repo does not include a hosted demo URL. The `render.yaml` is a deployment template. If you fork and click Deploy on Render.com it should provision, but I have not kept a live demo running.
 
 The blind held-out evaluation is small at 100 examples. It supports the generalization claim but is not a substitute for evaluation on truly external user data, which I do not have.
-
-See `AUTHENTICITY.md` for the formal statement and `PROVENANCE.md` for the SHA-256 file manifest.
 
 ## License
 
@@ -221,6 +219,8 @@ This repository is maintained as a small, reviewable public project. Setup steps
 
 ## Future improvements
 
-- Add a larger Roman Urdu variant dictionary from real examples.
-- Add confidence scoring for uncertain normalizations.
-- Add a small benchmark set for common Pakistani chat/search inputs.
+- Validate against an external corpus (public Roman Urdu datasets on Kaggle / Hugging Face) instead of only self-curated data.
+- Preserve input casing in the output (currently everything is lowercased — see `docs/limitations.md`).
+- Add an English stoplist or confidence penalty for aggressive short-token expansions (`me`, `b`, `h`) so code-switched English is not mangled.
+- Move the lexicon and variant map out of Python dicts into JSON/TSV data files with a loader, so native speakers who are not programmers can contribute.
+- Grow the variant dictionary from real unresolved tokens via the `/metrics` review loop.

@@ -25,18 +25,15 @@ The system resolves each token independently. It does not look at neighboring to
 
 ---
 
-## 2. Multi-token rewrites are not supported
+## 2. Multi-token rewrites cover only curated phrases
 
-The resolver is strictly per-token. Pakistani Roman Urdu has compound forms that span multiple tokens:
+Since v1.2, a phrase layer (~125 curated entries in `app/multitoken.py`) handles compound forms like `ho gya → ho gaya`, `ja rha → ja raha`, and `kr de → kar de`. Its limits:
 
-| Input | What we'd ideally produce | What we actually produce |
-|---|---|---|
-| `pi lo` | `pee lo` (drink) | `pi lo` — first token mis-normalized, particle untouched |
-| `kha lo` | `kha lo` (eat) | `kha lo` — accidentally correct, but `kha → kaha` mapping makes this brittle |
-| `kr de` | `kar de` (do it) | `kar de` — works because variant map has `kr → kar` and `krde → kar de` |
-| `ho ja` | `ho ja` (be it) | `ho ja` — works by accident |
+- Only phrases that were curated up front fire — there is no fuzzy or generative phrase matching (by design: "never silently guess").
+- Phrase tokens must be separated by whitespace only. `ho. gya` is treated as two separate tokens with the punctuation preserved (`ho. gaya`), never merged across a sentence boundary.
+- Phrases are at most 3 tokens long.
 
-**Why:** an n-gram pass with longest-match would solve this. Architecturally easy. Hasn't shipped because per-token resolution covers the 80% case and gold-standard data on multi-token forms is thin.
+Compound forms outside the curated map fall back to per-token resolution, which can be wrong when tokens interact.
 
 ---
 
@@ -61,6 +58,20 @@ When a Pakistani user types `kyaaaa`, they usually mean emphatic "kya" — the s
 - Profanity and informal register
 
 **Coverage:** the `/metrics` endpoint exposes the top unresolved tokens from live traffic. The intended growth loop is: deploy → watch `/metrics` → batch-add the top 50 unresolved tokens to the variant map → ship. See `docs/corpus.md` for the curation methodology.
+
+---
+
+## 4a. Input casing is destroyed
+
+The normalizer always emits lowercase: `Kya haal hai` → `kya haal hai`. For a preprocessing layer feeding NLP systems, case can be real signal (sentence starts, proper nouns, emphasis) and it is lost. If you need casing, keep the original text alongside the output — every token record carries `original`, so reconstruction is possible per token.
+
+---
+
+## 4b. Aggressive short-token expansions mangle English code-switching
+
+The variant map expands very short SMS tokens (`me → main`, `h → hai`, `b → bhi`, `p → aap`, `q → kyun`). These are right for Urdu SMS text but wrong for the English side of code-switched input — and Roman Urdu is definitionally code-switched. Verified example: `me too yaar` comes out as `main to yaar`, an English sentence mangled.
+
+There is currently no English stoplist and no confidence penalty on single-letter expansions. If your traffic is heavily code-switched, filter on `source == "variant_map"` for one/two-letter originals, or strip known-English spans before normalizing. A stoplist/penalty is on the future-work list.
 
 ---
 
@@ -105,7 +116,7 @@ The `/metrics` endpoint exposes `top_unknown_tokens` from live traffic. If you p
 
 ## 9. What's tested vs what's claimed
 
-- **Tested:** the 87 unit tests, 13 client SDK tests, 35 adversarial tests cover the resolver, phonetic algorithm, variant map integrity, batch handling, error responses, edge cases, and the explicit adversarial examples flagged by external review.
+- **Tested:** 179 tests across 8 files cover the resolver, phonetic algorithm, variant map integrity, batch handling, error responses, edge cases, regression guards for every fixed bug, and the explicit adversarial examples flagged by external review.
 - **Benchmarked:** 492 examples (250 hand-curated + 242 adversarial perturbations) with token F1, sentence accuracy, latency, and baseline comparison.
 - **Not tested at scale:** real production traffic. Numbers from a 492-example dataset are directional, not definitive — F1 on a million-message corpus would likely be 3-5 points lower.
 
@@ -115,12 +126,16 @@ The `/metrics` endpoint exposes `top_unknown_tokens` from live traffic. If you p
 
 In rough priority order:
 
-1. **Multi-token rewrites** via n-gram longest-match (single-digit F1 improvement)
+1. **External-corpus validation** (public Roman Urdu datasets on Kaggle / Hugging Face) — the current benchmark is entirely self-curated
 2. **Context-aware homograph resolution** via a small n-gram model or LLM scoring pass
-3. **Lexicon growth** via the `/metrics` → curation → release loop
-4. **Confidence scores** per token (currently boolean)
-5. **WebSocket streaming endpoint** for inputs over the batch limit
-6. **Per-region dialect packs** (Karachi vs Lahore vs Punjabi-flavored variant maps)
+3. **English stoplist / confidence penalty** for short-token expansions (see 4b)
+4. **Casing preservation** in the output (see 4a)
+5. **Lexicon growth** via the `/metrics` → curation → release loop
+6. **Data files instead of Python dicts** so non-programmer native speakers can contribute
+7. **WebSocket streaming endpoint** for inputs over the batch limit
+8. **Per-region dialect packs** (Karachi vs Lahore vs Punjabi-flavored variant maps)
+
+(Shipped since this list was first written: multi-token phrase rewrites and per-token confidence scores, both in v1.2.)
 
 See `CHANGELOG.md` `[Unreleased]` for tracked items.
 

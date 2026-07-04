@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.2] — 2026-07-04
+
+Bug-fix and hardening release driven by an external code review.
+
+### Fixed
+- **Variant-map entries shadowed by the lexicon (dead code).** The canonical-lexicon check ran before the variant map, so nine variant entries whose spelling also appeared in the lexicon never fired: `abh, aya, bohat, hi, kam, ki, kiya, mein, tu`. Visible symptom: `bohat` did not normalize to `bahut` despite the README's own example table. Non-identity variant remaps now win over the lexicon, the nine shadowed spellings were removed from `CANONICAL_LEXICON`, and a data-integrity test enforces the invariant permanently.
+- **Phrase layer deleted punctuation.** `ho. gya` became `ho gaya` (sentence boundary destroyed) and `kr, de` became `kar de`. Phrase tokens must now be separated by whitespace only; `ho. gya` → `ho. gaya`.
+- **UnicodeEncodeError on Windows consoles.** `benchmark/run_benchmark.py` (plus `comparison.py`, `latency.py`, the CLI, and `scripts/review_unknowns.py`) crashed on cp1252 code pages. New `app/console.py::ensure_utf8_stdout()` reconfigures stdout/stderr to UTF-8 at every console entry point.
+
+### Added
+- 17 new tests (regression guards for all three bugs, data-integrity invariant, API hardening tests): 162 → 179 total.
+- Bounded in-memory state: rate-limit tracker prunes stale IPs (`MAX_TRACKED_IPS`), telemetry counters are capped (`TELEMETRY_MAX_TOKENS`).
+- Optional `/metrics` bearer-token gate (`METRICS_TOKEN`) — the endpoint exposes fragments of user input.
+- POST bodies using chunked transfer encoding (no Content-Length) are rejected with 411, closing a body-size-guard bypass.
+
+### Changed
+- Benchmark numbers re-run after the fixes (all improved or held): combined 492 F1 90.1% → **90.2%**, sentence accuracy 63.2% → **63.4%**; blind held-out F1 89.3% → **90.8%**, sentence accuracy 44.0% → **47.0%**. README, `benchmark/results.md` updated.
+- Removed self-attestation filler (`AUTHENTICITY.md`, `PROVENANCE.md`, `CERTIFICATE.html`, `FINAL-CHECKLIST.md`, `docs/daily-notes/`, `docs/reviewer-notes/`).
+- `docs/limitations.md`: documented casing loss and code-switching mangling by short-token expansions; refreshed stale sections (multi-token rewrites and confidence scores shipped in v1.2).
+- README: refreshed stale "Future improvements" section, updated test counts and badges.
+
+---
+
 ## [1.2.1] — 2026-06-05
 
 Polish + consistency pass in response to a third external review focused

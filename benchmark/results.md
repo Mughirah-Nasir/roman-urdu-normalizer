@@ -1,15 +1,15 @@
 # Benchmark results
 
-All numbers in this document are reproducible from the current repository. Each table is followed by the exact command that produced it. The system under test is the **four-layer pipeline** (phrase map → variant map → phonetic → unknown) at version **v1.2.1**.
+All numbers in this document are reproducible from the current repository. Each table is followed by the exact command that produced it. The system under test is the **four-layer pipeline** (phrase map → variant map → phonetic → unknown) at version **v1.2.2**.
 
 ## Headline numbers
 
 | Dataset | Examples | Token F1 | Sentence accuracy |
 | --- | ---: | ---: | ---: |
-| `combined` (hand-curated + adversarial perturbations) | 492 | 90.1% | 63.2% |
-| `gold_standard.jsonl` (hand-curated only) | 250 | 90.6% | 66.0% |
-| `gold_standard_adversarial.jsonl` (adversarial only) | 242 | 89.5% | 60.3% |
-| `heldout.jsonl` (blind held-out, never used to inform the lexicon) | 100 | 89.3% | 44.0% |
+| `combined` (hand-curated + adversarial perturbations) | 492 | 90.2% | 63.4% |
+| `gold_standard.jsonl` (hand-curated only) | 250 | 90.7% | 66.4% |
+| `gold_standard_adversarial.jsonl` (adversarial only) | 242 | 89.7% | 60.3% |
+| `heldout.jsonl` (blind held-out, never used to inform the lexicon) | 100 | 90.8% | 47.0% |
 
 Reproduce:
 
@@ -20,7 +20,7 @@ python -m benchmark.run_benchmark --dataset gold_standard_adversarial.jsonl
 python -m benchmark.run_benchmark --dataset heldout.jsonl
 ```
 
-The blind held-out set is the most important number for honesty. It was written specifically for evaluation and never used to inform the variant map or canonical lexicon. F1 holding within one point of the in-sample combined number (89.3 vs 90.1) is the generalization signal.
+The blind held-out set is the most important number for honesty. It was written specifically for evaluation and never used to inform the variant map or canonical lexicon. F1 holding level with the in-sample combined number (90.8 vs 90.2) is the generalization signal; the sentence-level accuracy (47.0%) is markedly lower than in-sample and is the honest headline for unseen data.
 
 ## Comparison study
 
@@ -29,9 +29,9 @@ Four strategies scored on the combined 492-example dataset. Reproduce with `pyth
 | Strategy | Sentence accuracy | Token precision | Token recall | Token F1 |
 | --- | ---: | ---: | ---: | ---: |
 | Baseline A: `naive_replace` | 3.7% | 39.3% | 39.4% | 39.4% |
-| Baseline B: `levenshtein_nearest` | 10.8% | 52.1% | 51.7% | 51.9% |
-| Baseline C: `tfidf_char_ngram` (sklearn) | 16.1% | 60.7% | 60.4% | 60.5% |
-| **Ours: four-layer pipeline** | **63.2%** | **90.0%** | **90.1%** | **90.1%** |
+| Baseline B: `levenshtein_nearest` | 10.4% | 52.0% | 51.6% | 51.8% |
+| Baseline C: `tfidf_char_ngram` (sklearn) | 15.7% | 60.5% | 60.3% | 60.4% |
+| **Ours: four-layer pipeline** | **63.4%** | **90.2%** | **90.2%** | **90.2%** |
 
 **Reading the table.**
 
@@ -39,9 +39,9 @@ Four strategies scored on the combined 492-example dataset. Reproduce with `pyth
 
 `levenshtein_nearest` resolves each unknown token to the canonical lexicon word with smallest edit distance, bounded at distance 2. Recall-happy but precision-poor. It silently rewrites correct words to lexicon neighbors. This is the failure mode the "never silently guess" rule was designed against.
 
-`tfidf_char_ngram` is a real machine-learning baseline using scikit-learn. Vectorizes tokens as character bigrams through 4-grams (TF-IDF) and finds the canonical word with highest cosine similarity, with a 0.45 threshold. This is the kind of thing a senior engineer would actually try before writing custom rules. It scores 60.5% F1, substantially better than the rule-based baselines but still 29 F1 points below the four-layer pipeline.
+`tfidf_char_ngram` is a real machine-learning baseline using scikit-learn. Vectorizes tokens as character bigrams through 4-grams (TF-IDF) and finds the canonical word with highest cosine similarity, with a 0.45 threshold. This is the kind of thing a senior engineer would actually try before writing custom rules. It scores 60.4% F1, substantially better than the rule-based baselines but still about 30 F1 points below the four-layer pipeline.
 
-The **four-layer pipeline** beats the ML baseline by 29 F1 points and the trivial baselines by 38 to 51 F1 points. More importantly, it preserves the "never silently guess" contract that none of the baselines can offer.
+The **four-layer pipeline** beats the ML baseline by about 30 F1 points and the trivial baselines by 38 to 51 F1 points. More importantly, it preserves the "never silently guess" contract that none of the baselines can offer.
 
 ## Latency
 
