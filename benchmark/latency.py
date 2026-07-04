@@ -28,6 +28,7 @@ import sys
 import time
 from pathlib import Path
 
+from app.console import ensure_utf8_stdout
 from app.normalizer import normalize_text
 
 
@@ -91,6 +92,7 @@ def measure(iterations: int = 10_000, warmup: int = 1_000) -> dict[str, float]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    ensure_utf8_stdout()  # box-drawing output crashes cp1252 consoles otherwise
     parser = argparse.ArgumentParser(prog="latency_benchmark")
     parser.add_argument("--iterations", type=int, default=10_000)
     parser.add_argument("--warmup", type=int, default=1_000)

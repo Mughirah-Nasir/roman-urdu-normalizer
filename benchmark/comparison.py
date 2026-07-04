@@ -46,6 +46,7 @@ import re
 import sys
 from pathlib import Path
 
+from app.console import ensure_utf8_stdout
 from app.data import CANONICAL_LEXICON, VARIANT_MAP
 from app.normalizer import normalize_text
 from benchmark.run_benchmark import load_gold_standard, precision_recall_f1, score_pair
@@ -201,6 +202,7 @@ def score_strategy(name: str, fn, gold: list[dict]) -> dict:
 
 
 def main(argv: list[str] | None = None) -> int:
+    ensure_utf8_stdout()  # box-drawing output crashes cp1252 consoles otherwise
     parser = argparse.ArgumentParser(prog="comparison")
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--dataset", default="combined",

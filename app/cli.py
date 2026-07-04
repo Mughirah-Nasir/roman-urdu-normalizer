@@ -26,6 +26,7 @@ import argparse
 import json
 import sys
 
+from app.console import ensure_utf8_stdout
 from app.data import lexicon_stats
 from app.normalizer import normalize_text
 
@@ -59,6 +60,7 @@ def _normalize_lines(lines, as_json: bool) -> None:
 
 
 def main() -> int:
+    ensure_utf8_stdout()  # pass-through emoji/Nastaliq crashes cp1252 consoles
     parser = argparse.ArgumentParser(
         prog="roman-urdu-normalizer",
         description="Normalize Roman Urdu text from the command line.",

@@ -41,6 +41,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from app.console import ensure_utf8_stdout  # noqa: E402
 from app.data import CANONICAL_LEXICON, VARIANT_MAP, all_canonical_words  # noqa: E402
 from app.phonetic import phonetic_key  # noqa: E402
 
@@ -184,6 +185,7 @@ def write_changelog_entry(accepted: dict[str, str], out_path: Path) -> None:
 
 
 def main() -> int:
+    ensure_utf8_stdout()  # report output crashes cp1252 consoles otherwise
     parser = argparse.ArgumentParser(prog="review_unknowns")
     parser.add_argument("--api", default="http://localhost:8000",
                         help="base URL of running normalizer (default: localhost:8000)")

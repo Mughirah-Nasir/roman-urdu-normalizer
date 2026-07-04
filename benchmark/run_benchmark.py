@@ -33,6 +33,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+from app.console import ensure_utf8_stdout
 from app.normalizer import normalize_text
 
 # --------------------------------------------------------------------------
@@ -219,6 +220,7 @@ def print_human(report: dict[str, Any]) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    ensure_utf8_stdout()  # box-drawing output crashes cp1252 consoles otherwise
     parser = argparse.ArgumentParser(prog="run_benchmark")
     parser.add_argument("--json", action="store_true",
                         help="emit full results as JSON to stdout")
