@@ -214,6 +214,22 @@ PHRASE_MAP: dict[tuple[str, ...], str] = {
 _PHRASE_TOKEN_RE = re.compile(r"\w+", re.UNICODE)
 
 
+def _gaps_are_whitespace(text: str, word_spans: list, i: int, span_count: int) -> bool:
+    """True if every gap between the candidate phrase's consecutive tokens is
+    whitespace only.
+
+    Phrase entries model *adjacent* spoken tokens. If punctuation sits between
+    them ("kr, de", "ho. gya"), the tokens belong to different syntactic units
+    and rewriting across the boundary would silently delete the punctuation —
+    a "never silently guess" contract violation (regression fixed in v1.2.2).
+    """
+    for k in range(span_count - 1):
+        gap = text[word_spans[i + k][1]:word_spans[i + k + 1][0]]
+        if gap.strip():
+            return False
+    return True
+
+
 def _scan_for_phrases(text: str, max_phrase_len: int = 3) -> list[dict]:
     """
     Find all longest phrase-map matches in `text`. Returns a list of
@@ -238,7 +254,7 @@ def _scan_for_phrases(text: str, max_phrase_len: int = 3) -> list[dict]:
         # Try longest phrase first
         for span_count in range(min(max_phrase_len, len(word_spans) - i), 1, -1):
             tokens = tuple(word_spans[i + k][2].lower() for k in range(span_count))
-            if tokens in PHRASE_MAP:
+            if tokens in PHRASE_MAP and _gaps_are_whitespace(text, word_spans, i, span_count):
                 start_char = word_spans[i][0]
                 end_char = word_spans[i + span_count - 1][1]
                 matches.append({
