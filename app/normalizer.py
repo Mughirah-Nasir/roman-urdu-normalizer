@@ -7,12 +7,14 @@ Resolution order (longest match wins at each layer):
       Scan input left-to-right for known compound forms — "kr de", "ja rha",
       "ho gya". Longest match wins. Matched spans skip the per-token layers.
 
-  Layer 1 — Already canonical
-      If the lowercased token is a canonical lexicon word, return it.
-
-  Layer 2 — Exact variant map
+  Layer 1 — Exact variant map (non-identity remaps)
       O(1) dict lookup against VARIANT_MAP. Catches SMS shorthand that the
       phonetic algorithm can't reach (e.g. "bht" -> "bahut", "nhi" -> "nahi").
+      Checked before the lexicon so a curated remap (e.g. "bohat" -> "bahut")
+      can never be shadowed by the variant spelling appearing in the lexicon.
+
+  Layer 2 — Already canonical
+      If the lowercased token is a canonical lexicon word, return it.
 
   Layer 3 — Phonetic key match
       Compute the phonetic key of the input; look up canonical words sharing
@@ -108,6 +110,19 @@ def normalize_token(token: str) -> dict[str, Any]:
     raw = token
     lower = token.lower().strip()
 
+    # Layer 1 — exact variant map, checked BEFORE the canonical lexicon for
+    # non-identity remaps. A curated rewrite like "bohat" -> "bahut" must win
+    # even if the variant spelling also (incorrectly) appears in the lexicon;
+    # otherwise the map entry is silently dead (regression fixed in v1.2.2).
+    mapped = VARIANT_MAP.get(lower)
+    if mapped is not None and mapped != lower:
+        return {
+            "original": raw, "normalized": mapped,
+            "source": "variant_map", "confidence": CONFIDENCE_EXACT,
+            "ambiguous": False, "candidates": [],
+        }
+
+    # Layer 2 — already canonical
     if lower in CANONICAL_LEXICON:
         return {
             "original": raw, "normalized": lower,
@@ -115,9 +130,10 @@ def normalize_token(token: str) -> dict[str, Any]:
             "ambiguous": False, "candidates": [],
         }
 
-    if lower in VARIANT_MAP:
+    # Identity variant-map entries not in the lexicon (e.g. "haan" -> "haan")
+    if mapped is not None:
         return {
-            "original": raw, "normalized": VARIANT_MAP[lower],
+            "original": raw, "normalized": mapped,
             "source": "variant_map", "confidence": CONFIDENCE_EXACT,
             "ambiguous": False, "candidates": [],
         }

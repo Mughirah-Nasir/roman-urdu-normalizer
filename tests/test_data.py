@@ -33,6 +33,22 @@ class TestVariantMapIntegrity:
         # we want a real dictionary, not a toy
         assert len(VARIANT_MAP) >= 300
 
+    def test_non_identity_variant_keys_not_in_lexicon(self):
+        """A VARIANT_MAP key that remaps to a DIFFERENT word must never also
+        be in CANONICAL_LEXICON. When both hold, the entry is dead data:
+        the lexicon declares the spelling canonical while the map says it
+        should be rewritten. This exact inconsistency shipped in v1.2.1 with
+        9 dead entries (abh, aya, bohat, hi, kam, ki, kiya, mein, tu) —
+        including "bohat" -> "bahut" from the README's own example table.
+        """
+        shadowed = {
+            k: v for k, v in VARIANT_MAP.items()
+            if v != k and k in CANONICAL_LEXICON
+        }
+        assert not shadowed, (
+            f"variant map entries shadowed by the lexicon (dead data): {shadowed}"
+        )
+
     def test_variant_map_values_are_canonical(self):
         """Every value in the variant map should either be in the canonical
         lexicon OR be a hyphenated compound (which we treat as canonical).

@@ -240,7 +240,8 @@ _PRONOUNS = {
     # Personal — 1st person
     "main", "hum",
     # Personal — 2nd person (informal -> formal)
-    "tu", "tum", "aap",
+    # NOTE: "tu" is deliberately NOT canonical — VARIANT_MAP folds it to "tum".
+    "tum", "aap",
     # Personal — 3rd person
     "wo", "ye", "in", "un",
     # Possessive
@@ -291,13 +292,15 @@ _VERBS_INF = {
 
 _VERBS_CONJ = {
     # karna conjugations
-    "karta", "karti", "karte", "kiya", "ki", "karunga", "karoge", "karenge",
+    # NOTE: "kiya" and "ki" are VARIANT_MAP remaps ("kya" / "koi"), so they
+    # must not also be canonical here — the map entry would be dead code.
+    "karta", "karti", "karte", "karunga", "karoge", "karenge",
     "karega", "karegi", "karein", "karo", "karoon",
     # jana
     "jata", "jati", "jate", "gaya", "gayi", "gaye",
     "jaunga", "jaungi", "jaoge", "jayenge", "jao", "jaayega",
-    # aana
-    "ata", "ati", "ate", "aya", "ayi", "aye",
+    # aana ("aya" is a VARIANT_MAP remap to "aaya", so not canonical here)
+    "ata", "ati", "ate", "ayi", "aye",
     "aunga", "aungi", "aoge", "ayenge",
     # khana
     "khata", "khati", "khate", "khaya", "khayi", "khaye",
@@ -425,8 +428,8 @@ _ADJECTIVES = {
 }
 
 _ADVERBS = {
-    # Time
-    "abhi", "abh", "ab", "kabhi", "hamesha",
+    # Time ("abh" is a VARIANT_MAP remap to "abhi", so not canonical here)
+    "abhi", "ab", "kabhi", "hamesha",
     "phir", "baad", "pehle", "fauran",
     # Place
     "yahan", "wahan", "idhar", "udhar",
@@ -435,15 +438,18 @@ _ADVERBS = {
     # Manner
     "achi-tarah", "buri-tarah", "asaani-se", "mushkil-se",
     "jaldi", "dheere", "ahista",
-    # Degree
-    "bohat", "thora", "kam", "zyada", "sirf", "bhi", "hi", "to",
+    # Degree — "bohat"/"kam"/"hi" are VARIANT_MAP remaps ("bahut"/"kaam"/
+    # "hai"), so they must not also be canonical here.
+    "bahut", "thora", "zyada", "sirf", "bhi", "to",
     "bilkul", "shayad", "zaroor",
 }
 
 _CONJUNCTIONS = {
     "aur", "ya", "lekin", "magar", "agar", "warna",
     "kyunki", "is-liye", "jab", "tak",
-    "ke", "ki", "ka", "se", "ko", "mein", "par", "to", "phir", "balke", "ya-phir",
+    # NOTE: "ki" and "mein" are VARIANT_MAP remaps ("koi" / "main"), so they
+    # are deliberately not canonical here.
+    "ke", "ka", "se", "ko", "par", "to", "phir", "balke", "ya-phir",
     "jab-bhi", "agar-bhi", "lekin-phir",
 }
 
