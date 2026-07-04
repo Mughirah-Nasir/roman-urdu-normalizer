@@ -10,6 +10,7 @@ Endpoints:
     GET  /docs                  - auto-generated OpenAPI docs
 """
 
+import hmac
 import logging
 import os
 import time
@@ -66,6 +67,18 @@ MAX_REQUEST_BYTES = int(os.getenv("MAX_REQUEST_BYTES", str(1 * 1024 * 1024)))
 # Rate limit — requests per minute per IP. 0 disables.
 RATE_LIMIT_PER_MIN = int(os.getenv("RATE_LIMIT_PER_MIN", "0"))
 
+# Upper bound on distinct client IPs tracked by the rate limiter. Stale IPs
+# are pruned once this is reached, so the tracker cannot grow without bound.
+MAX_TRACKED_IPS = int(os.getenv("MAX_TRACKED_IPS", "10000"))
+
+# Upper bound on distinct tokens kept per telemetry counter. Without a cap,
+# an attacker sending novel tokens grows the unknown-token Counter forever.
+TELEMETRY_MAX_TOKENS = int(os.getenv("TELEMETRY_MAX_TOKENS", "5000"))
+
+# Optional bearer token for /metrics. When set, the endpoint (which exposes
+# fragments of user input) requires "Authorization: Bearer <token>".
+METRICS_TOKEN = os.getenv("METRICS_TOKEN", "")
+
 
 # ----------------------------------------------------------------------------
 # In-memory telemetry — top unresolved tokens for lexicon growth
@@ -78,6 +91,22 @@ TELEMETRY: dict[str, Counter | int] = {
     "ambiguous_tokens":  Counter(),
     "tokens_processed":  0,
 }
+
+
+def _bounded_increment(counter: Counter, key: str,
+                       cap: int | None = None) -> None:
+    """Increment counter[key], keeping the counter's size bounded.
+
+    When the counter exceeds the cap, it is compacted to the most frequent
+    half — cheap, and it preserves exactly the signal /metrics reports
+    (top-N tokens). Rare junk from a flood of novel tokens is dropped.
+    """
+    cap = TELEMETRY_MAX_TOKENS if cap is None else cap
+    counter[key] += 1
+    if cap > 0 and len(counter) > cap:
+        kept = counter.most_common(max(cap // 2, 1))
+        counter.clear()
+        counter.update(dict(kept))
 
 
 # ----------------------------------------------------------------------------
@@ -117,6 +146,15 @@ app.add_middleware(
 _rate_window: dict[str, list[float]] = {}
 
 
+def _prune_rate_window(now: float) -> None:
+    """Evict IPs with no request in the last 60s so the tracker cannot
+    accumulate one timestamp list per unique client IP forever."""
+    cutoff = now - 60.0
+    stale = [ip for ip, ts in _rate_window.items() if not ts or ts[-1] <= cutoff]
+    for ip in stale:
+        del _rate_window[ip]
+
+
 @app.middleware("http")
 async def hardening_middleware(request: Request, call_next):
     # Body-size guard for POST bodies
@@ -128,11 +166,24 @@ async def hardening_middleware(request: Request, call_next):
                 content={"error": "payload_too_large",
                          "detail": f"request body exceeds {MAX_REQUEST_BYTES} bytes"},
             )
+        # A chunked body carries no Content-Length, which would bypass the
+        # size guard entirely. This JSON API has no legitimate need for
+        # chunked uploads, so require a declared length instead.
+        te = request.headers.get("transfer-encoding", "")
+        if cl is None and "chunked" in te.lower():
+            return JSONResponse(
+                status_code=411,
+                content={"error": "length_required",
+                         "detail": "chunked transfer encoding is not supported; "
+                                   "send a Content-Length header"},
+            )
 
     # Rate limit
     if RATE_LIMIT_PER_MIN > 0:
         client_ip = request.client.host if request.client else "unknown"
         now = time.time()
+        if client_ip not in _rate_window and len(_rate_window) >= MAX_TRACKED_IPS:
+            _prune_rate_window(now)
         window = _rate_window.setdefault(client_ip, [])
         # Drop anything older than 60s
         cutoff = now - 60.0
@@ -285,15 +336,27 @@ def _record_telemetry(result: dict) -> None:
     TELEMETRY["tokens_processed"] += result["stats"]["total"]  # type: ignore
     for tok in result["tokens"]:
         if tok["source"] == "unknown":
-            TELEMETRY["unknown_tokens"][tok["original"].lower()] += 1  # type: ignore
+            _bounded_increment(TELEMETRY["unknown_tokens"], tok["original"].lower())  # type: ignore[arg-type]
         if tok["ambiguous"]:
-            TELEMETRY["ambiguous_tokens"][tok["original"].lower()] += 1  # type: ignore
+            _bounded_increment(TELEMETRY["ambiguous_tokens"], tok["original"].lower())  # type: ignore[arg-type]
 
 
 @app.get("/metrics", tags=["meta"])
-def metrics():
+def metrics(request: Request):
     """Operational telemetry: total tokens processed, per-endpoint request
-    counts, and the top unresolved tokens — useful for lexicon growth."""
+    counts, and the top unresolved tokens — useful for lexicon growth.
+
+    The top-unknown list contains raw fragments of user input, so when the
+    METRICS_TOKEN env var is set, callers must send a matching
+    "Authorization: Bearer <token>" header."""
+    if METRICS_TOKEN:
+        auth = request.headers.get("authorization", "")
+        expected = f"Bearer {METRICS_TOKEN}"
+        if not hmac.compare_digest(auth.encode(), expected.encode()):
+            raise HTTPException(
+                status_code=401,
+                detail="metrics endpoint requires a valid bearer token",
+            )
     unknown_counter = TELEMETRY["unknown_tokens"]
     ambiguous_counter = TELEMETRY["ambiguous_tokens"]
     request_counter = TELEMETRY["request_count"]
