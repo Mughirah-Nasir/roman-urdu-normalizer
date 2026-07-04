@@ -118,3 +118,156 @@ class TestUnknownAfterRewriteIsBugged:
         result = normalize_token("totally_unknown_word_xyzqwerty")
         assert result["source"] == "unknown"
         assert result["normalized"] == result["original"]
+
+
+class TestVariantMapShadowedByLexiconBug:
+    """
+    BUG (v1.2.1): 9 variant-map entries were dead code because the canonical
+    lexicon was checked BEFORE the variant map in normalize_token, and those
+    9 variant spellings also (incorrectly) appeared in the lexicon. Verified
+    live: normalize_text("bohat") returned "bohat" even though the README's
+    own example table promises "bohat" -> "bahut".
+
+    Fix: non-identity variant-map remaps now win over the lexicon, and the
+    9 shadowed spellings were removed from CANONICAL_LEXICON (a matching
+    data-integrity test lives in tests/test_data.py).
+    """
+
+    FORMERLY_DEAD_ENTRIES = {
+        "abh":   "abhi",
+        "aya":   "aaya",
+        "bohat": "bahut",
+        "hi":    "hai",
+        "kam":   "kaam",
+        "ki":    "koi",
+        "kiya":  "kya",
+        "mein":  "main",
+        "tu":    "tum",
+    }
+
+    def test_formerly_dead_variant_entries_resolve(self):
+        for variant, canonical in self.FORMERLY_DEAD_ENTRIES.items():
+            result = normalize_token(variant)
+            assert result["normalized"] == canonical, (
+                f"{variant!r} -> {result['normalized']!r}, expected "
+                f"{canonical!r} — variant map entry is dead again"
+            )
+            assert result["source"] == "variant_map"
+            assert result["confidence"] == 1.0
+
+    def test_readme_example_bohat_becomes_bahut(self):
+        # The exact claim from the README's example table.
+        from app.normalizer import normalize_text
+        assert normalize_text("bohat")["normalized"] == "bahut"
+
+    def test_identity_variant_entries_still_report_unchanged(self):
+        # Words that are both canonical AND identity-mapped in the variant
+        # map ("kya" -> "kya") must keep reporting source="unchanged".
+        result = normalize_token("kya")
+        assert result["normalized"] == "kya"
+        assert result["source"] == "unchanged"
+
+
+class TestPhraseLayerAtePunctuationBug:
+    """
+    BUG (v1.2.1): the phrase layer matched word tokens regardless of what
+    sat between them, so "ho. gya" -> "ho gaya" (sentence boundary deleted)
+    and "kr, de" -> "kar de" (comma deleted). Silently destroying
+    punctuation violates the project's "never silently guess" contract.
+
+    Fix: phrase tokens must be separated by whitespace only.
+    """
+
+    def test_full_stop_between_phrase_tokens_is_preserved(self):
+        from app.normalizer import normalize_text
+        result = normalize_text("ho. gya")
+        assert result["normalized"] == "ho. gaya"
+        assert result["stats"]["phrase_map"] == 0
+
+    def test_comma_between_phrase_tokens_is_preserved(self):
+        from app.normalizer import normalize_text
+        result = normalize_text("kr, de")
+        assert result["normalized"].startswith("kar,")
+        assert "," in result["normalized"]
+        assert result["stats"]["phrase_map"] == 0
+
+    def test_phrase_still_matches_across_a_single_space(self):
+        from app.normalizer import normalize_text
+        result = normalize_text("ho gya")
+        assert result["normalized"] == "ho gaya"
+        assert result["stats"]["phrase_map"] == 1
+
+    def test_phrase_still_matches_across_multiple_spaces(self):
+        from app.normalizer import normalize_text
+        result = normalize_text("ho  gya")
+        assert result["stats"]["phrase_map"] == 1
+
+    def test_sentence_boundary_case_from_report(self):
+        from app.normalizer import normalize_text
+        result = normalize_text("kaam ho gya. ab tk kuch nai")
+        assert ". " in result["normalized"]
+        assert result["normalized"] == "kaam ho gaya. ab tak kuch nahi"
+
+
+class TestWindowsConsoleEncodingBug:
+    """
+    BUG (v1.2.1): benchmark/run_benchmark.py printed box-drawing characters
+    that crash with UnicodeEncodeError on legacy Windows consoles (cp1252) —
+    ironic for a tool aimed at Pakistan, where Windows dominates.
+
+    Fix: app.console.ensure_utf8_stdout() reconfigures stdout/stderr to
+    UTF-8 at every console entry point (benchmark, comparison, latency,
+    CLI, review_unknowns).
+    """
+
+    def _cp1252_stdout(self):
+        import io
+        buf = io.BytesIO()
+        return buf, io.TextIOWrapper(buf, encoding="cp1252")
+
+    def test_print_human_survives_cp1252_stdout(self, monkeypatch):
+        import sys
+
+        from app.console import ensure_utf8_stdout
+        from benchmark.run_benchmark import print_human
+
+        report = {
+            "dataset": "unit-test",
+            "examples": 1,
+            "sentence_accuracy": 0.0,
+            "token_precision": 0.5,
+            "token_recall": 0.5,
+            "token_f1": 0.5,
+            "by_category": {
+                "misc": {"examples": 1, "exact_match": 0,
+                         "sentence_accuracy": 0.0,
+                         "precision": 0.5, "recall": 0.5, "f1": 0.5},
+            },
+            # An error record with an emoji — pass-through user text must
+            # not crash the report printer either.
+            "errors": [{
+                "id": "t1", "category": "misc", "exact": False,
+                "input": "kya haal hai 🏃", "expected": "kya haal hai 🏃",
+                "predicted": "kya haal hai", "notes": "unit test",
+            }],
+        }
+
+        buf, fake_stdout = self._cp1252_stdout()
+        monkeypatch.setattr(sys, "stdout", fake_stdout)
+        ensure_utf8_stdout()   # the fix under test
+        print_human(report)    # crashed with UnicodeEncodeError before fix
+        sys.stdout.flush()
+        assert "BENCHMARK RESULTS" in buf.getvalue().decode("utf-8")
+
+    def test_ensure_utf8_stdout_is_safe_on_plain_streams(self, monkeypatch):
+        # Streams without .reconfigure (e.g. wrapped/captured) must not raise.
+        import sys
+
+        from app.console import ensure_utf8_stdout
+
+        class Plain:
+            def write(self, s):
+                return len(s)
+
+        monkeypatch.setattr(sys, "stdout", Plain())
+        ensure_utf8_stdout()  # must be a silent no-op
